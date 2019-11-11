@@ -11,6 +11,9 @@ class LexicalAnalyzer:
     def increaseTokenNumber(self):
         self.tokenNumber = self.tokenNumber + 1
 
+    def startLexicalAnalyzer(self):
+        pass
+
     def classifyToken (self):
         pass
     def separateToken(self):
