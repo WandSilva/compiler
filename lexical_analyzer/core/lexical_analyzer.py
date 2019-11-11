@@ -1,10 +1,23 @@
 
-#Possíve melhoria: 
-#	mandar a posição do caractere e a lista completa (atualmente estou mandando só a linha). 
-#	A linha servirá apenas para olhar os próximos caracteres. 
-#	Fazer isso para cada caractere. Assim da pra verificar tudo que há na linha.
+import sys
+import os.path
 
-def main():    
+import string
+
+class LexicalAnalyzer:
+    def __init__(self):
+        tokenNumber = 0
+
+    def increaseTokenNumber(self):
+        self.tokenNumber = self.tokenNumber + 1
+
+    def classifyToken (self):
+        pass
+    def separateToken(self):
+        pass
+
+'''
+def main():
     i1 = "a=1;"
     i2 = "x>1"
     i3 = "x>=1"
@@ -24,7 +37,7 @@ def relational_operators (inputA):
     for i in range (0, len(input_split)):
         if(input_split[i] == "="):
             if(input_split[i+1] == '='):
-                return "opetator: =="
+                return "opetator: == "
             else:            
                 return"operator: ="
         elif(input_split[i] == ">"):
@@ -44,3 +57,4 @@ def relational_operators (inputA):
 
 if __name__ == "__main__":
     main()
+'''
