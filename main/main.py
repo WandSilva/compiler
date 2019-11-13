@@ -1,5 +1,5 @@
-from ..lexical_analyzer.core.lexical_analyzer import LexicalAnalyzer    # Não consegui ainda resolver esse tipo de importação
-from ..lexical_analyzer.token.token import Token    # Não consegui ainda resolver esse tipo de importação
+from lexical_analyzer.core.lexical_analyzer import LexicalAnalyzer    # Não consegui ainda resolver esse tipo de importação
+from lexical_analyzer.token.token import Token    # Não consegui ainda resolver esse tipo de importação
 
 import os
 import sys
