@@ -25,10 +25,10 @@ def readFilesAndUpdateFilesTextAux():
     else:
         i = 0
         for i in range(0, numberFiles):
-            auxFile = os.path.isfile('../input/entrada' + 'i' + '.txt')  # Se o arquivo existir na pasta, prossegue
+            auxFile = os.path.isfile('../input/entrada' + str(i) + '.txt')  # Se o arquivo existir na pasta, prossegue
             if auxFile:
                 fileText = []
-                fileAux = open('../input/entrada' + 'i' + '.txt', "r")  # Abre o arquivo de texto específico
+                fileAux = open('../input/entrada' + str(i) + '.txt', "r")  # Abre o arquivo de texto específico
                 lineText = fileAux.readline()  # Tenta ler uma linha do arquivo de texto
                 while lineText is not None:  # Enquanto encontrar uma linha no arquivo de texto, consome o mesmo e
                     # coloca na lista de linhas da lista de arquivo de textos
