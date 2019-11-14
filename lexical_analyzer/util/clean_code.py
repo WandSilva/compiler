@@ -1,3 +1,5 @@
+import re
+
 class CleanCode:
     
     def __init__(self):
@@ -18,7 +20,7 @@ class CleanCode:
             line=""
             return [False, line]
         elif(line.find("//") >= 0):
-            line=""
+            line = re.sub("//.*", "", line)
             return [False, line]
         elif(line.find("/*") >= 0):
             line=""
