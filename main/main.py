@@ -5,7 +5,7 @@ import os
 import sys
 import glob
 
-tableSimbols = []  # Tabela de Simbolos
+tableSimbols = []   # Tabela de Simbolos
 filesText = []
 
 
