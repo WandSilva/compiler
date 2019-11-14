@@ -1,5 +1,6 @@
-from lexical_analyzer.core.lexical_analyzer import LexicalAnalyzer    # Não consegui ainda resolver esse tipo de importação
-from lexical_analyzer.token.token import Token    # Não consegui ainda resolver esse tipo de importação
+from lexical_analyzer.core.lexical_analyzer import LexicalAnalyzer
+from lexical_analyzer.token.token import Token    
+from lexical_analyzer.util.clean_code import CleanCode
 
 import os
 import sys
@@ -7,14 +8,32 @@ import glob
 
 tableSimbols = []   # Tabela de Simbolos
 filesText = []
+sourceCode = []
 
 
 def main():
+    code = read_file("../input/eu.txt");
+    cc = CleanCode()
+    is_block_comment = False
+    newLine = ""
+    for line in code:
+        is_block_comment, newLine = cc.remove_comments(is_block_comment, line);
+        sourceCode.append(newLine)
+        print(newLine)
+    if(is_block_comment):
+        print("comentário mal formado")
+
+    
     # lexicalAnalyzer = LexicalAnalyzer()
 
-    readFilesAndUpdateFilesTextAux()
+    # readFilesAndUpdateFilesTextAux()
     # lexicalAnalyzer.startLexicalAnalyzer()
 
+
+def read_file(path):
+    with open(path) as f:
+        lines = f.read().splitlines()      
+    return lines
 
 def readFilesAndUpdateFilesTextAux():
     numberFiles = len(glob.glob('../input/*.txt'))
