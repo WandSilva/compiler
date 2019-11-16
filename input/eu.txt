@@ -1,6 +1,2 @@
-//teste1
-/*teste2
-teste3
-teste4 */
-/* teste5 */
-teste6//regex hoje, regez amanhã, regex sempre!
+primeira_linha
+segunda_linha
