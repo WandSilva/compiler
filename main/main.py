@@ -19,7 +19,7 @@ def main():
     for code in codes:
         cleanSourceCode = []
         for line in code:
-            is_block_comment, newLine = remove_comments(is_block_comment, line)
+            is_block_comment, newLine = cc.remove_comments(is_block_comment, line)
             cleanSourceCode.append(newLine)
         lexInputCodes.append(cleanSourceCode)
     if is_block_comment:
