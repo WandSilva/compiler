@@ -9,6 +9,7 @@ import glob
 tableSimbols = []   # Tabela de Simbolos
 filesText = []
 sourceCode = []
+auxLexemes = []
 
 
 def main():
@@ -24,7 +25,7 @@ def main():
         print("comentário mal formado")
 
     
-    # lexicalAnalyzer = LexicalAnalyzer()
+    # lexicalAnalyzer = LexicalAnalyzer(auxLexemes)
 
     # readFilesAndUpdateFilesTextAux()
     # lexicalAnalyzer.startLexicalAnalyzer()
