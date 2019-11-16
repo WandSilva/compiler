@@ -25,18 +25,16 @@ def main():
     for (line_number, line) in enumerate(cleanSourceCode):   
         checkpoint = 0
         for (char_number, character) in enumerate(line):
-            lex_analyser((line[checkpoint:char_number+1]))
+            result = lex_analyser((line[checkpoint:char_number+1]))
+            print(result)
+            
 
 
-    
-    # lexicalAnalyzer = LexicalAnalyzer()
-
-    # readFilesAndUpdateFilesTextAux()
-    # lexicalAnalyzer.startLexicalAnalyzer()
 
 
 def lex_analyser(char):
-    print(char)
+    classe =  "classe_teste"
+    return {classe, char}
 
 def read_file(path):
     with open(path) as f:
