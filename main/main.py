@@ -8,7 +8,7 @@ import glob
 
 tableSimbols = []   # Tabela de Simbolos
 filesText = []
-sourceCode = []
+cleanSourceCode = []
 auxLexemes = []
 
 
@@ -22,21 +22,17 @@ def main():
         cleanSourceCode.append(newLine)
     if(is_block_comment):
         print("comentário mal formado") #arrumar isso aqui depois. Tem que gerar erro
-     
-    for (line_number, line) in enumerate(cleanSourceCode):   
-        checkpoint = 0
-        for (char_number, character) in enumerate(line):
-            result = lex_analyser((line[checkpoint:char_number+1]))
-            print(result)
-            
+    
+    tableSimbols = lex_analyser(cleanSourceCode)
+    print(tableSimbols)
+        
 
 
-
-
-def lex_analyser(char):
-    la = LexicalAnalyzer()
-    classe = la.classifyToken(char)
-    return {classe, char}
+def lex_analyser(cleanSourceCode):
+    la = LexicalAnalyzer(cleanSourceCode)
+    classe = la.identifyToken()
+    return classe
+    
 
 def read_file(path):
     with open(path) as f:
