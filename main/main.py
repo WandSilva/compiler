@@ -19,10 +19,15 @@ def main():
     newLine = ""
     for line in code:
         is_block_comment, newLine = cc.remove_comments(is_block_comment, line);
-        sourceCode.append(newLine)
-        print(newLine)
+        cleanSourceCode.append(newLine)
     if(is_block_comment):
-        print("comentário mal formado")
+        print("comentário mal formado") #arrumar isso aqui depois. Tem que gerar erro
+     
+    for (line_number, line) in enumerate(cleanSourceCode):   
+        checkpoint = 0
+        for (char_number, character) in enumerate(line):
+            lex_analyser((line[checkpoint:char_number+1]))
+
 
     
     # lexicalAnalyzer = LexicalAnalyzer(auxLexemes)
@@ -30,6 +35,9 @@ def main():
     # readFilesAndUpdateFilesTextAux()
     # lexicalAnalyzer.startLexicalAnalyzer()
 
+
+def lex_analyser(char):
+    print(char)
 
 def read_file(path):
     with open(path) as f:
