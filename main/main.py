@@ -6,6 +6,7 @@ import os
 import glob
 
 #tableOfS = []  # Tabela de Simbolos
+
 filesText = []
 lexInputCodes = []
 auxLexemes = []
@@ -32,9 +33,10 @@ def main():
     
 
 def lex_analyser(cleanSourceCode):
+    pass
     la = LexicalAnalyzer(cleanSourceCode)
-    tableReturn = la.identify_token()
-    return tableReturn
+    classe = la.identify_token()
+    return classe
 
 
 def read_file(path):
