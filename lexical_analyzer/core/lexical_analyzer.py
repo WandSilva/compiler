@@ -14,7 +14,7 @@ class LexicalAnalyzer:
         self.auxLines = auxLines
         self.tokenNumber = 0
         self.tableSimbol = []
-    
+
 
     def increaseTokenNumber(self):
         self.tokenNumber = self.tokenNumber + 1
@@ -42,27 +42,30 @@ class LexicalAnalyzer:
             auxClass = ""
             lookAheadClass = ""
             auxLexeme = ""
+            previewClassify = ""
             for numChars in range(sizeChars):
-                while auxLine[numChars] == " ":
-                    numChars = numChars + 1
+                if auxClass == "":
+                    while auxLine[numChars] == " ":
+                        numChars = numChars + 1
                 auxLexeme = auxLexeme + auxLine[numChars]
                 auxClass = self.classifyToken(self, auxLexeme)
-                if auxLine[numChars + 1] != " " & auxLine[numChars + 1] is not None:
+                if auxLine[numChars + 1] is not None:
                     auxLookAheadLexeme = auxLexeme + auxLine[numChars + 1]
                     lookAheadClass = self.classifyToken(self, auxLookAheadLexeme)
                     if auxClass == lookAheadClass:
+                        previewClassify = auxClass
                         continue
                     else:
                         if lookAheadClass == "INVALID_CLASS":
                             token = Token(auxLexeme, numLines, auxClass, None)
                             self.tableSimbols.append(token)
                         else:
-
+                            numChars = numChars + 1
 
                 else:
                     token = Token(auxLexeme, numLines, auxClass, None)
                     self.tableSimbols.append(token)
-                    
+
         return self.tableSimbols
 
 
