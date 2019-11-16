@@ -59,19 +59,24 @@ class LexicalAnalyzer:
                         if lookAheadClass == "INVALID_CLASS":
                             token = Token(auxLexeme, numLines, auxClass, None)
                             self.tableSimbols.append(token)
+                            auxClass = ""
+                            lookAheadClass = ""
                         else:
                             numChars = numChars + 1
 
                 else:
                     token = Token(auxLexeme, numLines, auxClass, None)
                     self.tableSimbols.append(token)
+                    auxClass = ""
+                    lookAheadClass = ""
+
 
         return self.tableSimbols
 
 
     def classifyToken(self, lexeme):
         #   Verifica se é um idenficador
-        returnRegex = re.search("[a-zA-Z]+\\w*", lexeme)
+        returnRegex = re.search("^([a-zA-Z]+\\w*)$", lexeme)
         if returnRegex:
             aux = self.isReserved(lexeme)
             if aux:
@@ -79,43 +84,48 @@ class LexicalAnalyzer:
             else:
                 return "IDE"  # É um idenficador comum
         #   Verifica se é um número completo
-        returnRegex = re.search("-?\\d+(\\.(\\d+))?", lexeme)
+        returnRegex = re.search("^((-)?(\\s)*(\\d)+(\\.(\\d)+)?)$", lexeme)
         if returnRegex:
             return "NRO"
         #   Verifica se é um número incompleto
-        returnRegex = re.search("-?\\d+\\.?", lexeme)
+        returnRegex = re.search("^((-)?(\\d)+\\.?)$", lexeme)
         if returnRegex:
             return "NRO_INCOMPLETO"
         #   Verifica se é um operador relacional
-        returnRegex = re.search("(<=)|<|(==)|=|(>=)|>|(!=)", lexeme)
+        returnRegex = re.search("^((<=)|<|(==)|=|(>=)|>|(!=))$", lexeme)
         if returnRegex:
             return "REL"
         #   Verifica se é um operador aritimético
-        returnRegex = re.search("(--)|-|(\\+\\+)|\\+|\\*|/", lexeme)
+        returnRegex = re.search("^((--)|-|(\\+\\+)|\\+|\\*|/)$", lexeme)
         if returnRegex:
             return "ART"
         #   Verifica se é um operador lógico
-        returnRegex = re.search("!|(&&)|(\\|\\|)", lexeme)
+        returnRegex = re.search("^(!|(&&)|(\\|\\|))$", lexeme)
         if returnRegex:
             return "LOG"
+        #   Verifica se é um operador lógico mal formado
+        returnRegex = re.search("^(&|\\|)$", lexeme)
+        if returnRegex:
+            return "LOG_BF"
         #   Verifica se é um delimitador
-        returnRegex = re.search(":|;|,|\\(|\\)|[|]|\\{|}|\\.", lexeme)
+        returnRegex = re.search("^(:|;|,|\\(|\\)|[|]|\\{|}|\\.)$", lexeme)
         if returnRegex:
             return "DEL"
         #   Verifica se é uma cadeia de caracteres
-        returnRegex = re.search("\"((\\\\\")|[^\"]|\\n)*\"", lexeme)
+        returnRegex = re.search("^(\"((\\\\\")|[^\"]|\\n)*\")$", lexeme)
         if returnRegex:
             return "CDC"
         #   Verifica se é uma cadeia de caracteres mal formada
-        returnRegex = re.search("\"((\\\\\")|[^\"]|\\n)*", lexeme)
+        returnRegex = re.search("^(\"((\\\\\")|[^\"]|\\n)*)$", lexeme)
         if returnRegex:
             return "CMF"
         #   Verifica se é uma caractere inválido
-        returnRegex = re.search("[^\\n\\w.()|+\\-<>=!/\\\\*\\[\\]{}\"\'\\\\\"]+", lexeme)
+        returnRegex = re.search("^([^\\n\\w.()|+\\-<>=!/\\\\*\\[\\]{}\"\'\\\\\"]+)$", lexeme)
         if returnRegex:
             return "INVALID_CARACTER"
         #   Verifica se é um comentario mal formado
         #   Implementar aqui
+
         return "INVALID_CLASS"
 
     def separateToken(self):
