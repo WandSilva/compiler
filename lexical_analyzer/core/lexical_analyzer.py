@@ -50,11 +50,13 @@ class LexicalAnalyzer:
                     auxLookAheadLexeme = auxLexeme + auxLine[numChars + 1]
                     lookAheadClass = self.classifyToken(self, auxLookAheadLexeme)
                     if auxClass == lookAheadClass:
-                        numChars = numChars + 1
+                        continue
                     else:
                         if lookAheadClass == "INVALID_CLASS":
                             token = Token(auxLexeme, numLines, auxClass, None)
                             self.tableSimbols.append(token)
+                        else:
+
 
                 else:
                     token = Token(auxLexeme, numLines, auxClass, None)
