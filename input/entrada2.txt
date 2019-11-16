@@ -1,2 +1,1 @@
-abc_linha
-/*dce_linha
+x=1

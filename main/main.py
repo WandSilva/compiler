@@ -5,7 +5,7 @@ from lexical_analyzer.util.clean_code import CleanCode
 import os
 import glob
 
-tableOfS = []  # Tabela de Simbolos
+#tableOfS = []  # Tabela de Simbolos
 filesText = []
 lexInputCodes = []
 auxLexemes = []
@@ -24,14 +24,12 @@ def main():
         lexInputCodes.append(cleanSourceCode)
     if is_block_comment:
         print("comentário mal formado")  # arrumar isso aqui depois. Tem que gerar erro
-    '''
-    lexInputCodes.append("int aloisio = 25;")
-    lexInputCodes.append("123.456.789")
-    lexInputCodes.append("123. aloisio")
+    
     tableOfS = lex_analyser(lexInputCodes)
     print(tableOfS)
-    '''
-
+    for i in tableOfS:
+        print(i)
+    
 
 def lex_analyser(cleanSourceCode):
     la = LexicalAnalyzer(cleanSourceCode)

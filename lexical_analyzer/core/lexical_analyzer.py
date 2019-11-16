@@ -6,14 +6,16 @@ import re
 
 
 class LexicalAnalyzer:
-    auxLines = []
-    tableSimbols = []
-    tokenNumber = 0
-    numErrors = 0
+    #auxLines = []
+    #tableSimbols = []
+    #tokenNumber = 0
+    #numErrors = 0
 
     def __init__(self, auxLines):
         self.auxLines = auxLines
         self.tokenNumber = 0
+        self.tableSimbols = []
+        self.numErrors = 0
 
     def increase_token_number(self):
         self.tokenNumber = self.tokenNumber + 1
@@ -24,7 +26,7 @@ class LexicalAnalyzer:
     def classify_token_k(self):
         pass
 
-    @property
+    #@property
     def identify_token(self):
         lexeme = ""
         auxLine = ""
