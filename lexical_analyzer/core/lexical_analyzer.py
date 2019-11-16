@@ -13,76 +13,83 @@ class LexicalAnalyzer:
     def __init__(self, auxLines):
         self.auxLines = auxLines
         self.tokenNumber = 0
-        self.tableSimbol = []
 
-
-    def increaseTokenNumber(self):
+    def increase_token_number(self):
         self.tokenNumber = self.tokenNumber + 1
 
-    def startLexicalAnalyzer(self):
+    def start_lexical_analyzer(self):
         pass
 
-    def classifyTokenK(self):
+    def classify_token_k(self):
         pass
 
-    def identifyToken(self):
-
+    def identify_token(self):
         lexeme = ""
         auxLine = ""
         errorLexeme = ""
         lineCDC = 0
         CDC = 0
-
         numLines = 0
         sizeLexemes = len(self.auxLines)
-        for numLines in range(sizeLexemes):
+        for numLines in range(sizeLexemes - 1):
             auxLine = self.auxLines[numLines]
             sizeChars = len(self.auxLines[numLines])
             numChars = 0
             auxClass = ""
             lookAheadClass = ""
             auxLexeme = ""
-            previewClassify = ""
-            for numChars in range(sizeChars):
-                if auxClass == "":
+            auxLookAheadLexeme = ""
+            for numChars in range(sizeChars - 1):
+                if auxLexeme == "":
                     while auxLine[numChars] == " ":
                         numChars = numChars + 1
                 auxLexeme = auxLexeme + auxLine[numChars]
-                auxClass = self.classifyToken(self, auxLexeme)
-                if auxLine[numChars + 1] is not None:
-                    auxLookAheadLexeme = auxLexeme + auxLine[numChars + 1]
-                    lookAheadClass = self.classifyToken(self, auxLookAheadLexeme)
+                auxClass = self.classify_token(self, auxLexeme)
+                if auxClass == "INVALID_CLASS":
+                    errorLexeme = self.return_error_msg(auxClass)
+                    token = Token(auxLexeme, numLines, auxClass, errorLexeme)
+                    self.tableSimbols.append(token)
+                    auxLexeme = ""
+                    auxLookAheadLexeme = ""
+                    continue
+                elif numChars + 1 <= sizeChars - 1:
+                    numChars2 = numChars + 1
+                    auxLookAheadLexeme = auxLexeme + auxLine[numChars2]
+                    lookAheadClass = self.classify_token(self, auxLookAheadLexeme)
                     if auxClass == lookAheadClass:
-                        previewClassify = auxClass
                         continue
                     else:
-                        if lookAheadClass == "INVALID_CLASS":
-                            token = Token(auxLexeme, numLines, auxClass, None)
+                        if auxClass != "INVALID_CLASS" & lookAheadClass == "INVALID_CLASS":
+                            errorLexeme = self.return_error_msg(auxClass)
+                            token = Token(auxLexeme, numLines, auxClass, errorLexeme)
                             self.tableSimbols.append(token)
-                            auxClass = ""
-                            lookAheadClass = ""
+                            auxLexeme = ""
+                            auxLookAheadLexeme = ""
+                            continue
                         else:
-                            numChars = numChars + 1
-
+                            continue
                 else:
-                    token = Token(auxLexeme, numLines, auxClass, None)
+                    errorLexeme = self.return_error_msg(auxClass)
+                    token = Token(auxLexeme, numLines, auxClass, errorLexeme)
                     self.tableSimbols.append(token)
-                    auxClass = ""
-                    lookAheadClass = ""
-
+                    auxLexeme = ""
+                    auxLookAheadLexeme = ""
 
         return self.tableSimbols
 
-
-    def classifyToken(self, lexeme):
-        #   Verifica se é um idenficador
+    def classify_token(self, lexeme):
+        #   Verifica se é um identificador
         returnRegex = re.search("^([a-zA-Z]+\\w*)$", lexeme)
         if returnRegex:
-            aux = self.isReserved(lexeme)
+            aux = self.is_reserved(lexeme)
             if aux:
                 return "PRE"  # É uma palavra reservada
             else:
-                return "IDE"  # É um idenficador comum
+                return "IDE"  # É um identificador comum
+        #   Verifica se é um identificador mal formado
+        returnRegex = re.search("^([a-zA-Z]+\\w*)$", lexeme)
+        if returnRegex:
+            return "IDE_BF"
         #   Verifica se é um número completo
         returnRegex = re.search("^((-)?(\\s)*(\\d)+(\\.(\\d)+)?)$", lexeme)
         if returnRegex:
@@ -96,7 +103,7 @@ class LexicalAnalyzer:
         if returnRegex:
             return "REL"
         #   Verifica se é um operador aritimético
-        returnRegex = re.search("^((--)|-|(\\+\\+)|\\+|\\*|/)$", lexeme)
+        returnRegex = re.search("^(((--)|-|(\\+\\+)|\\+|\\*|/)(\\s)*)$", lexeme)
         if returnRegex:
             return "ART"
         #   Verifica se é um operador lógico
@@ -128,11 +135,11 @@ class LexicalAnalyzer:
 
         return "INVALID_CLASS"
 
-    def separateToken(self):
+    def separate_token(self):
         pass
 
     @staticmethod
-    def isReserved(lexeme):
+    def is_reserved(lexeme):
         reserved = "var const typedef struct extends procedure function start return if else then while read print " \
                    "int real boolean string true false global local".split()
         if lexeme in reserved:
@@ -140,46 +147,28 @@ class LexicalAnalyzer:
         else:
             return False
 
+    @staticmethod
+    def return_error_msg(classLexeme):
+        errorMsg = ""
+        if classLexeme == "IDE_BF":
+            errorMsg = "Identificador mal formado"
+            return errorMsg
+        elif classLexeme == "NRO_INCOMPLETO":
+            errorMsg = "Número mal formado"
+            return errorMsg
+        elif classLexeme == "LOG_BF":
+            errorMsg = "Operador lógico mal formado"
+            return errorMsg
+        elif classLexeme == "CMF":
+            errorMsg = "Cadeia de caracteres mal formada"
+            return errorMsg
+        elif classLexeme == "INVALID_CARACTER":
+            errorMsg = "Caractere(s) inválido(s)"
+            return errorMsg
+        elif classLexeme == "CoMF":
+            errorMsg = "Comentário mal formado"
+            return errorMsg
+        elif classLexeme == "INVALID_CLASS":
+            errorMsg = "Caractere não reconhecido"
+            return errorMsg
 
-'''
-def main():
-    i1 = "a=1;"
-    i2 = "x>1"
-    i3 = "x>=1"
-    i4 = "x<1"
-    i5 = "x<=1"
-    i6 = "x!=1"
-    i7 = "x = = 1"
-    
-    input_test = i7 
-    print("entrada:" + input_test)  
-    output = relational_operators(input_test)
-    print(output)
-
-def relational_operators (inputA):
-    input_split = list(inputA)
-    
-    for i in range (0, len(input_split)):
-        if(input_split[i] == "="):
-            if(input_split[i+1] == '='):
-                return "opetator: == "
-            else:            
-                return"operator: ="
-        elif(input_split[i] == ">"):
-            if(input_split[i+1] == '='):
-                return "opetator: >="
-            else:            
-                return "operator: >"
-        elif(input_split[i] == "<"):
-            if(input_split[i+1] == '='):
-                return "opetator: <="
-            else:            
-                return "operator: <"
-        elif(input_split[i] == "!"):
-            if(input_split[i+1] == '='):
-                return "opetator: !="
-
-
-if __name__ == "__main__":
-    main()
-'''
