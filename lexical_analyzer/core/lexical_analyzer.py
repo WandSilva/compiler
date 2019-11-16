@@ -10,10 +10,11 @@ class LexicalAnalyzer:
     tableSimbols = []
     tokenNumber = 0
 
-    def __init__(self, auxLines, tableSimbols):
+    def __init__(self, auxLines):
         self.auxLines = auxLines
         self.tokenNumber = 0
-        self.tableSimbols = tableSimbols
+        self.tableSimbol = []
+    
 
     def increaseTokenNumber(self):
         self.tokenNumber = self.tokenNumber + 1
@@ -59,6 +60,8 @@ class LexicalAnalyzer:
                 else:
                     token = Token(auxLexeme, numLines, auxClass, None)
                     self.tableSimbols.append(token)
+                    
+        return self.tableSimbols
 
 
     def classifyToken(self, lexeme):
