@@ -9,6 +9,7 @@ class LexicalAnalyzer:
     auxLines = []
     tableSimbols = []
     tokenNumber = 0
+    numErrors = 0
 
     def __init__(self, auxLines):
         self.auxLines = auxLines
@@ -23,6 +24,7 @@ class LexicalAnalyzer:
     def classify_token_k(self):
         pass
 
+    @property
     def identify_token(self):
         lexeme = ""
         auxLine = ""
@@ -61,6 +63,8 @@ class LexicalAnalyzer:
                     else:
                         if auxClass != "INVALID_CLASS" & lookAheadClass == "INVALID_CLASS":
                             errorLexeme = self.return_error_msg(auxClass)
+                            if errorLexeme is not None:
+                                self.numErrors = self.numErrors + 1
                             token = Token(auxLexeme, numLines, auxClass, errorLexeme)
                             self.tableSimbols.append(token)
                             auxLexeme = ""
@@ -70,6 +74,8 @@ class LexicalAnalyzer:
                             continue
                 else:
                     errorLexeme = self.return_error_msg(auxClass)
+                    if errorLexeme is not None:
+                        self.numErrors = self.numErrors + 1
                     token = Token(auxLexeme, numLines, auxClass, errorLexeme)
                     self.tableSimbols.append(token)
                     auxLexeme = ""
@@ -171,4 +177,5 @@ class LexicalAnalyzer:
         elif classLexeme == "INVALID_CLASS":
             errorMsg = "Caractere não reconhecido"
             return errorMsg
+        return None
 
