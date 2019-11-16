@@ -33,7 +33,8 @@ def main():
 
 
 def lex_analyser(char):
-    classe =  "classe_teste"
+    la = LexicalAnalyzer()
+    classe = la.classifyToken(char)
     return {classe, char}
 
 def read_file(path):
