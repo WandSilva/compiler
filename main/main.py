@@ -8,7 +8,8 @@ import glob
 
 tableSimbols = []   # Tabela de Simbolos
 filesText = []
-cleanSourceCode = []
+sourceCode = []
+auxLexemes = []
 
 
 def main():
