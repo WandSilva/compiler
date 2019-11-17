@@ -7,7 +7,7 @@ import re
 
 class LexicalAnalyzer:
     #auxLines = []
-    #tableSimbols = []
+    tableSimbols = []
     #tokenNumber = 0
     #numErrors = 0
 
@@ -34,8 +34,9 @@ class LexicalAnalyzer:
         lineCDC = 0
         CDC = 0
         numLines = 0
+        token = None
         sizeLexemes = len(self.auxLines)
-        for numLines in range(sizeLexemes - 1):
+        for numLines in range(sizeLexemes):
             auxLine = self.auxLines[numLines]
             sizeChars = len(self.auxLines[numLines])
             numChars = 0
@@ -43,9 +44,9 @@ class LexicalAnalyzer:
             lookAheadClass = ""
             auxLexeme = ""
             auxLookAheadLexeme = ""
-            for numChars in range(sizeChars - 1):
+            for numChars in range(sizeChars):
                 if auxLexeme == "":
-                    while auxLine[numChars] == " ":
+                    while auxLine[numChars] == " " and numChars < sizeChars - 1:
                         numChars = numChars + 1
                 auxLexeme = auxLexeme + auxLine[numChars]
                 auxClass = self.classify_token(auxLexeme)
@@ -55,6 +56,7 @@ class LexicalAnalyzer:
                     self.tableSimbols.append(token)
                     auxLexeme = ""
                     auxLookAheadLexeme = ""
+                    token = None
                     continue
                 elif numChars + 1 <= sizeChars - 1:
                     numChars2 = numChars + 1
@@ -63,7 +65,7 @@ class LexicalAnalyzer:
                     if auxClass == lookAheadClass:
                         continue
                     else:
-                        if auxClass != "INVALID_CLASS" & lookAheadClass == "INVALID_CLASS":
+                        if auxClass != "INVALID_CLASS" and lookAheadClass == "INVALID_CLASS":
                             errorLexeme = self.return_error_msg(auxClass)
                             if errorLexeme is not None:
                                 self.numErrors = self.numErrors + 1
@@ -71,17 +73,31 @@ class LexicalAnalyzer:
                             self.tableSimbols.append(token)
                             auxLexeme = ""
                             auxLookAheadLexeme = ""
+                            token = None
                             continue
                         else:
                             continue
                 else:
-                    errorLexeme = self.return_error_msg(auxClass)
-                    if errorLexeme is not None:
-                        self.numErrors = self.numErrors + 1
-                    token = Token(auxLexeme, numLines, auxClass, errorLexeme)
-                    self.tableSimbols.append(token)
-                    auxLexeme = ""
-                    auxLookAheadLexeme = ""
+                    if auxLexeme != " ":
+                        errorLexeme = self.return_error_msg(auxClass)
+                        if errorLexeme is not None:
+                            self.numErrors = self.numErrors + 1
+                        token = Token(auxLexeme, numLines, auxClass, errorLexeme)
+                        self.tableSimbols.append(token)
+                        auxLexeme = ""
+                        auxLookAheadLexeme = ""
+                        token = None
+        
+        if token is not None:
+            errorLexeme = self.return_error_msg(auxClass)
+            if errorLexeme is not None:
+                self.numErrors = self.numErrors + 1
+            token = Token(auxLexeme, numLines, auxClass, errorLexeme)
+            self.tableSimbols.append(token)
+            auxLexeme = ""
+            auxLookAheadLexeme = ""
+            token = None
+            
 
         return self.tableSimbols
 
