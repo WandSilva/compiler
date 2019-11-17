@@ -1,33 +1,26 @@
 from lexical_analyzer.core.lexical_analyzer import LexicalAnalyzer
-from lexical_analyzer.util.clean_code import CleanCode
 
 import glob
 
 tableOfS = []  # Tabela de Simbolos
 
-filesText = []
-lexInputCodes = []
+
 auxLexemes = []
 
 
 def main():
     codes = read_file("../input/")
-    cc = CleanCode()
-    is_block_comment = False
-    newLine = ""
+    la = LexicalAnalyzer(cleanSourceCode)
     for code in codes:
-        cleanSourceCode = []
-        for line in code:
-            is_block_comment, newLine = cc.remove_comments(is_block_comment, line)
-            cleanSourceCode.append(newLine)
-        lexInputCodes.append(cleanSourceCode)
-    if is_block_comment:
-        print("comentário mal formado")  # arrumar isso aqui depois. Tem que gerar erro
-    
+        
+   
+   
     for code in lexInputCodes:
-        tableOfS.append(lex_analyser(code))
+        tableOfS.append(lex_analyser(code))  
     
-    print(tableOfS)
+    for i in tableOfS:
+        for j in i:
+            print(j.to_dict())
 
 def lex_analyser(cleanSourceCode):
     pass

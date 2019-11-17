@@ -1,4 +1,5 @@
 from lexical_analyzer.token.token import Token
+from lexical_analyzer.util.clean_code import CleanCode
 import sys
 import os.path
 import string
@@ -197,3 +198,19 @@ class LexicalAnalyzer:
             return errorMsg
         return None
 
+    def identify_comments(code):
+        cc = CleanCode()
+        newLine = ""  
+        cleanSourceCode = []
+        is_block_comment = False
+        error_line = 0
+        for index, line in enumerate(code):
+            is_block_comment, newLine = cc.remove_comments(is_block_comment, line)
+            cleanSourceCode.append(newLine)
+            if(is_block_comment):
+                error_line = index+1
+            elif:
+                error_line=0
+            
+        if is_block_comment:
+            print("comentário mal formado, linha:"+str(line_number))
