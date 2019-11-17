@@ -43,14 +43,22 @@ def read_file(path):
 
 def save_file(token_list, comf_list, index):
     output_file = "../output/saida"+str(index)
+    error_list = []
     for token in token_list:
-        #open(output_file,'a').write(json.dumps(token.to_dict())+"\n")
+        if(token.to_dict()["typeError"] == None):
+            open(output_file,'a').write(token.to_dict()["linha"] + " " +
+                 token.to_dict()["tipo"] + " " +
+                 token.to_dict()["lexema"] + "\n")
+        else:
+            error_list.append(token)  
+        
+    open(output_file,'a').write("\n\n")      
+    for token in error_list:
         open(output_file,'a').write(token.to_dict()["linha"] + " " +
-             token.to_dict()["tipo"] + " " +
-             token.to_dict()["lexema"] + "\n")
-    
+                 token.to_dict()["tipo"] + " " +
+                 token.to_dict()["lexema"] + "\n")         
     if(comf_list[index-1] is not None):    
-        open(output_file,'a').write("\n\n"+comf_list[index-1]["linha"] + " " +
+        open(output_file,'a').write(comf_list[index-1]["linha"] + " " +
                  comf_list[index-1]["typeError"] + " " +
                  comf_list[index-1]["lexeme"] + "\n")
 
