@@ -48,7 +48,7 @@ class LexicalAnalyzer:
                     while auxLine[numChars] == " ":
                         numChars = numChars + 1
                 auxLexeme = auxLexeme + auxLine[numChars]
-                auxClass = self.classify_token(self, auxLexeme)
+                auxClass = self.classify_token(auxLexeme)
                 if auxClass == "INVALID_CLASS":
                     errorLexeme = self.return_error_msg(auxClass)
                     token = Token(auxLexeme, numLines, auxClass, errorLexeme)
@@ -59,7 +59,7 @@ class LexicalAnalyzer:
                 elif numChars + 1 <= sizeChars - 1:
                     numChars2 = numChars + 1
                     auxLookAheadLexeme = auxLexeme + auxLine[numChars2]
-                    lookAheadClass = self.classify_token(self, auxLookAheadLexeme)
+                    lookAheadClass = self.classify_token(auxLookAheadLexeme)
                     if auxClass == lookAheadClass:
                         continue
                     else:

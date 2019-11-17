@@ -1,11 +1,9 @@
 from lexical_analyzer.core.lexical_analyzer import LexicalAnalyzer
-from lexical_analyzer.token.token import Token
 from lexical_analyzer.util.clean_code import CleanCode
 
-import os
 import glob
 
-#tableOfS = []  # Tabela de Simbolos
+tableOfS = []  # Tabela de Simbolos
 
 filesText = []
 lexInputCodes = []
@@ -26,11 +24,10 @@ def main():
     if is_block_comment:
         print("comentário mal formado")  # arrumar isso aqui depois. Tem que gerar erro
     
-    tableOfS = lex_analyser(lexInputCodes)
-    print(tableOfS)
-    for i in tableOfS:
-        print(i)
+    for code in lexInputCodes:
+        tableOfS.append(lex_analyser(code))
     
+    print(tableOfS)
 
 def lex_analyser(cleanSourceCode):
     pass
@@ -42,6 +39,7 @@ def lex_analyser(cleanSourceCode):
 def read_file(path):
     numberFiles = len(glob.glob(path + '*.txt'))
     if numberFiles == 0:
+        print(path)
         print ("A pasta de entrada está vazia!")
     codes = []
     for i in range(numberFiles):
