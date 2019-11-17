@@ -1,10 +1,15 @@
 from lexical_analyzer.core.lexical_analyzer import LexicalAnalyzer
 import glob
+import os
 
 all_tokens_list = []  # Tabela de Simbolos
+input_path = "../input/"
+output_path = "../output/"
+
 def main():
+    clear_output(output_path)
     lexInputCodes = []
-    codes = read_file("../input/")
+    codes = read_file(input_path)
     la = LexicalAnalyzer()
     comf_list = []
     
@@ -18,7 +23,7 @@ def main():
         all_tokens_list.append(lex_analyser(code))  
     
     for index, tokens_list in enumerate(all_tokens_list):
-        save_file(tokens_list, comf_list, index+1)
+        save_file(output_path,tokens_list, comf_list, index+1)
         #for j in tokens_list:
         #    print(j.to_dict())
         
@@ -41,8 +46,8 @@ def read_file(path):
             codes.append(f.read().splitlines())
     return codes
 
-def save_file(token_list, comf_list, index):
-    output_file = "../output/saida"+str(index)
+def save_file(path, token_list, comf_list, index):
+    output_file = path+"saida"+str(index)+".txt"
     error_list = []
     for token in token_list:
         if(token.to_dict()["typeError"] == None):
@@ -61,6 +66,13 @@ def save_file(token_list, comf_list, index):
         open(output_file,'a').write(comf_list[index-1]["linha"] + " " +
                  comf_list[index-1]["typeError"] + " " +
                  comf_list[index-1]["lexeme"] + "\n")
+        
+def clear_output(path):
+    direc = os.listdir(path)
+    for file in direc:   
+        if os.path.exists(path+file):
+            os.remove(path+file)
+
 
 if __name__ == "__main__":
     main()
