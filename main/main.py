@@ -3,17 +3,12 @@ from lexical_analyzer.core.lexical_analyzer import LexicalAnalyzer
 import glob
 
 tableOfS = []  # Tabela de Simbolos
-
-
-auxLexemes = []
-
-
 def main():
+    lexInputCodes = []
     codes = read_file("../input/")
-    la = LexicalAnalyzer(cleanSourceCode)
+    la = LexicalAnalyzer()
     for code in codes:
-        
-   
+        lexInputCodes.append(la.rmv_comments(code))   
    
     for code in lexInputCodes:
         tableOfS.append(lex_analyser(code))  
@@ -23,9 +18,8 @@ def main():
             print(j.to_dict())
 
 def lex_analyser(cleanSourceCode):
-    pass
-    la = LexicalAnalyzer(cleanSourceCode)
-    classe = la.identify_token()
+    la = LexicalAnalyzer()
+    classe = la.identify_token(cleanSourceCode)
     return classe
 
 
@@ -39,7 +33,6 @@ def read_file(path):
         file = path + "entrada" + str(i) + '.txt'
         with open(file) as f:
             codes.append(f.read().splitlines())
-
     return codes
 
 

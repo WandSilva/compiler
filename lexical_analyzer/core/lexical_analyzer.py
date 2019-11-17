@@ -1,19 +1,16 @@
 from lexical_analyzer.token.token import Token
 from lexical_analyzer.util.clean_code import CleanCode
-import sys
-import os.path
-import string
 import re
 
 
 class LexicalAnalyzer:
     #auxLines = []
-    tableSimbols = []
+    #tableSimbols = []
     #tokenNumber = 0
     #numErrors = 0
 
-    def __init__(self, auxLines):
-        self.auxLines = auxLines
+    def __init__(self):
+        #self.auxLines = auxLines
         self.tokenNumber = 0
         self.tableSimbols = []
         self.numErrors = 0
@@ -28,18 +25,15 @@ class LexicalAnalyzer:
         pass
 
     #@property
-    def identify_token(self):
-        lexeme = ""
+    def identify_token(self, auxLines):
         auxLine = ""
         errorLexeme = ""
-        lineCDC = 0
-        CDC = 0
         numLines = 0
         token = None
-        sizeLexemes = len(self.auxLines)
+        sizeLexemes = len(auxLines)
         while numLines <= sizeLexemes - 1:
-            auxLine = self.auxLines[numLines]
-            sizeChars = len(self.auxLines[numLines])
+            auxLine = auxLines[numLines]
+            sizeChars = len(auxLines[numLines])
             numChars = 0
             auxClass = ""
             lookAheadClass = ""
@@ -208,19 +202,20 @@ class LexicalAnalyzer:
             return errorMsg
         return None
 
-    def identify_comments(code):
+    def rmv_comments(self, code):
         cc = CleanCode()
         newLine = ""  
         cleanSourceCode = []
         is_block_comment = False
-        error_line = 0
+        error_line = []
         for index, line in enumerate(code):
             is_block_comment, newLine = cc.remove_comments(is_block_comment, line)
             cleanSourceCode.append(newLine)
             if(is_block_comment):
-                error_line = index+1
-            elif:
-                error_line=0
+                error_line.append(index + 1)
+            elif(not is_block_comment):
+                error_line=[]
             
         if is_block_comment:
-            print("comentário mal formado, linha:"+str(line_number))
+            print("comentário mal formado, linha:"+str(error_line[0]))
+        return cleanSourceCode

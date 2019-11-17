@@ -4,7 +4,6 @@ class Token:
     def __init__(self):
         pass
 
-
     def __init__(self, lexema, linha, tipo, typeError):
         self.lexema = lexema
         self.linha = linha
@@ -14,7 +13,7 @@ class Token:
         
     def to_dict(self):
         token_dict = {"lexema":self.lexema,
-                      "linha":self.linha,
+                      "linha":self.linha+1,
                       "tipo":self.tipo,
                       "typeError":self.typeError}
         return token_dict
