@@ -1,0 +1,13 @@
+exemplo teste;
+
+real f = 3.0;
+
+texto msg = "teste
+
+se ( f >= -10) && (f < ) 
+	escreva("mensagem );
+	
+// exemplo de teste do lexico
+
+/* exa869 mi processadores de 
+linguagem de programacao

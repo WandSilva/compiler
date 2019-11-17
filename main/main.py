@@ -41,7 +41,7 @@ def read_file(path):
         print ("A pasta de entrada está vazia!")
     codes = []
     for i in range(numberFiles):
-        file = path + "entrada" + str(i) + '.txt'
+        file = path + "entrada" + str(i+1) + '.txt'
         with open(file) as f:
             codes.append(f.read().splitlines())
     return codes
