@@ -207,15 +207,18 @@ class LexicalAnalyzer:
         newLine = ""  
         cleanSourceCode = []
         is_block_comment = False
-        error_line = []
+        error_line = {"line":[], "number":[]}
+        comf = None
         for index, line in enumerate(code):
             is_block_comment, newLine = cc.remove_comments(is_block_comment, line)
             cleanSourceCode.append(newLine)
             if(is_block_comment):
-                error_line.append(index + 1)
+                error_line["number"].append(index + 1)
+                error_line["line"].append(line)
             elif(not is_block_comment):
-                error_line=[]
+                error_line = {"line":[], "number":[]}
             
         if is_block_comment:
-            print("comentário mal formado, linha:"+str(error_line[0]))
-        return cleanSourceCode
+            comf={"linha":str(error_line["number"][0]), "lexeme":str(error_line["line"][0]),"typeError": "CoMF"}
+            #print("comentário mal formado, linha:"+str(error_line["number"][0]))
+        return cleanSourceCode, comf

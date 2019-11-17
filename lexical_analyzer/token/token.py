@@ -12,8 +12,8 @@ class Token:
         self.typeError = typeError
         
     def to_dict(self):
-        token_dict = {"lexema":self.lexema,
-                      "linha":self.linha+1,
+        token_dict = {"linha":str(self.linha+1),
                       "tipo":self.tipo,
+                      "lexema":self.lexema,                      
                       "typeError":self.typeError}
         return token_dict
