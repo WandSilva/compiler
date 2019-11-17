@@ -46,63 +46,69 @@ class LexicalAnalyzer:
             auxLookAheadLexeme = ""
             while numChars <= sizeChars - 1:
                 if auxLexeme == "":
-                    while auxLine[numChars] == " " and numChars < sizeChars - 1:
+                    if auxLine[numChars] == " ":
                         numChars = numChars + 1
+                        continue
                 auxLexeme = auxLexeme + auxLine[numChars]
                 auxClass = self.classify_token(auxLexeme)
-                if auxClass == "INVALID_CLASS":
+                if auxClass == "INVALID_CLASS" and auxLexeme != " ":
                     errorLexeme = self.return_error_msg(auxClass)
                     token = Token(auxLexeme, numLines, auxClass, errorLexeme)
+                    if errorLexeme is not None:
+                        self.numErrors = self.numErrors + 1
+                        token.hasError = True
                     self.tableSimbols.append(token)
                     auxLexeme = ""
                     auxLookAheadLexeme = ""
                     numChars = numChars + 1
                     token = None
-                    continue
                 elif numChars + 1 <= sizeChars - 1:
                     numChars2 = numChars + 1
                     auxLookAheadLexeme = auxLexeme + auxLine[numChars2]
                     lookAheadClass = self.classify_token(auxLookAheadLexeme)
                     if auxClass == lookAheadClass:
                         numChars = numChars + 1
-                        continue
                     else:
                         if auxClass != "INVALID_CLASS" and lookAheadClass == "INVALID_CLASS":
                             errorLexeme = self.return_error_msg(auxClass)
+                            token = Token(auxLexeme, numLines, auxClass, errorLexeme)
                             if errorLexeme is not None:
                                 self.numErrors = self.numErrors + 1
-                            token = Token(auxLexeme, numLines, auxClass, errorLexeme)
+                                token.hasError = True
                             self.tableSimbols.append(token)
                             auxLexeme = ""
                             auxLookAheadLexeme = ""
                             numChars = numChars + 1
                             token = None
                             continue
-                        else:
-                            continue
+                        numChars = numChars + 1
+                        
                 else:
                     if auxLexeme != " ":
                         errorLexeme = self.return_error_msg(auxClass)
+                        token = Token(auxLexeme, numLines, auxClass, errorLexeme)
                         if errorLexeme is not None:
                             self.numErrors = self.numErrors + 1
-                        token = Token(auxLexeme, numLines, auxClass, errorLexeme)
+                            token.hasError = True
                         self.tableSimbols.append(token)
                         auxLexeme = ""
                         auxLookAheadLexeme = ""
                         numChars = numChars + 1
                         token = None
+                        
+            numLines = numLines + 1
         
         if token is not None:
             errorLexeme = self.return_error_msg(auxClass)
+            token = Token(auxLexeme, numLines, auxClass, errorLexeme)
             if errorLexeme is not None:
                 self.numErrors = self.numErrors + 1
-            token = Token(auxLexeme, numLines, auxClass, errorLexeme)
+                token.hasError = True
             self.tableSimbols.append(token)
             auxLexeme = ""
             auxLookAheadLexeme = ""
             token = None
             
-
         return self.tableSimbols
 
     def classify_token(self, lexeme):
@@ -131,7 +137,7 @@ class LexicalAnalyzer:
         if returnRegex:
             return "REL"
         #   Verifica se é um operador aritimético
-        returnRegex = re.search("^(((--)|-|(\\+\\+)|\\+|\\*|/)(\\s)*)$", lexeme)
+        returnRegex = re.search("^(((--)|-|(\\+\\+)|\\+|\\*|/))$", lexeme)
         if returnRegex:
             return "ART"
         #   Verifica se é um operador lógico
