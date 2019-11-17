@@ -36,7 +36,7 @@ class LexicalAnalyzer:
         numLines = 0
         token = None
         sizeLexemes = len(self.auxLines)
-        for numLines in range(sizeLexemes):
+        while numLines <= sizeLexemes - 1:
             auxLine = self.auxLines[numLines]
             sizeChars = len(self.auxLines[numLines])
             numChars = 0
@@ -44,7 +44,7 @@ class LexicalAnalyzer:
             lookAheadClass = ""
             auxLexeme = ""
             auxLookAheadLexeme = ""
-            for numChars in range(sizeChars):
+            while numChars <= sizeChars - 1:
                 if auxLexeme == "":
                     while auxLine[numChars] == " " and numChars < sizeChars - 1:
                         numChars = numChars + 1
@@ -56,6 +56,7 @@ class LexicalAnalyzer:
                     self.tableSimbols.append(token)
                     auxLexeme = ""
                     auxLookAheadLexeme = ""
+                    numChars = numChars + 1
                     token = None
                     continue
                 elif numChars + 1 <= sizeChars - 1:
@@ -63,6 +64,7 @@ class LexicalAnalyzer:
                     auxLookAheadLexeme = auxLexeme + auxLine[numChars2]
                     lookAheadClass = self.classify_token(auxLookAheadLexeme)
                     if auxClass == lookAheadClass:
+                        numChars = numChars + 1
                         continue
                     else:
                         if auxClass != "INVALID_CLASS" and lookAheadClass == "INVALID_CLASS":
@@ -73,6 +75,7 @@ class LexicalAnalyzer:
                             self.tableSimbols.append(token)
                             auxLexeme = ""
                             auxLookAheadLexeme = ""
+                            numChars = numChars + 1
                             token = None
                             continue
                         else:
@@ -86,6 +89,7 @@ class LexicalAnalyzer:
                         self.tableSimbols.append(token)
                         auxLexeme = ""
                         auxLookAheadLexeme = ""
+                        numChars = numChars + 1
                         token = None
         
         if token is not None:
