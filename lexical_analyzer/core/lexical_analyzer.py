@@ -64,7 +64,7 @@ class LexicalAnalyzer:
                     if auxClass == lookAheadClass:
                         numChars = numChars + 1
                     else:
-                        if auxClass != "INVALID_CLASS" and lookAheadClass == "INVALID_CLASS":
+                        if auxClass != "INVALID_CLASS" and (lookAheadClass == "INVALID_CLASS" or lookAheadClass == "INVALID_CARACTER"):
                             errorLexeme = self.return_error_msg(auxClass)
                             token = Token(auxLexeme, numLines, auxClass, errorLexeme)
                             if errorLexeme is not None:
