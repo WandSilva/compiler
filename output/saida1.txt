@@ -1,4 +1,9 @@
+CORRECT TOKENS:
 
+No lexically correct tokens were found.
+
+
+TOKENS WITH LEXICAL ERRORS:
 
 10 CMF "casa x=1   oi * -3 x--    
 7 CoMF /* 111111

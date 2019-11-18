@@ -1,3 +1,5 @@
+CORRECT TOKENS:
+
 1 IDE exemplo
 1 IDE teste
 1 DEL ;
@@ -15,4 +17,7 @@
 8 DEL ;
 
 
-12 CoMF /* exa869 mi processadores de 
+TOKENS WITH LEXICAL ERRORS:
+
+No tokens were found with errors lexical.
+### SUCCESS! ###

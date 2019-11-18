@@ -8,8 +8,8 @@ import glob
 import os
 
 all_tokens_list = []  # Tabela de Simbolos
-input_path = "../input/"
-output_path = "../output/"
+input_path = "input/"
+output_path = "output/"
 
 def main():
     clear_output(output_path)
@@ -54,23 +54,34 @@ def read_file(path):
 def save_file(path, token_list, comf_list, index):
     output_file = path+"saida"+str(index)+".txt"
     error_list = []
+    allTokensHasNoError = True
+    open(output_file,'a').write("CORRECT TOKENS:\n\n")
     for token in token_list:
         if(token.to_dict()["typeError"] == None):
             open(output_file,'a').write(token.to_dict()["linha"] + " " +
                  token.to_dict()["tipo"] + " " +
                  token.to_dict()["lexema"] + "\n")
+            allTokensHasNoError = False
         else:
-            error_list.append(token)  
+            error_list.append(token)
+            
+    if allTokensHasNoError == True:
+        open(output_file,'a').write("No lexically correct tokens were found.\n")
         
-    open(output_file,'a').write("\n\n")      
-    for token in error_list:
-        open(output_file,'a').write(token.to_dict()["linha"] + " " +
-                 token.to_dict()["tipo"] + " " +
-                 token.to_dict()["lexema"] + "\n")         
-    if(comf_list[index-1] is not None):    
-        open(output_file,'a').write(comf_list[index-1]["linha"] + " " +
-                 comf_list[index-1]["typeError"] + " " +
-                 comf_list[index-1]["lexeme"] + "\n")
+    open(output_file,'a').write("\n\n")
+    open(output_file,'a').write("TOKENS WITH LEXICAL ERRORS:\n\n")
+    if len(error_list) == 0 and comf_list[index-1] is not None:
+        open(output_file,'a').write("No tokens were found with errors lexical.\n")
+        open(output_file,'a').write("### SUCCESS! ###\n")
+    else:
+        for token in error_list:
+            open(output_file,'a').write(token.to_dict()["linha"] + " " +
+                     token.to_dict()["tipo"] + " " +
+                     token.to_dict()["lexema"] + "\n")         
+        if(comf_list[index-1] is not None):    
+            open(output_file,'a').write(comf_list[index-1]["linha"] + " " +
+                     comf_list[index-1]["typeError"] + " " +
+                     comf_list[index-1]["lexeme"] + "\n")
         
 def clear_output(path):
     direc = os.listdir(path)
