@@ -31,7 +31,8 @@ class LexicalAnalyzer:
         numLines = 0
         token = None
         sizeLexemes = len(auxLines)
-        while numLines <= sizeLexemes - 1:
+        controlStringBF = False
+        while numLines <= sizeLexemes - 1 and controlStringBF == False:
             auxLine = auxLines[numLines]
             sizeChars = len(auxLines[numLines])
             numChars = 0
@@ -44,6 +45,20 @@ class LexicalAnalyzer:
                     if auxLine[numChars] == " " or auxLine[numChars] == "\t":
                         numChars = numChars + 1
                         continue
+                    if auxLine[numChars] == "\"":
+                        auxL = 0
+                        auxC = 0
+                        auxL, auxC, controlStringBF = self.classify_string(auxLines, numLines, sizeLexemes, numChars, sizeChars, controlStringBF)
+                        numLines = auxL
+                        numChars = auxC
+                        auxLexeme = ""
+                        auxLookAheadLexeme = ""
+                        if numLines <= sizeLexemes - 1:
+                            auxLine = auxLines[numLines]
+                            sizeChars = len(auxLines[numLines])
+                            continue
+                        else:
+                            break
                 auxLexeme = auxLexeme + auxLine[numChars]
                 auxClass = self.classify_token(auxLexeme)
                 if auxClass == "INVALID_CLASS" and auxLexeme != " ":
@@ -91,7 +106,8 @@ class LexicalAnalyzer:
                         numChars = numChars + 1
                         token = None
                         
-            numLines = numLines + 1
+            if numChars > sizeChars - 1:
+                numLines = numLines + 1
         
         if token is not None:
             errorLexeme = self.return_error_msg(auxClass)
@@ -105,6 +121,60 @@ class LexicalAnalyzer:
             token = None
             
         return self.tableSimbols
+    
+    
+    def classify_string(self, auxLines, numLines, sizeLexemes, numChars, sizeChars, controlStringBF):
+        numCharsAux = numChars + 1
+        numLinesAux = numLines
+        auxClass = ""
+        lookAheadClass = ""
+        auxLexeme = ""
+        auxLookAheadLexeme = ""
+        isStringValid = False
+        auxString = "\"" 
+        while numLinesAux <= sizeLexemes - 1 and isStringValid == False:
+            auxLine = auxLines[numLinesAux]
+            sizeChars2 = len(auxLines[numLinesAux])
+            while numCharsAux <= sizeChars2 - 1 and isStringValid == False:
+                auxString = auxString + auxLine[numCharsAux]
+                auxLexeme = auxLine[numCharsAux]
+                if numCharsAux + 1 <= sizeChars2 - 1:
+                    numChars2 = numCharsAux + 1
+                    auxLookAheadLexeme = auxLine[numChars2]
+                    if auxLexeme != "/" and auxLookAheadLexeme == "\"":
+                        auxString = auxString + auxLine[numChars2]
+                        token = Token(auxString, numLinesAux, "CDC", None)
+                        token.hasError = False
+                        self.tableSimbols.append(token)
+                        numCharsAux = numChars + 2
+                        isStringValid = True
+                        
+                    numCharsAux = numCharsAux + 1
+                    continue
+                else:
+                    if auxLexeme == "\"":
+                        token = Token(auxString, numLinesAux, "CDC", None)
+                        token.hasError = False
+                        self.tableSimbols.append(token)
+                        numCharsAux = numChars + 1
+                        isStringValid = True
+                        continue
+                    
+                    numCharsAux = numCharsAux + 1
+                
+            numLinesAux = numLinesAux + 1
+            numCharsAux = 0
+            auxString = auxString + " "
+            
+        if isStringValid == False:
+            token = Token(auxString, numLinesAux, "CMF", "Cadeia de caracteres mal formada")
+            token.hasError = True
+            self.tableSimbols.append(token)
+            numCharsAux = numCharsAux + 1
+            controlStringBF = True
+
+        return numLinesAux, numCharsAux, controlStringBF
+                
 
     def classify_token(self, lexeme):
         #   Verifica se é um identificador
