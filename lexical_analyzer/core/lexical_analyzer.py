@@ -79,7 +79,7 @@ class LexicalAnalyzer:
                         numChars = numChars + 1
                         
                 else:
-                    if auxLexeme != " ":
+                    if auxLexeme != " " or auxLexeme != "\t":
                         errorLexeme = self.return_error_msg(auxClass)
                         token = Token(auxLexeme, numLines, auxClass, errorLexeme)
                         if errorLexeme is not None:
