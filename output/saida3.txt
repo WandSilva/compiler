@@ -15,6 +15,7 @@
 7 REL >=
 7 NRO -10
 7 DEL )
+7 LOG &&
 7 DEL (
 7 IDE f
 7 REL <
@@ -24,8 +25,5 @@
 
 
 5 CMF "teste
-7 INVALID_CARACTER && 
-8 INVALID_CARACTER 	
 8 CMF "mensagem );
-9 INVALID_CARACTER 	
 12 CoMF /* exa869 mi processadores de 

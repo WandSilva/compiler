@@ -41,7 +41,7 @@ class LexicalAnalyzer:
             auxLookAheadLexeme = ""
             while numChars <= sizeChars - 1:
                 if auxLexeme == "":
-                    if auxLine[numChars] == " ":
+                    if auxLine[numChars] == " " or auxLine[numChars] == "\t":
                         numChars = numChars + 1
                         continue
                 auxLexeme = auxLexeme + auxLine[numChars]
