@@ -9,21 +9,10 @@
 5 IDE texto
 5 IDE msg
 5 REL =
-7 IDE se
-7 DEL (
-7 IDE f
-7 REL >=
-7 NRO -10
-7 DEL )
-7 LOG &&
-7 DEL (
-7 IDE f
-7 REL <
-7 DEL )
-8 IDE escreva
-8 DEL (
+8 CDC "teste  se ( f >= -10) && (f < )  	escreva("
+8 IDE mensagem
+8 DEL )
+8 DEL ;
 
 
-5 CMF "teste
-8 CMF "mensagem );
 12 CoMF /* exa869 mi processadores de 

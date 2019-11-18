@@ -126,8 +126,6 @@ class LexicalAnalyzer:
     def classify_string(self, auxLines, numLines, sizeLexemes, numChars, sizeChars, controlStringBF):
         numCharsAux = numChars + 1
         numLinesAux = numLines
-        auxClass = ""
-        lookAheadClass = ""
         auxLexeme = ""
         auxLookAheadLexeme = ""
         isStringValid = False
@@ -146,8 +144,9 @@ class LexicalAnalyzer:
                         token = Token(auxString, numLinesAux, "CDC", None)
                         token.hasError = False
                         self.tableSimbols.append(token)
-                        numCharsAux = numChars + 2
+                        numCharsAux = numCharsAux + 2
                         isStringValid = True
+                        continue
                         
                     numCharsAux = numCharsAux + 1
                     continue
@@ -156,15 +155,16 @@ class LexicalAnalyzer:
                         token = Token(auxString, numLinesAux, "CDC", None)
                         token.hasError = False
                         self.tableSimbols.append(token)
-                        numCharsAux = numChars + 1
+                        numCharsAux = numCharsAux + 1
                         isStringValid = True
                         continue
                     
                     numCharsAux = numCharsAux + 1
                 
-            numLinesAux = numLinesAux + 1
-            numCharsAux = 0
-            auxString = auxString + " "
+            if isStringValid == False:
+                numLinesAux = numLinesAux + 1
+                numCharsAux = 0
+                auxString = auxString + " "
             
         if isStringValid == False:
             token = Token(auxString, numLinesAux, "CMF", "Cadeia de caracteres mal formada")
@@ -213,14 +213,6 @@ class LexicalAnalyzer:
         returnRegex = re.search("^(:|;|,|\\(|\\)|[|]|\\{|}|\\.)$", lexeme)
         if returnRegex:
             return "DEL"
-        #   Verifica se é uma cadeia de caracteres
-        returnRegex = re.search("^(\"((\\\\\")|[^\"]|\\n)*\")$", lexeme)
-        if returnRegex:
-            return "CDC"
-        #   Verifica se é uma cadeia de caracteres mal formada
-        returnRegex = re.search("^(\"((\\\\\")|[^\"]|\\n)*)$", lexeme)
-        if returnRegex:
-            return "CMF"
         #   Verifica se é uma caractere inválido
         returnRegex = re.search("^([^\\n\\w.()|+\\-<>=!/\\\\*\\[\\]{}\"\'\\\\\"]+)$", lexeme)
         if returnRegex:
@@ -250,9 +242,6 @@ class LexicalAnalyzer:
             return errorMsg
         elif classLexeme == "LOG_BF":
             errorMsg = "Operador lógico mal formado"
-            return errorMsg
-        elif classLexeme == "CMF":
-            errorMsg = "Cadeia de caracteres mal formada"
             return errorMsg
         elif classLexeme == "INVALID_CARACTER":
             errorMsg = "Caractere(s) inválido(s)"
