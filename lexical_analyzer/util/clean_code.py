@@ -1,3 +1,8 @@
+#   EXA869 - MI - Processadores de Linguagem de Programação (2019.2)
+#   Discentes: Aloisio Junior e Wanderson Silva
+
+#   CLASSE PARA REMOÇÃO DE COMENTÁRIOS
+
 import re
 
 class CleanCode:

@@ -1,3 +1,8 @@
+#   EXA869 - MI - Processadores de Linguagem de Programação (2019.2)
+#   Discentes: Aloisio Junior e Wanderson Silva
+
+#   ANALISADOR LÉXICO
+
 from lexical_analyzer.token.token import Token
 from lexical_analyzer.util.clean_code import CleanCode
 import re
