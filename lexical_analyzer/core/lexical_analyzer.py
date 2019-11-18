@@ -115,10 +115,6 @@ class LexicalAnalyzer:
                 return "PRE"  # É uma palavra reservada
             else:
                 return "IDE"  # É um identificador comum
-        #   Verifica se é um identificador mal formado
-        returnRegex = re.search("^([a-zA-Z]+\\w*)$", lexeme)
-        if returnRegex:
-            return "IDE_BF"
         #   Verifica se é um número completo
         returnRegex = re.search("^((-)?(\\s)*(\\d)+(\\.(\\d)+)?)$", lexeme)
         if returnRegex:
@@ -179,10 +175,7 @@ class LexicalAnalyzer:
     @staticmethod
     def return_error_msg(classLexeme):
         errorMsg = ""
-        if classLexeme == "IDE_BF":
-            errorMsg = "Identificador mal formado"
-            return errorMsg
-        elif classLexeme == "NRO_INCOMPLETO":
+        if classLexeme == "NRO_INCOMPLETO":
             errorMsg = "Número mal formado"
             return errorMsg
         elif classLexeme == "LOG_BF":
