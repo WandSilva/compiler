@@ -70,7 +70,7 @@ def save_file(path, token_list, comf_list, index):
         
     open(output_file,'a').write("\n\n")
     open(output_file,'a').write("TOKENS WITH LEXICAL ERRORS:\n\n")
-    if len(error_list) == 0 and comf_list[index-1] is not None:
+    if len(error_list) == 0 and comf_list[index-1] is None:
         open(output_file,'a').write("No tokens were found with errors lexical.\n")
         open(output_file,'a').write("### SUCCESS! ###\n")
     else:
