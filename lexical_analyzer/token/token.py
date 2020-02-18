@@ -2,6 +2,7 @@
 #   Discentes: Aloisio Junior e Wanderson Silva
 
 #   CLASSE TOKEN
+import re
 
 class Token:
 
@@ -15,9 +16,19 @@ class Token:
         self.hasError = False
         self.typeError = typeError
         
+        if self.tipo == "NRO":
+            returnRegex = re.search("^(\\d)+$", self.lexema)
+            if returnRegex:
+                self.tipoNRO = "NRO_I"
+                
+            returnRegex = re.search("^((-)?(\\d)+(\\.(\\d)+))$", self.lexema)
+            if returnRegex:
+                self.tipoNRO = "NRO_R"
+        
     def to_dict(self):
         token_dict = {"linha":str(self.linha+1),
                       "tipo":self.tipo,
+                      "tipoNRO":self.tipoNRO,
                       "lexema":self.lexema,                      
                       "typeError":self.typeError}
         return token_dict
