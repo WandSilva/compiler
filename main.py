@@ -4,6 +4,7 @@
 #   ARQUIVO PRINCIPAL PARA CHAMADA DOS ANALISADORES
 
 from lexical_analyzer.core.lexical_analyzer import LexicalAnalyzer
+from syntatic_analyzer.core.syntatic_analyzer import SyntaticAnalyzer
 import glob
 import os
 
@@ -31,6 +32,8 @@ def main():
         save_file(output_path,tokens_list, comf_list, index+1)
         #for j in tokens_list:
         #    print(j.to_dict())
+        
+    sa = SyntaticAnalyzer()
         
         
 def lex_analyser(cleanSourceCode):
