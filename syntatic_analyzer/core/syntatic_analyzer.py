@@ -579,9 +579,68 @@ class SyntaticAnalyzer:
 
     
     def callIfStatement(self):
+        if self.lexemToken in self.FirstCommandIf:
+            self.getNextToken()
+        else: 
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", "if"))
+            self.getNextToken()
+        if self.lexemToken == '(':
+            self.getNextToken()
+            self.callFullLogicalExp()
+        else:
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
+            self.getNextToken()
+        if self.lexemToken == ')':
+            self.getNextToken()
+        else:
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ")"))
+            self.getNextToken()
+        if self.lexemToken == 'then':
+            self.getNextToken()
+        else: 
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", "then"))
+            self.getNextToken()
+        if self.lexemToken == '{':
+            self.getNextToken
+            self.callComands()
+        else: 
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "{"))
+            self.getNextToken()
+        if self.lexemToken == '}':
+            self.getNextToken
+        else:
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "}"))
+            self.getNextToken()
 
     
     def callWhileStatement(self):
+        if self.lexemToken in self.FirstCommandWhile:
+            self.getNextToken()
+        else: 
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", "while"))
+            self.getNextToken()
+        if self.lexemToken == '(':
+            self.getNextToken()
+            self.callFullLogicalExp()
+        else:
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
+            self.getNextToken()
+        if self.lexemToken == ')':
+            self.getNextToken()
+        else:
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ")"))
+            self.getNextToken()
+        if self.lexemToken == '{':
+            self.getNextToken
+            self.callComands()
+        else: 
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "{"))
+            self.getNextToken()
+        if self.lexemToken == '}':
+            self.getNextToken
+        else:
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "}"))
+            self.getNextToken()
 
     
     def callReadStatement(self):
