@@ -34,6 +34,17 @@ class SyntaticAnalyzer:
         self.FirstValueConst = []
         self.FirstNumber = []
         self.FirstBooleanos = []
+        self.FirstModifier = []
+        self.FirstCommandIf = []
+        self.FirstCallVariable = []
+        self.FirstCommandWhile = []
+        self.FirstCommandRead = []
+        self.FirstCommandPrint = []
+        self.FirstUnaryOP = []
+        self.FirstAssignment = []
+        self.FirstCallProcedure_Function = []
+        self.FirstCommand = []
+        self.FirstReturn = []
         
         self.FirstGlobalValues.append("const")
         self.FirstGlobalValues.append("var")
@@ -60,6 +71,25 @@ class SyntaticAnalyzer:
         self.FirstIDE_Struct2.append("extends")
         self.FirstFunctions_Procedures.append("function")
         self.FirstFunctions_Procedures.append("procedure")
+        self.FirstModifier.append("local")
+        self.FirstModifier.append("global")
+        self.FirstCommandIf.append("if")
+        self.FirstCallVariable.extend(self.FirstModifier)
+        self.FirstCallVariable.append("IDE")
+        self.FirstCommandWhile.append("while")
+        self.FirstCommandRead.append("read")
+        self.FirstCommandPrint.append("print")
+        self.FirstUnaryOP
+        self.FirstAssignment.extend(self.FirstCallVariable)
+        self.FirstAssignment.extend(self.FirstUnaryOP)
+        self.FirstCallProcedure_Function.append("IDE")
+        self.FirstCommand.extend(self.FirstCommandIf)
+        self.FirstCommand.extend(self.FirstCommandWhile)
+        self.FirstCommand.extend(self.FirstCommandRead)
+        self.FirstCommand.extend(self.FirstCommandPrint)
+        self.FirstCommand.extend(self.FirstAssignment)
+        self.FirstCommand.extend(self.FirstCallProcedure_Function)
+        self.FirstReturn.append("return")
     
     
     def starSyntaticAnalyzer(self):
@@ -69,13 +99,18 @@ class SyntaticAnalyzer:
         
     def getNextToken(self):
         token = self.listTokens[self.currentToken]
-        self.lexemToken = token.lexema
-        self.errorLineToken = token.linha
-        self.typeLexema = token.tipo
-        self.typeNRO = token.tipoNRO
-    
-        self.previousToken = self.currentToken
-        self.currentToken = self.currentToken + 1
+        if token is not None:
+            self.lexemToken = token.lexema
+            self.errorLineToken = token.linha
+            self.typeLexema = token.tipo
+            self.typeNRO = token.tipoNRO
+            self.previousToken = self.currentToken
+            self.currentToken = self.currentToken + 1
+
+        else:
+            self.lexemToken = None
+
+        
     
     def lookNextToken(self):
         token = self.listTokens[self.currentToken + 1]
@@ -86,6 +121,8 @@ class SyntaticAnalyzer:
         return token
 
     def start(self):
+        controlPanic = False
+        
         self.callGlobalValues()
         self.callFunctionProcedure()
     
@@ -99,6 +136,9 @@ class SyntaticAnalyzer:
                     self.getNextToken()
                 else:
                     self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "{"))
+                    while (not (self.lexemToken in self.FirstConstValuesDeclaration) and (not self.lexemToken == None)):
+                        self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.FirstConstValuesDeclaration))
+                        self.getNextToken()
                 
                 self.callConstValuesDeclaration()
                 
@@ -106,16 +146,25 @@ class SyntaticAnalyzer:
                     self.getNextToken()
                 else:
                     self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "}"))
+                    while (not (self.lexemToken == "var") and (not self.lexemToken == None)):
+                        self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["var"]))
+                        self.getNextToken()
                 
                 if self.lexemToken == "var":
                     self.getNextToken()
                 else:
-                    self.listErrors.append(self.errorMessage(self.errorLineToken, "palavra", "var"))
+                    self.listErrors.append(self.errorMessage(self.errorLineToken, "palavra", "var")) #*
+                    while (not (self.lexemToken == "{") and (not self.lexemToken == None)):
+                        self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken))
+                        self.getNextToken()
                 
                 if self.lexemToken == "{":
                     self.getNextToken()
                 else:
                     self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "{"))
+                    while (not (self.lexemToken in self.FirstVarValuesDeclaration) and (not self.lexemToken == None)):
+                        self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken))
+                        self.getNextToken()
                 
                 self.callVarValeusDeclaration()
                 
@@ -131,6 +180,9 @@ class SyntaticAnalyzer:
                     self.getNextToken()
                 else:
                     self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "{"))
+                    while (not (self.lexemToken in self.FirstVarValuesDeclaration) and (not self.lexemToken == None)):
+                        self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken))
+                        self.getNextToken()
                 
                 self.callVarValeusDeclaration()
                 
@@ -138,16 +190,25 @@ class SyntaticAnalyzer:
                     self.getNextToken()
                 else:
                     self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "}"))
+                    while (not (self.lexemToken == "const") and (not self.lexemToken == None)):
+                        self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken))
+                        self.getNextToken()
                 
                 if self.lexemToken == "const":
                     self.getNextToken()
                 else:
                     self.listErrors.append(self.errorMessage(self.errorLineToken, "palavra", "const"))
+                    while (not (self.lexemToken == "{") and (not self.lexemToken == None)):
+                        self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken))
+                        self.getNextToken()
                 
                 if self.lexemToken == "{":
                     self.getNextToken()
                 else:
                     self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "{"))
+                    while (not (self.lexemToken in self.FirstConstValuesDeclaration) and (not self.lexemToken == None)):
+                        self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken))
+                        self.getNextToken()
                 
                 self.callConstValuesDeclaration()
                 
@@ -155,6 +216,8 @@ class SyntaticAnalyzer:
                     self.getNextToken()
                 else:
                     self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "}"))
+        
+        else:
                 
     
     def callConstValuesDeclaration(self):
@@ -167,22 +230,42 @@ class SyntaticAnalyzer:
                 self.getNextToken()
             else:
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ";"))
+                while (not (self.lexemToken in self.FirstConstValuesDeclaration) and (not self.lexemToken == None)):
+                    self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken))
+                    self.getNextToken()
                 
             self.callConstValuesDeclaration()
-    
+
+        else:
+            #if self.typeLexema == "IDE":
+            #    self.listErrors.append(self.errorMessage(self.errorLineToken, "tipo", ""))
+            #else:
+            while (not (self.lexemToken in self.FirstConstValuesDeclaration or self.lexemToken == "}" ) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken))
+                self.getNextToken()
+
+            if self.lexemToken is not None and (not self.lexemToken == "}"):
+                self.callConstValuesDeclaration()
+ 
         
     def callConstValuesAttribution(self):
         if self.typeLexema in self.FirstConstValuesAttribution:
             self.getNextToken()
         else:
             self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", ""))
+            while (not (self.lexemToken == "=") and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken))
+                self.getNextToken()
         
         if self.lexemToken == "=":
             self.getNextToken()
         else:
             self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "="))
+            while (not (self.lexemToken in self.FirstValueConst or self.typeLexema in self.FirstValueConst) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken))
+                self.getNextToken()
             
-        if self.lexemToken in self.FirstValueConst:
+        if (self.lexemToken in self.FirstValueConst or self.typeLexema in self.FirstValueConst):
             self.getNextToken()
         else:
             self.listErrors.append(self.errorMessage(self.errorLineToken, "valor", ""))
@@ -193,6 +276,8 @@ class SyntaticAnalyzer:
             self.getNextToken()
             self.callConstValuesAttribution
             self.callConstMoreAttributions
+
+        else:
     
         
     def callVarValeusDeclaration(self):
@@ -341,11 +426,12 @@ class SyntaticAnalyzer:
                 self.callProcedure()
 
         else:
-            token = self.lookNextToken()
-            if token.lexema in self.FirstType:
-                self.callFunction()
-            else:
-                self.callProcedure()
+            while (not (self.lexemToken in self.FirstFunctions_Procedures) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.FirstCallProcedure_Function))
+                self.getNextToken()
+            
+            if self.lexemToken is not None:
+                self.callFunctionProcedure()
 
     def callFunction(self):
         if self.lexemToken in self.FirstType:
@@ -422,16 +508,115 @@ class SyntaticAnalyzer:
 
 
     def callParamList(self):
+        if self.lexemToken in self.FirstType or self.typeLexema == "IDE":
+            if self.lexemToken in self.FirstType:
+                self.getNextToken()
+            else:
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "tipo", ""))
+            
+            if self.typeLexema == "IDE":
+                self.getNextToken()
+            else:
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", ""))
+
+            self.callMoreParam()
+
+        else:
+
+
+    def callMoreParam(self):
+        if self.lexemToken == ",":
+            self.getNextToken()
+            self.callParamList()
+        else:
 
 
     def callVarFunctionsProcedures(self):
-        if self.lexemToken
+        if self.lexemToken == "var":
+            self.getNextToken()
+        else:
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "palavra", "var"))
+
+        if self.lexemToken == "{":
+            self.getNextToken()
+        else:
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "{"))
+        
+        self.callVarValeusDeclaration()
+
+        if self.lexemToken == "}":
+            self.getNextToken()
+        else: 
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "}"))
 
     
     def callCommands(self):
+        if self.lexemToken in self.FirstCommand or self.typeLexema in self.FirstCommand:
+            self.callCommand()
+            self.callCommands()
+
+        else:
+
+
+    def callCommand(self):
+        if self.lexemToken in self.FirstCommandIf:
+            self.callIfStatement()
+
+        elif self.lexemToken in self.FirstCommandWhile:
+            self.callWhileStatement()
+
+        elif self.lexemToken in self.FirstCommandRead:
+            self.callReadStatement()
+
+        elif self.lexemToken in self.FirstCommandPrint:
+            self.calPrintStatement()
+
+        elif self.lexemToken in self.FirstAssignment or self.typeLexema in self.FirstAssignment:
+            self.callAssignment()
+
+        elif self.typeLexema in self.FirstCallProcedure_Function:
+            self.callProcedureFunction()
+
+    
+    def callIfStatement(self):
+
+    
+    def callWhileStatement(self):
+
+    
+    def callReadStatement(self):
+
+
+    def calPrintStatement(self):
+
+
+    def callAssignment(self):
+
+
+    def callProcedureFunction(self):
+
+    
+    def callExpression(self):
+
+
+    def callFullLogicalExp(self):
 
     
     def callReturn(self):
+        if self.lexemToken in self.FirstReturn:
+            self.getNextToken()
+        else:
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "palavra", "return"))
+        
+        self.callExpression()
+
+        if self.lexemToken == ";":
+            self.getNextToken()
+        else:
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ";"))
 
         
     def errorMessage(self, lineError, typeError, expectedValue):
+
+    
+    def errorMessagePanic(self, lineError, typeLexem, valeuLexem, expectativeCon):
