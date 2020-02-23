@@ -218,6 +218,7 @@ class SyntaticAnalyzer:
                     self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "}"))
         
         else:
+            pass
                 
     
     def callConstValuesDeclaration(self):
@@ -278,6 +279,7 @@ class SyntaticAnalyzer:
             self.callConstMoreAttributions
 
         else:
+            pass
     
         
     def callVarValeusDeclaration(self):
@@ -316,6 +318,7 @@ class SyntaticAnalyzer:
                 self.callVarValuesDeclaration()
 
             else:
+                pass
                 
 
             
@@ -522,6 +525,7 @@ class SyntaticAnalyzer:
             self.callMoreParam()
 
         else:
+            pass
 
 
     def callMoreParam(self):
@@ -529,6 +533,7 @@ class SyntaticAnalyzer:
             self.getNextToken()
             self.callParamList()
         else:
+            pass
 
 
     def callVarFunctionsProcedures(self):
@@ -556,6 +561,7 @@ class SyntaticAnalyzer:
             self.callCommands()
 
         else:
+            pass
 
 
     def callCommand(self):
@@ -644,21 +650,27 @@ class SyntaticAnalyzer:
 
     
     def callReadStatement(self):
+        pass
 
 
     def calPrintStatement(self):
+        pass
 
 
     def callAssignment(self):
+        pass
 
 
     def callProcedureFunction(self):
+        pass
 
     
     def callExpression(self):
+        pass
 
 
     def callFullLogicalExp(self):
+        pass
 
     
     def callReturn(self):
@@ -676,6 +688,8 @@ class SyntaticAnalyzer:
 
         
     def errorMessage(self, lineError, typeError, expectedValue):
+        pass
 
     
     def errorMessagePanic(self, lineError, typeLexem, valeuLexem, expectativeCon):
+        
