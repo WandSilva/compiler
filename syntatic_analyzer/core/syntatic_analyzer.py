@@ -90,11 +90,12 @@ class SyntaticAnalyzer:
         self.FirstModifier.append("global")
         self.FirstCommandIf.append("if")
         self.FirstCallVariable.extend(self.FirstModifier)
-        self.FirstCallVariable.append("IDE")
+        self.FirstCallVariable.append("IDE") #ainda tem esse IDE?
         self.FirstCommandWhile.append("while")
         self.FirstCommandRead.append("read")
         self.FirstCommandPrint.append("print")
-        self.FirstUnaryOP
+        self.FirstUnaryOP.append('++')
+        self.FirstUnaryOP.append('--')
         self.FirstAssignment.extend(self.FirstCallVariable)
         self.FirstAssignment.extend(self.FirstUnaryOP)
         self.FirstCallProcedure_Function.append("IDE")
@@ -718,7 +719,7 @@ class SyntaticAnalyzer:
             self.getNextToken()
         if self.lexemToken == '(':
             self.getNextToken()
-            self.callFullLogicalExp()
+            self.callRelationalExp()
         else:
             self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
             self.getNextToken()
@@ -753,7 +754,7 @@ class SyntaticAnalyzer:
             self.getNextToken()
         if self.lexemToken == '(':
             self.getNextToken()
-            self.callFullLogicalExp()
+            self.callRelationalExp()
         else:
             self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
             self.getNextToken()
@@ -795,29 +796,30 @@ class SyntaticAnalyzer:
         pass
 
 
-    def callFullLogicalExp(self):
+    def callRelationalExp(self):
         pass
 
-    def callFullRelationalEx(self):
+
+    def callOptLogicalExp(self):
         pass
 
-    
-    def callOptLogExp(self):
-        pass
-
-    def callPossRelExp(self):
-        pass
 
     def callLogicalExp(self):
         pass
 
+
     def callRelationalExp(self):
         pass
 
-    def callEqualExp(self):
+
+    def callOptRelExp(self):
         pass
 
-    def callInequalExp(self):
+
+    def callEqualityExp(self):
+        pass
+
+    def callInequalityExp(self):
         pass
 
 
@@ -843,25 +845,29 @@ class SyntaticAnalyzer:
     def callUnaryOp(self):
         pass
 
-
-    def callSubExp(self):
+    def callFinalValue(self):
         if self.lexemToken in self.FirstCallVariable:
             self.callCallVariable()
-        elif self.typeLexema in self.FirstNumber ou :
+        elif self.typeLexema == 'NRO':
             self.getNextToken()
-        elif self.typeLexema in self.FirstBooleanos:
+        elif self.getNextToken in self.FirstBooleanos:
             self.getNextToken()
         else:
             pass
 
-
-
     def callCallVariable(self):
-        pass
-    
+        if self.lexemToken in self.FirstCallVariable:
+            self.getNextToken()
+        if self.lexemToken == '.':
+            self.getNextToken()
+        if self.typeLexema == 'IDE':
+            self.getNextToken()
+        if self.lexemToken in self.FirtCallPath: #criar isso aqui
+            self.callPath()
+        else:
+            pass
 
-    def callModifier(self):
-        pass
+    
     
     def callReturn(self):
         if self.lexemToken in self.FirstReturn:
