@@ -651,6 +651,7 @@ class SyntaticAnalyzer:
             self.callMoreParam()
 
         else:
+            pass
 
 
     def callMoreParam(self):
@@ -658,6 +659,7 @@ class SyntaticAnalyzer:
             self.getNextToken()
             self.callParamList()
         else:
+            pass
 
 
     def callVarFunctionsProcedures(self):
@@ -685,6 +687,7 @@ class SyntaticAnalyzer:
             self.callCommands()
 
         else:
+            pass
 
 
     def callCommand(self):
@@ -708,27 +711,92 @@ class SyntaticAnalyzer:
 
     
     def callIfStatement(self):
+        if self.lexemToken in self.FirstCommandIf:
+            self.getNextToken()
+        else: 
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", "if"))
+            self.getNextToken()
+        if self.lexemToken == '(':
+            self.getNextToken()
+            self.callFullLogicalExp()
+        else:
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
+            self.getNextToken()
+        if self.lexemToken == ')':
+            self.getNextToken()
+        else:
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ")"))
+            self.getNextToken()
+        if self.lexemToken == 'then':
+            self.getNextToken()
+        else: 
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", "then"))
+            self.getNextToken()
+        if self.lexemToken == '{':
+            self.getNextToken
+            self.callComands()
+        else: 
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "{"))
+            self.getNextToken()
+        if self.lexemToken == '}':
+            self.getNextToken
+        else:
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "}"))
+            self.getNextToken()
 
     
     def callWhileStatement(self):
+        if self.lexemToken in self.FirstCommandWhile:
+            self.getNextToken()
+        else: 
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", "while"))
+            self.getNextToken()
+        if self.lexemToken == '(':
+            self.getNextToken()
+            self.callFullLogicalExp()
+        else:
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
+            self.getNextToken()
+        if self.lexemToken == ')':
+            self.getNextToken()
+        else:
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ")"))
+            self.getNextToken()
+        if self.lexemToken == '{':
+            self.getNextToken
+            self.callComands()
+        else: 
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "{"))
+            self.getNextToken()
+        if self.lexemToken == '}':
+            self.getNextToken
+        else:
+            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "}"))
+            self.getNextToken()
 
     
     def callReadStatement(self):
+        pass
 
 
     def calPrintStatement(self):
+        pass
 
 
     def callAssignment(self):
+        pass
 
 
     def callProcedureFunction(self):
+        pass
 
     
     def callExpression(self):
+        pass
 
 
     def callFullLogicalExp(self):
+        pass
 
     
     def callReturn(self):
@@ -746,6 +814,8 @@ class SyntaticAnalyzer:
 
         
     def errorMessage(self, lineError, typeError, expectedValue):
+        pass
 
     
     def errorMessagePanic(self, lineError, typeLexem, valeuLexem, expectativeCon):
+        
