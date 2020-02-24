@@ -975,6 +975,70 @@ class SyntaticAnalyzer:
     def callFullLogicalExp(self):
         pass
 
+    def callFullRelationalEx(self):
+        pass
+
+    
+    def callOptLogExp(self):
+        pass
+
+    def callPossRelExp(self):
+        pass
+
+    def callLogicalExp(self):
+        pass
+
+    def callRelationalExp(self):
+        pass
+
+    def callEqualExp(self):
+        pass
+
+    def callInequalExp(self):
+        pass
+
+
+    def callAritmeticExp(self):
+        pass
+
+
+    def callOperation(self):
+        pass
+
+
+    def callOpSum(self):
+        pass
+
+    def OpMultiplication(self):
+        pass
+
+
+    def callOpUnary(self):
+        pass
+
+
+    def callUnaryOp(self):
+        pass
+
+
+    def callSubExp(self):
+        if self.lexemToken in self.FirstCallVariable:
+            self.callCallVariable()
+        elif self.typeLexema in self.FirstNumber ou :
+            self.getNextToken()
+        elif self.typeLexema in self.FirstBooleanos:
+            self.getNextToken()
+        else:
+            pass
+
+
+
+    def callCallVariable(self):
+        pass
+    
+
+    def callModifier(self):
+        pass
     
     def callReturn(self):
         if self.lexemToken in self.FirstReturn:
