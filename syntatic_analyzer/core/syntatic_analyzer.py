@@ -159,7 +159,7 @@ class SyntaticAnalyzer:
         self.firstRelationalLessPrec.append('!=')
         self.firstOptRelExp.extend(self.firstRelationalLessPrec)
         self.firstOptRelExp.extend(self.firstRelationalMorePrec)
-        self.firstOptRelExp.extend(self.firs    tAritmeticExp)
+        self.firstOptRelExp.extend(self.firstAritmeticExp)
         self.firstLogicalOperators.append('&&')
         self.firstLogicalOperators.append('||')
         self.firstLogicalExp.extend(self.firstAritmeticExp)
@@ -844,7 +844,7 @@ class SyntaticAnalyzer:
                     self.getNextToken()
                 if (not self.lexemToken in self.FirstType):
                     self.listErrors.append(self.errorMessage(self.errorLineToken, "tipo", ""))
-                elif (self.lexemToken in self.FirstType)):
+                elif (self.lexemToken in self.FirstType):
                     self.getNextToken()
             
             if self.typeLexema == "IDE":
@@ -855,7 +855,7 @@ class SyntaticAnalyzer:
                     self.getNextToken()
                 if (not self.typeLexema == "IDE"):
                     self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", ""))
-                elif (self.typeLexema == "IDE")):
+                elif (self.typeLexema == "IDE"):
                     self.getNextToken()
 
             self.callMoreParam()
