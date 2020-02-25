@@ -49,6 +49,7 @@ class SyntaticAnalyzer:
         self.FirstCommands = []
         self.FirstReturn = []
         self.FirstParamList = []
+        self.FirstMoreParamList = []
         self.FirstVarFunctionsProcedures = []
         self.FirstExpression = []
 
@@ -70,6 +71,8 @@ class SyntaticAnalyzer:
         self.FollowCommands = []
         self.FollowReturn = []
         self.FollowVarFunctionsProcedures = []
+        self.FollowParamList = []
+        self.FollowMoreParamList = []
         
         
         # Set os first's dos não terminais
@@ -120,7 +123,8 @@ class SyntaticAnalyzer:
         self.FirstCommand.extend(self.FirstAssignment)
         self.FirstCommand.extend(self.FirstCallProcedure_Function)
         self.FirstReturn.append("return")
-        self.FirstParamList
+        self.FirstParamList.extend(self.FirstType)
+        self.FirstMoreParamList.append(",")
         self.FirstCommands.extend(self.FirstCommand)
         self.FirstVarFunctionsProcedures.append("var")
         self.FirstExpression
@@ -147,6 +151,8 @@ class SyntaticAnalyzer:
         self.FollowCommands.extend(self.FirstCommands)
         self.FollowVarFunctionsProcedures.extend(self.FirstCommands)
         self.FollowReturn.append("}")
+        self.FollowParamList.append(")")
+        self.FollowMoreParamList.extend(self.FollowParamList)
     
 
     def letsWork(self):
@@ -792,30 +798,57 @@ class SyntaticAnalyzer:
 
 
     def callParamList(self):
-        if self.lexemToken in self.FirstType or self.typeLexema == "IDE":
+        if self.lexemToken in self.FirstType:
             if self.lexemToken in self.FirstType:
                 self.getNextToken()
             else:
-                self.listErrors.append(self.errorMessage(self.errorLineToken, "tipo", ""))
+                while (not ((self.lexemToken in self.FirstType) or (self.typeLexema == "IDE") or (self.lexemToken in self.FollowParamList)) and (not self.lexemToken == None)):
+                    self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.FirstType))
+                    self.getNextToken()
+                if (not self.lexemToken in self.FirstType):
+                    self.listErrors.append(self.errorMessage(self.errorLineToken, "tipo", ""))
+                elif (self.lexemToken in self.FirstType)):
+                    self.getNextToken()
             
             if self.typeLexema == "IDE":
                 self.getNextToken()
             else:
-                self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", ""))
+                while (not ((self.typeLexema == "IDE") or (self.lexemToken in self.FirstMoreParam) or (self.lexemToken in self.FollowParamList)) and (not self.lexemToken == None)):
+                    self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.FirstType))
+                    self.getNextToken()
+                if (not self.typeLexema == "IDE"):
+                    self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", ""))
+                elif (self.typeLexema == "IDE")):
+                    self.getNextToken()
 
             self.callMoreParam()
 
         else:
-            pass
+            while (not ((self.lexemToken in self.FirstType) or (self.lexemToken in self.FollowParamList)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.FirstType))
+                self.getNextToken()
+            if (self.lexemToken in self.FirstType):
+                self.callParamList()
+            else:
+                pass
 
 
     def callMoreParam(self):
         if self.lexemToken == ",":
             self.getNextToken()
+            
             self.callParamList()
         else:
-            pass
+            while (not ((self.lexemToken == ",") or (self.lexemToken in self.FollowMoreParamList)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, [","]))
+                self.getNextToken()
+            if self.lexemToken == ",":
+                self.callMoreParam()
+            else:
+                pass
 
+    
+    def callParamListInFuncProc(self):
 
     def callVarFunctionsProcedures(self):
         if self.lexemToken == "var":
@@ -965,6 +998,7 @@ class SyntaticAnalyzer:
 
 
     def callProcedureFunction(self):
+        # Quando for chamar os parametros, chamar por: callParamListInFuncProc
         pass
 
     
