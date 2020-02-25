@@ -49,6 +49,7 @@ class SyntaticAnalyzer:
         self.firstCommands = []
         self.firstReturn = []
         self.firstParamList = []
+        self.firstMoreParam = []
         self.firstVarFunctionsProcedures = []
         self.firstExpression = []
         self.firstFinalValue = []
@@ -125,7 +126,8 @@ class SyntaticAnalyzer:
         self.firstCommand.extend(self.firstAssignment)
         self.firstCommand.extend(self.firstCallProcedure_Function)
         self.firstReturn.append("return")
-        self.firstParamList
+        self.firstParamList.extend(self.firstType)
+        self.firstMoreParam.append(",")
         self.firstCommands.extend(self.firstCommand)
         self.firstVarFunctionsProcedures.append("var")
         self.firstExpression
@@ -819,7 +821,7 @@ class SyntaticAnalyzer:
             if self.typeLexema == "IDE":
                 self.getNextToken()
             else:
-                while (not ((self.typeLexema == "IDE") or (self.lexemToken in self.FirstMoreParam) or (self.lexemToken in self.FollowParamList)) and (not self.lexemToken == None)):
+                while (not ((self.typeLexema == "IDE") or (self.lexemToken in self.firstMoreParam) or (self.lexemToken in self.FollowParamList)) and (not self.lexemToken == None)):
                     self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.FirstType))
                     self.getNextToken()
                 if (not self.typeLexema == "IDE"):
