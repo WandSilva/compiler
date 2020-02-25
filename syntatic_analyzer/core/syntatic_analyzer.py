@@ -43,6 +43,7 @@ class SyntaticAnalyzer:
         self.firstCommandRead = []
         self.firstCommandPrint = []
         self.firstUnaryOP = []
+        self.firstOpUnary = []
         self.firstAssignment = []
         self.firstCallProcedure_Function = []
         self.firstCommand = []
@@ -53,6 +54,13 @@ class SyntaticAnalyzer:
         self.firstExpression = []
         self.firstFinalValue = []
         self.firstTimesDivision = []
+        self.firstPlusMinus = []
+        self.firstAritmeticExp = []
+        self.firstRelationalMorePrec = []
+        self.firstRelationalLessPrec = []
+        self.firstOptRelExp = []
+        self.firstLogicalOperators = []
+        self.firstLogicalExp = []
 
         self.FollowGlobalValeus = []
         self.FollowConstValuesDeclaration = []
@@ -132,6 +140,27 @@ class SyntaticAnalyzer:
         self.firstFinalValue.extend(self.firstNumber)
         self.firstTimesDivision.append('*')
         self.firstTimesDivision.append('/')
+        self.firstOpUnary.extend(self.firstUnaryOP)
+        self.firstOpUnary.extend(self.firstFinalValue)
+        self.firstOpUnary.append('(')
+        self.firstPlusMinus.append('+')
+        self.firstPlusMinus.append('-')
+        self.firstAritmeticExp.extend(self.firstOpUnary)
+        self.firstAritmeticExp.append('(')
+        self.firstRelationalMorePrec.append('>')
+        self.firstRelationalMorePrec.append('<')
+        self.firstRelationalMorePrec.append('>=')
+        self.firstRelationalMorePrec.append('<=')
+        self.firstRelationalLessPrec.append('==')
+        self.firstRelationalLessPrec.append('!=')
+        self.firstOptRelExp.extend(self.firstRelationalLessPrec)
+        self.firstOptRelExp.extend(self.firstRelationalMorePrec)
+        self.firstOptRelExp.extend(self.firs    tAritmeticExp)
+        self.firstLogicalOperators.append('&&')
+        self.firstLogicalOperators.append('||')
+        self.firstLogicalExp.extend(self.firstAritmeticExp)
+        self.firstLogicalExp.extend('(')
+
 
         # Set os follow's dos não terminais
         self.FollowGlobalValeus.extend(self.firstFunctions_Procedures)
@@ -977,42 +1006,156 @@ class SyntaticAnalyzer:
 
     
     def callExpression(self):
-        pass
+        if self.lexemToken in self.firstAritmeticExp:
+            self.callRelationalExp()
+        else:
+            pass
+        if self.lexemToken in self.firstLogicalOperators:
+                self.callOptLogicalExp()
+        else:
+            pass
+
 
 
     def callRelationalExp(self):
-        pass
+        if self.lexemToken in self.firstAritmeticExp:
+            self.callAritmeticExp()
+        else:
+            pass
+        if self.lexemToken in self.firstOptRelExp:
+            self.callOptRelExp()
+        else:
+            pass
 
 
     def callOptLogicalExp(self):
-        pass
+        if self.lexemToken in self.firstLogicalOperators:
+                self.getNextToken()
+        else:
+            pass
+        if self.lexemToken in self.firstLogicalExp:
+                self.callLogicalExp()
+        else:
+            pass
+        
 
-
+    #regra não fatorada
     def callLogicalExp(self):
-        pass
+        if self.lexemToken in self.firstAritmeticExp:
+            self.callRelationalExp()
+            if self.lexemToken in self.firstLogicalOperators:
+                self.getNextToken()
+            else:
+                pass
+            if self.lexemToken in self.firstLogicalExp:
+                self.callLogicalExp()
+        elif self.lexemToken == '(':
+            self.getNextToken()
+            if self.lexemToken in self.firstLogicalExp:
+                self.callLogicalExp()
+            else:
+                pass
+            if self.lexemToken == ')':
+                self.getNextToken()
+        
 
 
     def callOptRelExp(self):
-        pass
+        if self.lexemToken in self.firstAritmeticExp:
+            self.callAritmeticExp()
+            if self.lexemToken in self.firstRelationalMorePrec:
+                self.callInequalityExp()
+            if self.lexemToken in self.firstRelationalLessPrec:
+                self.callEqualityExp()
+            else:
+                pass
+        elif self.lexemToken in self.firstRelationalLessPrec:
+            self.getNextToken()
+            if self.lexemToken in self.firstAritmeticExp:
+                self.callAritmeticExp()
+            else:
+                pass
+        elif self.lexemToken in self.firstRelationalMorePrec:
+            self.getNextToken()
+            if self.lexemToken in self.firstAritmeticExp:
+                self.callAritmeticExp()
+            else:
+                pass
+
 
 
     def callEqualityExp(self):
-        pass
+        if self.lexemToken in self.firstRelationalLessPrec:
+            self.getNextToken()
+        else:
+            pass
+        if self.lexemToken in self.firstAritmeticExp:
+            self.callAritmeticExp()
+        else:
+            pass
+        if self.lexemToken in self.firstRelationalMorePrec:
+            self.callInequalityExp()
+        else:
+            pass
+        if self.lexemToken in self.firstRelationalLessPrec:
+            self.callEqualityExp()
+        else:
+            pass
 
     def callInequalityExp(self):
-        pass
+        if self.lexemToken in self.firstRelationalMorePrec:
+            self.getNextToken()
+        else:
+            pass
+        if self.lexemToken in self.firstAritmeticExp:
+            self.callAritmeticExp()
+        else:
+            pass
+        if self.lexemToken in self.firstRelationalMorePrec:
+            self.callInequalityExp()
+        else:
+            pass
 
 
     def callAritmeticExp(self):
-        pass
+        if self.lexemToken in self.firstOpUnary:
+            self.callOperation()
+        else:
+            pass
+        if self.lexemToken in self.firstPlusMinus:
+            self.getNextToken()
+        elif self.lexemToken == '(':
+            self.getNextToken()
+            #incompleto
+            
 
 
     def callOperation(self):
-        pass
+        if self.lexemToken in self.firstOpUnary:
+            self.callOpUnary()
+        else:
+            pass
+        if self.lexemToken in self.firstTimesDivision:
+            self.callOpMultiplication()
+        else: 
+            pass
 
 
     def callOpSum(self):
-        pass
+        if self.lexemToken in self.firstPlusMinus:
+            self.getNextToken()
+        else:
+            pass
+        if self.lexemToken in self.firstOpUnary:
+            self.callOperation()
+        else:
+            pass
+        if self.lexemToken in self.firstPlusMinus:
+            self.getNextToken()
+        else:
+            pass
+        
+        
 
     def callOpMultiplication(self):
         if self.lexemToken in self.firstTimesDivision:
@@ -1023,7 +1166,7 @@ class SyntaticAnalyzer:
             self.callOpUnary()
         else:
             pass
-        if self.lexemToken in self.firstOpMultiplication: #criar
+        if self.lexemToken in self.firstTimesDivision:
             self.callOpMultiplication()
         
 
@@ -1035,12 +1178,14 @@ class SyntaticAnalyzer:
             self.callFinalValue()
         elif self.lexemToken == '(':
             self.getNextToken()
-            if self.lexemToken in self.firstAritmeticExp: #criar
+            if self.lexemToken in self.firstAritmeticExp:
                 self.callAritmeticExp()
             else:
                 pass
             if self.lexemToken == ')':
                 self.getNextToken()
+        else:
+            pass
 
 
 
