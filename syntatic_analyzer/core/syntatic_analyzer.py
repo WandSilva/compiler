@@ -62,6 +62,12 @@ class SyntaticAnalyzer:
         self.firstOptRelExp = []
         self.firstLogicalOperators = []
         self.firstLogicalExp = []
+        self.firstRelacionalExp = []
+        self.firstReadParam = []
+        self.firstMoreReadParams = []
+        self.firstPrintParams = []
+        self.firstPrintParam = []
+        self.firstMorePrintParams = []
 
         self.FollowGlobalValeus = []
         self.FollowConstValuesDeclaration = []
@@ -83,6 +89,17 @@ class SyntaticAnalyzer:
         self.FollowVarFunctionsProcedures = []
         self.FollowParamList = []
         self.FollowMoreParamList = []
+        self.FollowCommandIf = []
+        self.FollowCommandWhile = []
+        self.FollowCommandRead = []
+        self.FollowCommandPrint = []
+        self.FollowAssignment = []
+        self.FollowCallProcedureFunction = []
+        self.FollowReadParam = []
+        self.FollowMoreReadParams = []
+        self.FollowPrintParams = []
+        self.FollowPrintParam = []
+        self.FollowMorePrintParams = []
         
         
         # Set os first's dos não terminais
@@ -164,6 +181,13 @@ class SyntaticAnalyzer:
         self.firstLogicalOperators.append('||')
         self.firstLogicalExp.extend(self.firstAritmeticExp)
         self.firstLogicalExp.extend('(')
+        self.firstRelacionalExp # Tratar este first
+        self.firstReadParam.extend(self.firstCallVariable)
+        self.firstMoreReadParams.append(",")
+        self.firstPrintParam.append("CDC")
+        self.firstPrintParam.extend(self.firstCallVariable)
+        self.firstPrintParams.extend(self.firstPrintParam)
+        self.firstMorePrintParams.append(",")
 
 
         # Set os follow's dos não terminais
@@ -190,6 +214,17 @@ class SyntaticAnalyzer:
         self.FollowReturn.append("}")
         self.FollowParamList.append(")")
         self.FollowMoreParamList.extend(self.FollowParamList)
+        self.FollowCommandIf.extend(self.FollowCommand)
+        self.FollowCommandWhile.extend(self.FollowCommand)
+        self.FollowCommandRead.extend(self.FollowCommand)
+        self.FollowCommandPrint.extend(self.FollowCommand)
+        self.FollowAssignment.extend(self.FollowCommand)
+        self.FollowCallProcedureFunction.extend(self.FollowCommand)
+        self.FollowReadParam.append(")")
+        self.FollowMoreReadParams.extend(self.FollowReadParam)
+        self.FollowPrintParams.append(")")
+        self.FollowPrintParam.extend(self.firstMorePrintParams)
+        self.FollowMorePrintParams.extend(self.FollowPrintParams)
     
 
     def letsWork(self):
@@ -960,74 +995,300 @@ class SyntaticAnalyzer:
     def callIfStatement(self):
         if self.lexemToken in self.firstCommandIf:
             self.getNextToken()
-        else: 
-            self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", "if"))
-            self.getNextToken()
-        if self.lexemToken == '(':
-            self.getNextToken()
-            self.callRelationalExp()
         else:
-            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
-            self.getNextToken()
+            while (not ((self.lexemToken in self.firstCommandIf) or (self.lexemToken == "(") or (self.lexemToken in self.FollowCommandIf)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstCommandIf))
+                self.getNextToken()
+            if (not self.lexemToken in self.firstCommandIf):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "palavra", "if"))
+            elif (self.lexemToken in self.firstCommandIf):
+                self.getNextToken()
+        
+        if self.lexemToken == '(':
+            self.getNextToken()            
+        else:
+            while (not ((self.lexemToken == "(") or (self.lexemToken in self.firstRelacionalExp) or (self.lexemToken in self.FollowCommandIf)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["("]))
+                self.getNextToken()
+            if (not self.lexemToken == "("):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
+            elif (self.lexemToken == "("):
+                self.getNextToken()
+        
+        self.callRelationalExp()
+
         if self.lexemToken == ')':
             self.getNextToken()
         else:
-            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ")"))
-            self.getNextToken()
+            while (not ((self.lexemToken == ")") or (self.lexemToken == "then") or (self.lexemToken in self.FollowCommandIf)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, [")"]))
+                self.getNextToken()
+            if (not self.lexemToken == ")"):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ")"))
+            elif (self.lexemToken == ")"):
+                self.getNextToken()
+        
         if self.lexemToken == 'then':
             self.getNextToken()
-        else: 
-            self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", "then"))
-            self.getNextToken()
-        if self.lexemToken == '{':
-            self.getNextToken
-            self.callCommands()
-        else: 
-            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "{"))
-            self.getNextToken()
-        if self.lexemToken == '}':
-            self.getNextToken
         else:
-            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "}"))
+            while (not ((self.lexemToken == "then") or (self.lexemToken == "{") or (self.lexemToken in self.FollowCommandIf)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["then"]))
+                self.getNextToken()
+            if (not self.lexemToken == "then"):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "palavra", "then"))
+            elif (self.lexemToken == "then"):
+                self.getNextToken()
+        
+        if self.lexemToken == '{':
             self.getNextToken()
+        else:
+            while (not ((self.lexemToken == "{") or (self.lexemToken in self.firstCommands) or (self.lexemToken in self.FollowCommandIf)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["{"]))
+                self.getNextToken()
+            if (not self.lexemToken == "{"):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "{"))
+            elif (self.lexemToken == "{"):
+                self.getNextToken()
+
+        self.callCommands()
+        
+        if self.lexemToken == '}':
+            self.getNextToken()
+        else:
+            while (not ((self.lexemToken == "}") or (self.lexemToken in self.FollowCommandIf)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["}"]))
+                self.getNextToken()
+            if (not self.lexemToken == "}"):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "}"))
+            elif (self.lexemToken == "}"):
+                self.getNextToken()
 
     
     def callWhileStatement(self):
         if self.lexemToken in self.firstCommandWhile:
             self.getNextToken()
-        else: 
-            self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", "while"))
-            self.getNextToken()
+        else:
+            while (not ((self.lexemToken in self.firstCommandWhile) or (self.lexemToken == "(") or (self.lexemToken in self.FollowCommandWhile)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstCommandWhile))
+                self.getNextToken()
+            if (not self.lexemToken in self.firstCommandWhile):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "palavra", "while"))
+            elif (self.lexemToken in self.firstCommandWhile):
+                self.getNextToken()
+        
         if self.lexemToken == '(':
             self.getNextToken()
-            self.callRelationalExp()
         else:
-            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
-            self.getNextToken()
+            while (not ((self.lexemToken == "(") or (self.lexemToken in self.firstRelacionalExp) or (self.lexemToken in self.FollowCommandWhile)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["("]))
+                self.getNextToken()
+            if (not self.lexemToken == "("):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
+            elif (self.lexemToken == "("):
+                self.getNextToken()
+
+        self.callRelationalExp()
+        
         if self.lexemToken == ')':
             self.getNextToken()
         else:
-            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ")"))
-            self.getNextToken()
+            while (not ((self.lexemToken == ")") or (self.lexemToken == "{") or (self.lexemToken in self.FollowCommandWhile)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, [")"]))
+                self.getNextToken()
+            if (not self.lexemToken == ")"):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ")"))
+            elif (self.lexemToken == ")"):
+                self.getNextToken()
+        
         if self.lexemToken == '{':
             self.getNextToken
-            self.callCommands()
         else: 
-            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "{"))
-            self.getNextToken()
+            while (not ((self.lexemToken == "{") or (self.lexemToken in self.firstCommands) or (self.lexemToken in self.FollowCommandWhile)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["{"]))
+                self.getNextToken()
+            if (not self.lexemToken == "{"):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "{"))
+            elif (self.lexemToken == "{"):
+                self.getNextToken()
+
+        self.callCommands()
+        
         if self.lexemToken == '}':
             self.getNextToken
         else:
-            self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "}"))
-            self.getNextToken()
+            while (not ((self.lexemToken == "}") or (self.lexemToken in self.FollowCommandWhile)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["}"]))
+                self.getNextToken()
+            if (not self.lexemToken == "}"):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "}"))
+            elif (self.lexemToken == "}"):
+                self.getNextToken()
 
     
     def callReadStatement(self):
-        pass
+        if self.lexemToken in self.firstCommandRead:
+            self.getNextToken()
+        else:
+            while (not ((self.lexemToken in self.firstCommandIf) or (self.lexemToken == "(") or (self.lexemToken in self.FollowCommandRead)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstCommandRead))
+                self.getNextToken()
+            if (not self.lexemToken in self.firstCommandRead):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "palavra", "read"))
+            elif (self.lexemToken in self.firstCommandRead):
+                self.getNextToken()
+        
+        if self.lexemToken == "(":
+            self.getNextToken()
+        else:
+            while (not ((self.lexemToken == "(") or (self.lexemToken in self.firstReadParam) or (self.lexemToken in self.FollowCommandRead)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["("]))
+                self.getNextToken()
+            if (not self.lexemToken == "("):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
+            elif (self.lexemToken == "("):
+                self.getNextToken()
+        
+        self.callReadParam()
+
+        if self.lexemToken == ")":
+            self.getNextToken()
+        else:
+            while (not ((self.lexemToken == ")") or (self.lexemToken == ";") or (self.lexemToken in self.FollowCommandRead)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, [")"]))
+                self.getNextToken()
+            if (not self.lexemToken == ")"):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ")"))
+            elif (self.lexemToken == ")"):
+                self.getNextToken()
+        
+        if self.lexemToken == ";":
+            self.getNextToken()
+        else:
+            while (not ((self.lexemToken == ";") or (self.lexemToken in self.FollowCommandRead)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, [";"]))
+                self.getNextToken()
+            if (not self.lexemToken == ";"):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ";"))
+            elif (self.lexemToken == ";"):
+                self.getNextToken()
+
+
+    def callReadParam(self):
+        if self.lexemToken in self.firstReadParam:
+            self.callCallVariable()
+            self.callMoreReadParams()
+        else:
+            while (not ((self.lexemToken in self.firstReadParam) or (self.lexemToken in self.FollowReadParam)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstReadParam))
+                self.getNextToken()
+            if (not self.lexemToken in self.firstReadParam):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "parametros", ""))
+            elif (self.lexemToken in self.firstReadParam):
+                self.callReadParam()
+
+    
+    def callMoreReadParams(self):
+        if self.lexemToken in self.firstMoreReadParams:
+            self.getNextToken()
+            self.callReadParam()
+        else:
+            while (not ((self.lexemToken in self.firstMoreReadParams) or (self.lexemToken in self.FollowMoreReadParams)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstMoreReadParams))
+                self.getNextToken()
+            if (not self.lexemToken in self.firstMoreReadParams):
+                self.callMoreReadParams
+            elif (self.lexemToken in self.FollowMoreReadParams):
+                pass
 
 
     def calPrintStatement(self):
-        pass
+        if self.lexemToken in self.firstCommandPrint:
+            self.getNextToken()
+        else:
+            while (not ((self.lexemToken in self.firstCommandRead) or (self.lexemToken == "(") or (self.lexemToken in self.FollowCommandPrint)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstCommandPrint))
+                self.getNextToken()
+            if (not self.lexemToken in self.firstCommandPrint):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "palavra", "print"))
+            elif (self.lexemToken in self.firstCommandPrint):
+                self.getNextToken()
+        
+        if self.lexemToken == "(":
+            self.getNextToken()
+        else:
+            while (not ((self.lexemToken == "(") or (self.lexemToken in self.firstPrintParams) or (self.lexemToken in self.FollowCommandPrint)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["("]))
+                self.getNextToken()
+            if (not self.lexemToken == "("):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
+            elif (self.lexemToken == "("):
+                self.getNextToken()
+        
+        self.callPrintParams()
+
+        if self.lexemToken == ")":
+            self.getNextToken()
+        else:
+            while (not ((self.lexemToken == ")") or (self.lexemToken == ";") or (self.lexemToken in self.FollowCommandPrint)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, [")"]))
+                self.getNextToken()
+            if (not self.lexemToken == ")"):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ")"))
+            elif (self.lexemToken == ")"):
+                self.getNextToken()
+        
+        if self.lexemToken == ";":
+            self.getNextToken()
+        else:
+            while (not ((self.lexemToken == ";") or (self.lexemToken in self.FollowCommandPrint)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, [";"]))
+                self.getNextToken()
+            if (not self.lexemToken == ";"):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ";"))
+            elif (self.lexemToken == ";"):
+                self.getNextToken()
+
+
+    def callPrintParams(self):
+        if self.lexemToken in self.firstPrintParams:
+            self.callPrintParam()
+            self.callMorePrintParams()
+        else:
+            while (not ((self.lexemToken in self.firstPrintParams) or (self.lexemToken in self.FollowPrintParams)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstPrintParam))
+                self.getNextToken()
+            if (not self.lexemToken in self.firstPrintParams):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "parametros", ""))
+            elif (self.lexemToken in self.firstReadParams):
+                self.callPrintParams()
+
+
+    def callPrintParam(self):
+        if self.lexemToken in self.firstPrintParam or self.typeLexema in self.firstPrintParam:
+            if (self.typeLexema == "CDC"):
+                self.getNextToken()
+            elif (self.lexemToken in self.firstCallVariable):
+                self.callCallVariable()
+        else:
+            while (not ((self.lexemToken in self.firstPrintParam) or (self.lexemToken in self.FollowPrintParam)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstPrintParam))
+                self.getNextToken()
+            if (not self.lexemToken in self.firstPrintParam):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "parametros", ""))
+            elif (self.lexemToken in self.firstPrintParam):
+                self.callReadParam()   
+
+
+    def callMorePrintParams(self):
+        if (self.lexemToken in self.firstMorePrintParams):
+            self.getNextToken()
+            self.callPrintParams
+        else:
+            while (not ((self.lexemToken in self.firstMorePrintParams) or (self.lexemToken in self.FollowMorePrintParams)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstMorePrintParams))
+                self.getNextToken()
+            if (self.lexemToken in self.firstMorePrintParams):
+                self.callMorePrintParams()
 
 
     def callAssignment(self):
