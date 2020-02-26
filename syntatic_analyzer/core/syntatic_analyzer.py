@@ -68,6 +68,11 @@ class SyntaticAnalyzer:
         self.firstPrintParams = []
         self.firstPrintParam = []
         self.firstMorePrintParams = []
+        self.firstAssign2 = []
+        self.firstPaths = []
+        self.firstStruct = []
+        self.firstMatrAssign = []
+        self.firstCell = []
 
         self.FollowGlobalValeus = []
         self.FollowConstValuesDeclaration = []
@@ -100,6 +105,11 @@ class SyntaticAnalyzer:
         self.FollowPrintParams = []
         self.FollowPrintParam = []
         self.FollowMorePrintParams = []
+        self.FollowAssign2 = []
+        self.FollowPaths = []
+        self.FollowStruct = []
+        self.FollowMatrAssign = []
+        self.FollowCell = []
         
         
         # Set os first's dos não terminais
@@ -1292,9 +1302,45 @@ class SyntaticAnalyzer:
 
 
     def callAssignment(self):
+        if self.lexemToken in self.firstAssignment:
+            if self.lexemToken in self.firstCallVariable:
+                self.callCallVariable()
+
+                if self.lexemToken == "=":
+                    self.getNextToken()
+                else:
+
+                self.callAssign2()
+
+                if self.lexemToken == ";":
+                    self.getNextToken()
+                else:
+
+            elif self.lexemToken in self.firstUnaryOP:
+
+        else:
+
+    
+    def callAssign2(self):
         pass
 
 
+    def callPaths(self):
+        pass
+
+
+    def callStruct(self):
+        pass
+
+
+    def callMatrAssign(self):
+        pass
+
+
+    def callCell(self):
+        pass
+
+    
     def callProcedureFunction(self):
         # Quando for chamar os parametros, chamar por: callParamListInFuncProc
         pass
@@ -1522,6 +1568,8 @@ class SyntaticAnalyzer:
             pass
 
     
+    def callPath(self):
+
     
     def callReturn(self):
         if self.lexemToken in self.firstReturn:
