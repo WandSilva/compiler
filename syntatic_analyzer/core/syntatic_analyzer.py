@@ -1338,15 +1338,35 @@ class SyntaticAnalyzer:
         if self.lexemToken == '.':
             self.getNextToken()
         else:
-            pass
+            while (not ((self.lexemToken == ".") or (self.typeLexema == "IDE") or (self.lexemToken in self.FollowStruct)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["."]))
+                self.getNextToken()
+            if (not self.lexemToken == "."):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "."))
+            elif (self.lexemToken == "."):
+                self.getNextToken()
+
         if self.typeLexema == 'IDE':
             self.getNextToken()
         else:
-            pass
+            while (not ((self.typeLexema == "IDE") or (self.lexemToken in self.firstPaths) or (self.lexemToken in self.FollowStruct)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["IDE"]))
+                self.getNextToken()
+            if (not self.typeLexema == "IDE"):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", ""))
+            elif (self.typeLexema == "IDE"):
+                self.getNextToken()
+
         if self.lexemToken in self.firstPaths:
             self.callPaths()
         else:
-            pass
+            while (not ((self.lexemToken in self.firstPaths) or (self.lexemToken in self.FollowStruct)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstPaths))
+                self.getNextToken()
+            if (not self.lexemToken in self.firstPaths):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "."))
+            elif (self.lexemToken in self.firstPaths):
+                self.getNextToken()
 
 
     def callPaths(self):
