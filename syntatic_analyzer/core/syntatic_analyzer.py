@@ -931,6 +931,7 @@ class SyntaticAnalyzer:
 
     
     def callParamListInFuncProc(self):
+        pass
 
     def callVarFunctionsProcedures(self):
         if self.lexemToken == "var":
@@ -1322,23 +1323,77 @@ class SyntaticAnalyzer:
 
     
     def callAssign2(self):
-        pass
+        if self.lexemToken in self.firstCallProcedure_Function:
+            self.callProcedureFunction()
+        elif self.lexemToken in self.firstExpression:
+            self.callExpression()
+        elif self.typeLexema == 'CDC':
+            self.getNextToken()
+        else:
+            pass
 
-
-    def callPaths(self):
-        pass
 
 
     def callStruct(self):
-        pass
+        if self.lexemToken == '.':
+            self.getNextToken()
+        else:
+            pass
+        if self.typeLexema == 'IDE':
+            self.getNextToken()
+        else:
+            pass
+        if self.lexemToken in self.firstPaths:
+            self.callPaths()
+        else:
+            pass
 
+
+    def callPaths(self):
+        if self.lexemToken == '.':
+            self.callStruct()
+        else:
+            pass
+        if self.lexemToken in self.firstMatrAssign:
+            self.callMatrAssign()
+        else:
+            pass
 
     def callMatrAssign(self):
-        pass
+        if self.lexemToken == '[':
+            self.callCell()
+        else:
+            pass
+        if self.lexemToken in self.firstPaths:
+            self.callPaths()
+        else:
+            pass
 
 
     def callCell(self):
-        pass
+        if self.lexemToken == ('['):
+            self.getNextToken()
+            if self.typeLexema == 'NRO':
+                self.getNextToken()
+            else:
+                pass
+            if self.lexemToken == ']':
+                self.getNextToken()
+            else:
+                pass
+
+        elif self.lexemToken == ('['):
+            self.getNextToken()
+            if self.typeLexema in self.firstCallVariable:
+                self.callCallVariable()
+            else:
+                pass
+            if self.lexemToken == ']':
+                self.getNextToken()
+            else:
+                pass
+        else:
+            pass
 
     
     def callProcedureFunction(self):
@@ -1347,12 +1402,8 @@ class SyntaticAnalyzer:
 
     
     def callExpression(self):
-        if self.lexemToken in self.firstAritmeticExp:
-            self.callRelationalExp()
-        else:
-            pass
-        if self.lexemToken in self.firstLogicalOperators:
-                self.callOptLogicalExp()
+        if self.lexemToken in self.firstLogicalExp:
+                self.callLogicalExp()
         else:
             pass
 
@@ -1361,10 +1412,21 @@ class SyntaticAnalyzer:
     def callRelationalExp(self):
         if self.lexemToken in self.firstAritmeticExp:
             self.callAritmeticExp()
-        else:
-            pass
-        if self.lexemToken in self.firstOptRelExp:
-            self.callOptRelExp()
+            if self.lexemToken in self.firstOptRelExp:
+                self.callOptRelExp()
+            else:
+                pass    
+        
+        elif self.lexemToken == '(':
+            self.getNextToken
+            if self.lexemToken in self.firstLogicalExp:
+                self.callLogicalExp()
+            else:
+                pass
+            if self.getNextToken == ')':
+                self.getNextToken()
+            else:
+                pass
         else:
             pass
 
@@ -1380,48 +1442,39 @@ class SyntaticAnalyzer:
             pass
         
 
-    #regra não fatorada
     def callLogicalExp(self):
         if self.lexemToken in self.firstAritmeticExp:
             self.callRelationalExp()
-            if self.lexemToken in self.firstLogicalOperators:
-                self.getNextToken()
-            else:
-                pass
-            if self.lexemToken in self.firstLogicalExp:
-                self.callLogicalExp()
-        elif self.lexemToken == '(':
-            self.getNextToken()
-            if self.lexemToken in self.firstLogicalExp:
-                self.callLogicalExp()
-            else:
-                pass
-            if self.lexemToken == ')':
-                self.getNextToken()
+        else:
+            pass
+         if self.lexemToken in self.firstLogicalOperators:
+             self.callOptLogicalExp()
+        else:
+            pass
         
 
 
     def callOptRelExp(self):
-        if self.lexemToken in self.firstAritmeticExp:
-            self.callAritmeticExp()
-            if self.lexemToken in self.firstRelationalMorePrec:
-                self.callInequalityExp()
-            if self.lexemToken in self.firstRelationalLessPrec:
-                self.callEqualityExp()
-            else:
-                pass
-        elif self.lexemToken in self.firstRelationalLessPrec:
-            self.getNextToken()
-            if self.lexemToken in self.firstAritmeticExp:
-                self.callAritmeticExp()
-            else:
-                pass
-        elif self.lexemToken in self.firstRelationalMorePrec:
-            self.getNextToken()
-            if self.lexemToken in self.firstAritmeticExp:
-                self.callAritmeticExp()
-            else:
-                pass
+        if self.lexemToken in self.firstRelationalMorePrec:
+            self.callInequalityExp()
+        else:
+            pass
+        if self.lexemToken in self.firstRelationalLessPrec:
+            self.callEqualityExp()
+        else:
+            pass
+        # elif self.lexemToken in self.firstRelationalLessPrec:
+        #     self.getNextToken()
+        #     if self.lexemToken in self.firstAritmeticExp:
+        #         self.callAritmeticExp()
+        #     else:
+        #         pass
+        # elif self.lexemToken in self.firstRelationalMorePrec:
+        #     self.getNextToken()
+        #     if self.lexemToken in self.firstAritmeticExp:
+        #         self.callAritmeticExp()
+        #     else:
+        #         pass
 
 
 
@@ -1452,8 +1505,8 @@ class SyntaticAnalyzer:
             self.callAritmeticExp()
         else:
             pass
-        if self.lexemToken in self.firstRelationalMorePrec:
-            self.callInequalityExp()
+        if self.lexemToken in self.firstRelationalLessPrec:
+            self.callEqualityExp()
         else:
             pass
 
@@ -1461,13 +1514,22 @@ class SyntaticAnalyzer:
     def callAritmeticExp(self):
         if self.lexemToken in self.firstOpUnary:
             self.callOperation()
-        else:
-            pass
-        if self.lexemToken in self.firstPlusMinus:
-            self.getNextToken()
+            if self.lexemToken in self.firstPlusMinus:
+                self.callOpSum()
+            else:
+                pass
         elif self.lexemToken == '(':
             self.getNextToken()
-            #incompleto
+            if self.lexemToken in self.firstAritmeticExp:
+                self.callRelationalExp()
+            else: 
+                pass
+            if self.lexemToken == ')':
+            self.getNextToken()
+            else:
+                pass
+        else:
+            pass
             
 
 
@@ -1556,19 +1618,28 @@ class SyntaticAnalyzer:
             pass
 
     def callCallVariable(self):
-        if self.lexemToken in self.firstCallVariable:
-            self.getNextToken()
-        if self.lexemToken == '.':
-            self.getNextToken()
-        if self.typeLexema == 'IDE':
-            self.getNextToken()
-        if self.lexemToken in self.firstCallPath: #criar isso aqui
-            self.callPath()
+        if self.lexemToken in self.firstModifier or self.typeLexema == 'IDE':
+            self.callModifier()
         else:
             pass
+        self.lexemToken in self.firtPaths:
+            self.callPaths()
 
-    
-    def callPath(self):
+    def callModifier(self):
+        if self.lexemToken in firstModifier:
+            self.getNextToken()
+            if self.lexemToken == '.':
+                self.getNextToken()
+            else:
+                pass
+            if self.typeLexema == 'IDE':
+                self.getNextToken()
+            else:
+                pass
+        elif self.typeLexema == 'IDE':
+            self.getNextToken()
+        else:
+            pass
 
     
     def callReturn(self):
