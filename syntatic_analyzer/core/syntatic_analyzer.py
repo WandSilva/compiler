@@ -189,18 +189,19 @@ class SyntaticAnalyzer:
         self.firstLogicalOperators.append('||')
         self.firstLogicalExp.extend(self.firstAritmeticExp)
         self.firstLogicalExp.append('(')
-        self.firstRelacionalExp # Tratar este first
+        self.firstRelacionalExp.append(self.firstAritmeticExp)
+        self.firstRelacionalExp.append('(')
         self.firstReadParam.extend(self.firstCallVariable)
         self.firstMoreReadParams.append(",")
         self.firstPrintParam.append("CDC")
         self.firstPrintParam.extend(self.firstCallVariable)
         self.firstPrintParams.extend(self.firstPrintParam)
         self.firstMorePrintParams.append(",")
-        self.firstExpression.append(self.firstAritmeticExp)
+        self.firstExpression.extend(self.firstAritmeticExp)
         self.firstExpression.extend(self.firstLogicalExp)
         self.firstAssign2.append("CDC")
         self.firstAssign2.extend(self.firstCallProcedure_Function)
-        self.firstAssign2.extend(self.self.firstExpression)
+        self.firstAssign2.extend(self.firstExpression)
 
 
         # Set os follow's dos não terminais
