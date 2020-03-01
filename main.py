@@ -32,8 +32,10 @@ def main():
         save_file(output_path,tokens_list, comf_list, index+1)
         #for j in tokens_list:
         #    print(j.to_dict())
-        
-    sa = SyntaticAnalyzer()
+
+    for index in enumerate(all_tokens_list):    
+        sa = SyntaticAnalyzer(all_tokens_list[index])
+        del sa
         
         
 def lex_analyser(cleanSourceCode):

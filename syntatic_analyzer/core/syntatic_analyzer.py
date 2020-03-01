@@ -73,6 +73,10 @@ class SyntaticAnalyzer:
         self.firstStruct = []
         self.firstMatrAssign = []
         self.firstCell = []
+        self.firstParamListInFuncProc = []
+        self.firstMoreRealParam = []
+        self.firstRealParam = []
+        self.firstValueParam = []
 
         self.FollowGlobalValeus = []
         self.FollowConstValuesDeclaration = []
@@ -110,6 +114,13 @@ class SyntaticAnalyzer:
         self.FollowStruct = []
         self.FollowMatrAssign = []
         self.FollowCell = []
+        self.FollowCallVariable = []
+        self.FollowUnary_Op = []
+        self.FollowFinal_Value = []
+        self.FollowParamListInFuncProc = []
+        self.FollowRealParam = []
+        self.FollowValueParam = []
+        self.FollowMoreRealParam = []
         
         
         # Set os first's dos não terminais
@@ -145,7 +156,7 @@ class SyntaticAnalyzer:
         self.firstModifier.append("global")
         self.firstCommandIf.append("if")
         self.firstCallVariable.extend(self.firstModifier)
-        self.firstCallVariable.append("IDE") #ainda tem esse IDE?
+        # self.firstCallVariable.append("IDE") #ainda tem esse IDE?
         self.firstCommandWhile.append("while")
         self.firstCommandRead.append("read")
         self.firstCommandPrint.append("print")
@@ -202,6 +213,13 @@ class SyntaticAnalyzer:
         self.firstAssign2.append("CDC")
         self.firstAssign2.extend(self.firstCallProcedure_Function)
         self.firstAssign2.extend(self.firstExpression)
+        self.firstValueParam.extend(self.firstNumber)
+        self.firstValueParam.append("CDC")
+        self.firstValueParam.extend(self.firstBooleanos)
+        self.firstRealParam.extend(self.firstValueParam)
+        self.firstRealParam.extend(self.firstCallVariable)
+        self.firstMoreRealParam.append(",")
+        self.firstParamListInFuncProc.extend(self.firstRealParam)
 
 
         # Set os follow's dos não terminais
@@ -239,12 +257,25 @@ class SyntaticAnalyzer:
         self.FollowPrintParams.append(")")
         self.FollowPrintParam.extend(self.firstMorePrintParams)
         self.FollowMorePrintParams.extend(self.FollowPrintParams)
+        self.FollowUnary_Op # EDITAR
+        self.FollowFinal_Value # EDITAR
+        self.FollowRealParam # EDITAR
+        self.FollowCallVariable.extend(self.FollowUnary_Op)
+        self.FollowCallVariable.extend(self.FollowFinal_Value)
+        self.FollowCallVariable.extend(self.FollowMoreReadParams)
+        self.FollowCallVariable.extend(self.FollowPrintParam)
+        self.FollowCallVariable.extend(self.FollowRealParam)
+        self.FollowCallVariable.append("=")
+        self.FollowCallVariable.append("]")
+        self.FollowParamListInFuncProc.append(")")
+        self.FollowRealParam.extend(self.firstMoreRealParam)
+        self.FollowValueParam.extend(self.FollowRealParam)
+        self.FollowMoreRealParam.extend(self.FollowParamListInFuncProc)
     
 
     def letsWork(self):
         self.starSyntaticAnalyzer()
         self.writeFiles()
-        self.cleanStructs()
 
 
     def starSyntaticAnalyzer(self):
@@ -1004,7 +1035,7 @@ class SyntaticAnalyzer:
             self.callAssignment()
 
         elif self.typeLexema in self.firstCallProcedure_Function:
-            self.callProcedureFunction()            
+            self.callCallProcedureFunction()            
 
     
     def callIfStatement(self):
@@ -1329,7 +1360,7 @@ class SyntaticAnalyzer:
     
     def callAssign2(self):
         if self.lexemToken in self.firstCallProcedure_Function:
-            self.callProcedureFunction()
+            self.callCallProcedureFunction()
         elif self.lexemToken in self.firstExpression:
             self.callExpression()
         elif self.typeLexema == 'CDC':
@@ -1421,9 +1452,45 @@ class SyntaticAnalyzer:
             pass
 
     
-    def callProcedureFunction(self):
-        # Quando for chamar os parametros, chamar por: callParamListInFuncProc
-        pass
+    def callCallProcedureFunction(self):
+        if (self.typeLexema == "IDE"):
+            self.getNextToken()
+        else:
+
+        if (self.lexemToken == "("):
+            self.getNextToken()
+        else:
+            while (not ((self.lexemToken == "(") or (self.lexemToken in self.firstParamListInFuncProc) or (self.lexemToken in self.FollowCallProcedureFunction)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["("]))
+                self.getNextToken()
+            if (not self.lexemToken == "("):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
+            elif (self.lexemToken == "("):
+                self.getNextToken()
+
+        self.callParamListInFuncProc()
+
+        if (self.lexemToken == ")"):
+            self.getNextToken()
+        else:
+            while (not ((self.lexemToken == ")") or (self.lexemToken == ";") or (self.lexemToken in self.FollowCallProcedureFunction)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, [")"]))
+                self.getNextToken()
+            if (not self.lexemToken == ")"):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ")"))
+            elif (self.lexemToken == ")"):
+                self.getNextToken()
+
+        if (self.lexemToken == ";"):
+            self.getNextToken()
+        else:
+            while (not ((self.lexemToken == ";") or (self.lexemToken in self.FollowCallProcedureFunction)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, [";"]))
+                self.getNextToken()
+            if (not self.lexemToken == ";"):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ";"))
+            elif (self.lexemToken == ";"):
+                self.getNextToken()        
 
 
     def callComandsExp(self):
@@ -1432,8 +1499,7 @@ class SyntaticAnalyzer:
         elif self.lexemToken in self.firstLogicalOperators:
              self.callOptLogicalExp()
         else:
-            pass
-        
+            pass        
 
     
     def callExpression(self):
@@ -1443,7 +1509,6 @@ class SyntaticAnalyzer:
             self.callAritmeticExp()
         else:
             pass
-
 
 
     def callRelationalExp(self):
@@ -1487,8 +1552,7 @@ class SyntaticAnalyzer:
         if self.lexemToken in self.firstLogicalOperators:
              self.callOptLogicalExp()
         else:
-            pass
-        
+            pass        
 
 
     def callPosRelExp(self):
@@ -1539,6 +1603,7 @@ class SyntaticAnalyzer:
         else:
             pass
 
+
     def callInequalityExp(self):
         if self.lexemToken in self.firstRelationalMorePrec:
             self.getNextToken()
@@ -1572,8 +1637,7 @@ class SyntaticAnalyzer:
             else:
                 pass
         else:
-            pass
-            
+            pass    
 
 
     def callOperation(self):
@@ -1599,8 +1663,7 @@ class SyntaticAnalyzer:
         if self.lexemToken in self.firstPlusMinus:
             self.getNextToken()
         else:
-            pass
-        
+            pass  
         
 
     def callOpMultiplication(self):
@@ -1613,8 +1676,7 @@ class SyntaticAnalyzer:
         else:
             pass
         if self.lexemToken in self.firstTimesDivision:
-            self.callOpMultiplication()
-        
+            self.callOpMultiplication() 
 
 
     def callOpUnary(self):
@@ -1634,7 +1696,6 @@ class SyntaticAnalyzer:
             pass
 
 
-
     def callUnaryOp(self):
         if self.lexemToken in self.firstUnaryOP:
             self.getNextToken()
@@ -1649,7 +1710,6 @@ class SyntaticAnalyzer:
                 self.callCallVariable()
 
 
-
     def callFinalValue(self):
         if self.lexemToken in self.firstCallVariable:
             self.callCallVariable()
@@ -1660,13 +1720,43 @@ class SyntaticAnalyzer:
         else:
             pass
 
+
     def callCallVariable(self):
-        if self.lexemToken in self.firstModifier or self.typeLexema == 'IDE':
+        if self.lexemToken in self.firstModifier:
             self.callModifier()
         else:
-            pass
+            while (not ((self.lexemToken in self.firstModifier) or (self.lexemToken == ".") or (self.lexemToken in self.FollowCallVariable)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstModifier))
+                self.getNextToken()
+            if (not self.lexemToken in self.firstModifier):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "modificador", ""))
+            elif (self.lexemToken in self.firstModifier):
+                self.getNextToken()
+
         if self.lexemToken == '.':
-            self.callPaths()
+            self.getNextToken()
+        else:
+            while (not ((self.lexemToken == '.') or (self.typeLexema == "IDE") or (self.lexemToken in self.FollowCallVariable)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["."]))
+                self.getNextToken()
+            if (not self.lexemToken == '.'):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "."))
+            elif (self.lexemToken == '.'):
+                self.getNextToken()
+
+        if self.typeLexema == "IDE":
+            self.getNextToken()
+        else:
+            while (not ((self.typeLexema == "IDE") or (self.lexemToken in self.firstPaths) or (self.lexemToken in self.FollowCallVariable)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["identificador"]))
+                self.getNextToken()
+            if (not self.typeLexema == "IDE"):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", ""))
+            elif (self.typeLexema == "IDE"):
+                self.getNextToken()
+
+        self.callPaths()
+
 
     def callModifier(self):
         if self.lexemToken in self.firstModifier:
@@ -1706,6 +1796,7 @@ class SyntaticAnalyzer:
 
         
     def errorMessage(self, lineError, typeError, expectedValue):
+
         pass
 
     
@@ -1714,8 +1805,4 @@ class SyntaticAnalyzer:
 
 
     def writeFiles(self):
-        pass
-
-
-    def cleanStructs(self):
         pass
