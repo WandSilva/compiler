@@ -52,7 +52,7 @@ class SyntaticAnalyzer:
         self.firstParamList = []
         self.firstMoreParam = []
         self.firstVarFunctionsProcedures = []
-        self.firstExpression = []
+        self.firstExpression = [] #esta vazio
         self.firstFinalValue = []
         self.firstTimesDivision = []
         self.firstPlusMinus = []
@@ -165,7 +165,6 @@ class SyntaticAnalyzer:
         self.firstMoreParam.append(",")
         self.firstCommands.extend(self.firstCommand)
         self.firstVarFunctionsProcedures.append("var")
-        self.firstExpression
         self.firstFinalValue.extend(self.firstCallVariable)
         self.firstFinalValue.extend(self.firstBooleanos)
         self.firstFinalValue.extend(self.firstNumber)
@@ -189,7 +188,7 @@ class SyntaticAnalyzer:
         self.firstLogicalOperators.append('&&')
         self.firstLogicalOperators.append('||')
         self.firstLogicalExp.extend(self.firstAritmeticExp)
-        self.firstLogicalExp.extend('(')
+        self.firstLogicalExp.append('(')
         self.firstRelacionalExp # Tratar este first
         self.firstReadParam.extend(self.firstCallVariable)
         self.firstMoreReadParams.append(",")
@@ -197,6 +196,11 @@ class SyntaticAnalyzer:
         self.firstPrintParam.extend(self.firstCallVariable)
         self.firstPrintParams.extend(self.firstPrintParam)
         self.firstMorePrintParams.append(",")
+        self.firstExpression.append(self.firstAritmeticExp)
+        self.firstExpression.extend(self.firstLogicalExp)
+        self.firstAssign2.append("CDC")
+        self.firstAssign2.extend(self.firstCallProcedure_Function)
+        self.firstAssign2.extend(self.self.firstExpression)
 
 
         # Set os follow's dos não terminais
@@ -1302,7 +1306,24 @@ class SyntaticAnalyzer:
 
 
     def callAssignment(self):
-        pass
+        if self.lexemToken in self.firstCallVariable:
+            self.callCallVariable()
+            if self.lexemToken == '=':
+                self.getNextToken()
+            else:
+                pass
+            if (self.lexemToken in self.firstAssign2) or (self.typeLexema in self.firstAssign2):
+                self.callAssign2()
+            else:
+                pass
+            if self.lexemToken == ';':
+                self.getNextToken()
+            else:
+                pass
+        elif self.lexemToken in self.firstUnaryOP:
+            self.callUnaryOp()
+        else:
+            pass
 
     
     def callAssign2(self):
