@@ -285,16 +285,16 @@ class SyntaticAnalyzer:
         
     def getNextToken(self):
         print(self.currentToken)
-        token = self.listTokens[self.currentToken]
-        if token is not None:
+        if self.currentToken >= len(self.listTokens):
+            self.lexemToken = None
+        else:
+            token = self.listTokens[self.currentToken]
             self.lexemToken = token.lexema
             self.errorLineToken = token.linha
             self.typeLexema = token.tipo
             self.typeNRO = token.tipoNRO
             self.previousToken = self.currentToken
             self.currentToken = self.currentToken + 1
-        else:
-            self.lexemToken = None
         
     
     def lookNextToken(self):
@@ -320,7 +320,7 @@ class SyntaticAnalyzer:
                 if self.lexemToken == "{":
                     self.getNextToken()
                 else:
-                    while (not ((self.lexemToken == "{") or (self.lexemToken in self.firstConstValuesDeclaration) or (self.lexemToken in self.FollowGlobalValeus)) and (not self.lexemToken == None)):
+                    while not ((self.lexemToken == "{") or (self.lexemToken in self.firstConstValuesDeclaration) or (self.lexemToken in self.FollowGlobalValeus)) and not(self.lexemToken == None):
                         self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["{"]))
                         self.getNextToken()
                     if (not self.lexemToken == "{"):
