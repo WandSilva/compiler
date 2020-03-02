@@ -284,6 +284,7 @@ class SyntaticAnalyzer:
        
         
     def getNextToken(self):
+        print(self.currentToken)
         token = self.listTokens[self.currentToken]
         if token is not None:
             self.lexemToken = token.lexema
@@ -1456,8 +1457,9 @@ class SyntaticAnalyzer:
         if (self.typeLexema == "IDE"):
             self.getNextToken()
         else:
+            pass
 
-        if (self.lexemToken == "("):
+        if self.lexemToken == "(":
             self.getNextToken()
         else:
             while (not ((self.lexemToken == "(") or (self.lexemToken in self.firstParamListInFuncProc) or (self.lexemToken in self.FollowCallProcedureFunction)) and (not self.lexemToken == None)):
@@ -1830,9 +1832,9 @@ class SyntaticAnalyzer:
     def errorMessagePanic(self, lineError, typeLexem, valuexem, expectativeCon):
         string = ""
 
-        string = string + "Erro sintático na linha: " + lineError + ". ## " + "Palavra/caractere econtradado: " + "'" + valuexem + "'" + "[" + typeLexem + "]" + " ## " + "Palavras/caracteres esperados: "
+        string = string + "Erro sintático na linha: " + str(lineError) + ". ## " + "Palavra/caractere econtradado: " + "'" + valuexem + "'" + "[" + typeLexem + "]" + " ## " + "Palavras/caracteres esperados: "
 
-        for(aux in expectativeCon):
+        for aux in expectativeCon:
             if (aux == "IDE"):
                 if aux == expectativeCon[len(expectativeCon) - 1]:
                     string = string + "[tipo: IDENTIFICADOR]"

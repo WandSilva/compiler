@@ -1,9 +1,11 @@
 CORRECT TOKENS:
 
-No lexically correct tokens were found.
+1 IDE x
+1 REL =
+1 NRO 1
 
 
 TOKENS WITH LEXICAL ERRORS:
 
-10 CMF "casa x=1   oi * -3 x--    
-7 CoMF /* 111111
+No tokens were found with errors lexical.
+### SUCCESS! ###

@@ -19,5 +19,4 @@ CORRECT TOKENS:
 
 TOKENS WITH LEXICAL ERRORS:
 
-No tokens were found with errors lexical.
-### SUCCESS! ###
+12 CoMF /* exa869 mi processadores de 

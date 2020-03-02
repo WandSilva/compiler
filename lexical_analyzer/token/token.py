@@ -15,6 +15,7 @@ class Token:
         self.tipo = tipo
         self.hasError = False
         self.typeError = typeError
+        self.tipoNRO = None
         
         if self.tipo == "NRO":
             returnRegex = re.search("^(\\d)+$", self.lexema)

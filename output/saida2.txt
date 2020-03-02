@@ -7,5 +7,4 @@ CORRECT TOKENS:
 
 TOKENS WITH LEXICAL ERRORS:
 
-No tokens were found with errors lexical.
-### SUCCESS! ###
+2 CoMF /* kkkk

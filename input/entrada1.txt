@@ -1,9 +1,1 @@
-"casa
 x=1
-/* kkkkkk
-zzzzz */
-oi * -3
-x--
-/* 111111
-if(z>4) x=2 
-v-1
