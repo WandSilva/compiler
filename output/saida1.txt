@@ -1,8 +1,41 @@
 CORRECT TOKENS:
 
-1 IDE x
-1 REL =
-1 NRO 1
+1 PRE const
+1 DEL {
+2 PRE int
+2 IDE a
+2 REL =
+2 NRO 4
+2 DEL ;
+3 PRE boolean
+3 IDE aux1
+3 REL =
+3 PRE true
+3 DEL ;
+4 PRE real
+4 IDE numeroAux
+4 REL =
+4 NRO 4.478
+4 DEL ;
+5 PRE string
+5 IDE auxString
+5 REL =
+5 CDC "Testando"
+5 DEL ;
+6 DEL }
+7 PRE var
+7 DEL {
+8 PRE int
+8 IDE auxNum
+8 DEL ,
+8 IDE testeNum
+8 DEL ,
+8 IDE next
+8 DEL ;
+9 PRE string
+9 IDE auxString
+9 DEL ;
+10 DEL }
 
 
 TOKENS WITH LEXICAL ERRORS:

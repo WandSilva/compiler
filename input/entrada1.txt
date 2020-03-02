@@ -1,1 +1,10 @@
-x=1
+const {
+    int a = 4;
+    boolean aux1 = true;
+    real numeroAux = 4.478;
+    string auxString = "Testando";
+} 
+var {
+    int auxNum, testeNum, next;
+    string auxString;
+}
