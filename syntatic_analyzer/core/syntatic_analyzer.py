@@ -1228,7 +1228,7 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstReadParam))
                 self.getNextToken()
             if (not self.lexemToken in self.firstReadParam):
-                self.listErrors.append(self.errorMessage(self.errorLineToken, "parametros", ""))
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "parametros", "R"))
             elif (self.lexemToken in self.firstReadParam):
                 self.callReadParam()
 
@@ -1304,7 +1304,7 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstPrintParam))
                 self.getNextToken()
             if (not self.lexemToken in self.firstPrintParams):
-                self.listErrors.append(self.errorMessage(self.errorLineToken, "parametros", ""))
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "parametros", "P"))
             elif (self.lexemToken in self.firstPrintParams):
                 self.callPrintParams()
 
@@ -1320,7 +1320,7 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstPrintParam))
                 self.getNextToken()
             if (not self.lexemToken in self.firstPrintParam):
-                self.listErrors.append(self.errorMessage(self.errorLineToken, "parametros", ""))
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "parametros", "P"))
             elif (self.lexemToken in self.firstPrintParam):
                 self.callReadParam()   
 
@@ -1796,12 +1796,68 @@ class SyntaticAnalyzer:
 
         
     def errorMessage(self, lineError, typeError, expectedValue):
+        string = ""
+        if(typeError == "palavra"):
+            string = string + "Erro sintático na linha: " + lineError + ". ## " + "Palavra esperada e não encontrada: " + "'" + expectedValue + "'."
+        
+        elif(typeError == "simbolo"):
+            string = string + "Erro sintático na linha: " + lineError + ". ## " + "Simbolo esperado e não encontrado: " + "'" + expectedValue + "'."
+        
+        elif(typeError == "identificador"):
+            string = string + "Erro sintático na linha: " + lineError + ". ## " + "Tipo 'identitificador[IDE]' esperado e não encontrado."
 
-        pass
+        elif(typeError == "tipo"):
+            string = string + "Erro sintático na linha: " + lineError + ". ## " + "Palavra esperada e não encontrada: " +  "'int', 'real', 'boolean' ou 'string'."
+        
+        elif(typeError == "parametros"):
+            if (expectedValue == "R"):
+                string = string + "Erro sintático na linha: " + lineError + ". ## " + "Palavra esperada e não encontrada: " +  "'local' ou 'global'."    
+            elif (expectedValue == "P"):
+                string = string + "Erro sintático na linha: " + lineError + ". ## " + "Palavra esperada e não encontrada: " +  "[tipo: CADEIA DE CARACTERES], 'local' ou 'global'."
+
+        elif(typeError == "modificador"):
+            string = string + "Erro sintático na linha: " + lineError + ". ## " + "Palavra esperada e não encontrada: " +  "'local' ou 'global'."
+
+        elif(typeError == "valor"):
+            string = string + "Erro sintático na linha: " + lineError + ". ## " + "Valor esperado e não encontrado: " +  "[tipo: NUMERO], [tipo: CADEIA DE CARACTERES], 'true' ou 'false'."
+
+        elif(typeError == "NRO_I"):    
+            string = string + "Erro sintático na linha: " + lineError + ". ## " + "Valor esperado e não encontrado: " +  "[tipo: NUMERO INTEIRO]."
+
+        return string
 
     
-    def errorMessagePanic(self, lineError, typeLexem, valeuLexem, expectativeCon):
-        pass
+    def errorMessagePanic(self, lineError, typeLexem, valuexem, expectativeCon):
+        string = ""
+
+        string = string + "Erro sintático na linha: " + lineError + ". ## " + "Palavra/caractere econtradado: " + "'" + valuexem + "'" + "[" + typeLexem + "]" + " ## " + "Palavras/caracteres esperados: "
+
+        for(aux in expectativeCon):
+            if (aux == "IDE"):
+                if aux == expectativeCon[len(expectativeCon) - 1]:
+                    string = string + "[tipo: IDENTIFICADOR]"
+                else:
+                    string = string + "[tipo: IDENTIFICADOR]" + ", "
+
+            elif (aux == "CDC"):
+                if aux == expectativeCon[len(expectativeCon) - 1]:
+                    string = string + "[tipo: CADEIA DE CARACTERE]"
+                else:
+                    string = string + "[tipo: CADEIA DE CARACTERE]" + ", "
+
+            elif (aux == "NRO"):
+                if aux == expectativeCon[len(expectativeCon) - 1]:
+                    string = string + "[tipo: NUMERO]"
+                else:
+                    string = string + "[tipo: NUMERO]" + ", "
+            
+            else:
+                if aux == expectativeCon[len(expectativeCon) - 1]:
+                    string = string + "'" + aux + "'"
+                else:
+                    string = string + "'" + aux + "'" + ", "
+
+        return string
 
 
     def writeFiles(self):

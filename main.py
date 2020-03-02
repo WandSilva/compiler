@@ -35,6 +35,7 @@ def main():
 
     for index in enumerate(all_tokens_list):    
         sa = SyntaticAnalyzer(all_tokens_list[index])
+        sa.letsWork()
         del sa
         
         
