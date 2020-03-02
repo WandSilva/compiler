@@ -903,6 +903,7 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
         self.callVarFunctionsProcedures()
+        
         if self.lexemToken in self.firstCommand or self.typeLexema in self.firstCommand:
             self.callCommands()
 
@@ -1015,7 +1016,8 @@ class SyntaticAnalyzer:
     def callCommands(self):
         if self.lexemToken in self.firstCommand or self.typeLexema in self.firstCommand:
             self.callCommand()
-            self.callCommands()
+            if self.lexemToken in self.firstCommands:
+                self.callCommands()
 
         else:
             while (not ((self.lexemToken in self.firstCommand) or (self.typeLexema in self.firstCommand) or (self.lexemToken in self.FollowCommand)) and (not self.lexemToken == None)):
@@ -1103,7 +1105,8 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "{"):
                 self.getNextToken()
 
-        self.callCommands()
+        if self.lexemToken in self.firstCommand or self.typeLexema in self.firstCommand:
+            self.callCommands()
         
         if self.lexemToken == '}':
             self.getNextToken()
@@ -1115,7 +1118,26 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "}"))
             elif (self.lexemToken == "}"):
                 self.getNextToken()
+        
+        if self.lexemToken == "else":
+            self.callElseStatement()
 
+    
+    def callElseStatement(self):
+        self.getNextToken()
+        
+        if self.lexemToken == "{":
+            self.getNextToken()
+        else:
+          pass  
+        
+        if self.lexemToken in self.firstCommands or self.typeLexema in self.firstCommand:
+            self.callCommands()
+            
+        if self.lexemToken == "}":
+            self.getNextToken()
+        else:
+          pass  
     
     def callWhileStatement(self):
         if self.lexemToken in self.firstCommandWhile:
@@ -1164,7 +1186,8 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "{"):
                 self.getNextToken()
 
-        self.callCommands()
+        if self.lexemToken in self.firstCommand or self.typeLexema in self.firstCommand:
+            self.callCommands()
         
         if self.lexemToken == '}':
             self.getNextToken
@@ -1305,7 +1328,9 @@ class SyntaticAnalyzer:
     def callPrintParams(self):
         if self.lexemToken in self.firstPrintParams:
             self.callPrintParam()
-            self.callMorePrintParams()
+            
+            if self.lexemToken in self.firstMorePrintParams:
+                self.callMorePrintParams()
         else:
             while (not ((self.lexemToken in self.firstPrintParams) or (self.lexemToken in self.FollowPrintParams)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstPrintParam))
