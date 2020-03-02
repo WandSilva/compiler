@@ -8,3 +8,4 @@ var {
     int auxNum, testeNum, next;
     string auxString;
 }
+

@@ -595,8 +595,8 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", ""))
             elif (self.typeLexema == "IDE"):
                 self.getNextToken()
-        
-        self.callArrayVarification()
+        if self.lexemToken in self.firstArrayVerification:
+            self.callArrayVarification()
         
             
     def callArrayVarification(self): 
@@ -785,10 +785,10 @@ class SyntaticAnalyzer:
             elif (self.lexemToken in self.firstType):
                 self.getNextToken()
 
-        if self.typeLexema == "IDE":
+        if self.typeLexema == "IDE" or self.lexemToken == "start":
             self.getNextToken()
         else:
-            while (not ((self.typeLexema == "IDE") or (self.lexemToken == "(") or (self.lexemToken in self.FollowFunction)) and (not self.lexemToken == None)):
+            while (not ((self.typeLexema == "IDE" or self.lexemToken == "start") or (self.lexemToken == "(") or (self.lexemToken in self.FollowFunction)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["IDE"]))
                 self.getNextToken()
             if (not self.typeLexema == "IDE"):
@@ -832,8 +832,11 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
         self.callVarFunctionsProcedures()
-        self.callCommands()
-        self.callReturn()
+        if self.lexemToken in self.firstCommand or self.typeLexema in self.firstCommand:
+            self.callCommands()
+           
+        if self.lexemToken in self.firstReturn:  
+            self.callReturn()
 
         if self.lexemToken == "}":
             self.getNextToken()
@@ -1832,7 +1835,7 @@ class SyntaticAnalyzer:
     def errorMessagePanic(self, lineError, typeLexem, valuexem, expectativeCon):
         string = ""
 
-        string = string + "Erro sintático na linha: " + str(lineError+1) + ". ## " + "Palavra/caractere econtradado: " + "'" + valuexem + "'" + "[" + typeLexem + "]" + " ## " + "Palavras/caracteres esperados: "
+        string = string + "Erro sintático na linha: " + str(lineError+1) + ". ## " + "Palavra/caractere encontrado: " + "'" + valuexem + "'" + "[" + typeLexem + "]" + " ## " + "Palavras/caracteres esperados: "
 
         for aux in expectativeCon:
             if (aux == "IDE"):
