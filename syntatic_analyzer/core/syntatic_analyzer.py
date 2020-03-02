@@ -284,16 +284,17 @@ class SyntaticAnalyzer:
        
         
     def getNextToken(self):
-        token = self.listTokens[self.currentToken]
-        if token is not None:
+        print(self.currentToken)
+        if self.currentToken >= len(self.listTokens):
+            self.lexemToken = None
+        else:
+            token = self.listTokens[self.currentToken]
             self.lexemToken = token.lexema
             self.errorLineToken = token.linha
             self.typeLexema = token.tipo
             self.typeNRO = token.tipoNRO
             self.previousToken = self.currentToken
             self.currentToken = self.currentToken + 1
-        else:
-            self.lexemToken = None
         
     
     def lookNextToken(self):
@@ -319,7 +320,7 @@ class SyntaticAnalyzer:
                 if self.lexemToken == "{":
                     self.getNextToken()
                 else:
-                    while (not ((self.lexemToken == "{") or (self.lexemToken in self.firstConstValuesDeclaration) or (self.lexemToken in self.FollowGlobalValeus)) and (not self.lexemToken == None)):
+                    while not ((self.lexemToken == "{") or (self.lexemToken in self.firstConstValuesDeclaration) or (self.lexemToken in self.FollowGlobalValeus)) and not(self.lexemToken == None):
                         self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["{"]))
                         self.getNextToken()
                     if (not self.lexemToken == "{"):
@@ -1456,8 +1457,9 @@ class SyntaticAnalyzer:
         if (self.typeLexema == "IDE"):
             self.getNextToken()
         else:
+            pass
 
-        if (self.lexemToken == "("):
+        if self.lexemToken == "(":
             self.getNextToken()
         else:
             while (not ((self.lexemToken == "(") or (self.lexemToken in self.firstParamListInFuncProc) or (self.lexemToken in self.FollowCallProcedureFunction)) and (not self.lexemToken == None)):
@@ -1830,9 +1832,9 @@ class SyntaticAnalyzer:
     def errorMessagePanic(self, lineError, typeLexem, valuexem, expectativeCon):
         string = ""
 
-        string = string + "Erro sintático na linha: " + lineError + ". ## " + "Palavra/caractere econtradado: " + "'" + valuexem + "'" + "[" + typeLexem + "]" + " ## " + "Palavras/caracteres esperados: "
+        string = string + "Erro sintático na linha: " + str(lineError) + ". ## " + "Palavra/caractere econtradado: " + "'" + valuexem + "'" + "[" + typeLexem + "]" + " ## " + "Palavras/caracteres esperados: "
 
-        for(aux in expectativeCon):
+        for aux in expectativeCon:
             if (aux == "IDE"):
                 if aux == expectativeCon[len(expectativeCon) - 1]:
                     string = string + "[tipo: IDENTIFICADOR]"
