@@ -9,3 +9,8 @@ var {
     string auxString;
 }
 
+function int start(){
+    var{
+    }
+    print("aloisio");
+}

@@ -36,6 +36,21 @@ CORRECT TOKENS:
 9 IDE auxString
 9 DEL ;
 10 DEL }
+12 PRE function
+12 PRE int
+12 PRE start
+12 DEL (
+12 DEL )
+12 DEL {
+13 PRE var
+13 DEL {
+14 DEL }
+15 PRE print
+15 DEL (
+15 CDC "aloisio"
+15 DEL )
+15 DEL ;
+16 DEL }
 
 
 TOKENS WITH LEXICAL ERRORS:

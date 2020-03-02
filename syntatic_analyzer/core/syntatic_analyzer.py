@@ -220,6 +220,11 @@ class SyntaticAnalyzer:
         self.firstRealParam.extend(self.firstCallVariable)
         self.firstMoreRealParam.append(",")
         self.firstParamListInFuncProc.extend(self.firstRealParam)
+        self.firstStruct.append(".")
+        self.firstCell.append("[")
+        self.firstMatrAssign.extend(self.firstCell)
+        self.firstPaths.extend(self.firstStruct)
+        self.firstPaths.extend(self.firstMatrAssign)
 
 
         # Set os follow's dos não terminais
@@ -1176,7 +1181,7 @@ class SyntaticAnalyzer:
                 self.getNextToken()
         
         if self.lexemToken == '{':
-            self.getNextToken
+            self.getNextToken()
         else: 
             while (not ((self.lexemToken == "{") or (self.lexemToken in self.firstCommands) or (self.lexemToken in self.FollowCommandWhile)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["{"]))
@@ -1190,7 +1195,7 @@ class SyntaticAnalyzer:
             self.callCommands()
         
         if self.lexemToken == '}':
-            self.getNextToken
+            self.getNextToken()
         else:
             while (not ((self.lexemToken == "}") or (self.lexemToken in self.FollowCommandWhile)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["}"]))
@@ -1252,7 +1257,8 @@ class SyntaticAnalyzer:
     def callReadParam(self):
         if self.lexemToken in self.firstReadParam:
             self.callCallVariable()
-            self.callMoreReadParams()
+            if self.lexemToken in self.firstMoreReadParams:
+                self.callMoreReadParams()
         else:
             while (not ((self.lexemToken in self.firstReadParam) or (self.lexemToken in self.FollowReadParam)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstReadParam))
@@ -1326,7 +1332,7 @@ class SyntaticAnalyzer:
 
 
     def callPrintParams(self):
-        if self.lexemToken in self.firstPrintParams:
+        if self.lexemToken in self.firstPrintParams or self.typeLexema in self.firstPrintParams:
             self.callPrintParam()
             
             if self.lexemToken in self.firstMorePrintParams:
@@ -1440,12 +1446,10 @@ class SyntaticAnalyzer:
     def callPaths(self):
         if self.lexemToken == '.':
             self.callStruct()
-        else:
-            pass
-        if self.lexemToken in self.firstMatrAssign:
+        
+        elif self.lexemToken in self.firstMatrAssign:
             self.callMatrAssign()
-        else:
-            pass
+        
 
     def callMatrAssign(self):
         if self.lexemToken == '[':
@@ -1787,8 +1791,8 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", ""))
             elif (self.typeLexema == "IDE"):
                 self.getNextToken()
-
-        self.callPaths()
+        if self.lexemToken in self.firstPaths:
+            self.callPaths()
 
 
     def callModifier(self):
@@ -1798,10 +1802,12 @@ class SyntaticAnalyzer:
                 self.getNextToken()
             else:
                 pass
+            
             if self.typeLexema == 'IDE':
                 self.getNextToken()
             else:
                 pass
+            
         elif self.typeLexema == 'IDE':
             self.getNextToken()
         else:
