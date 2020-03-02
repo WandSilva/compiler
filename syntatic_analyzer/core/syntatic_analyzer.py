@@ -806,8 +806,9 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
             elif (self.lexemToken == "("):
                 self.getNextToken()
-
-        self.callParamList()
+        
+        if self.lexemToken in self.firstParamList:
+            self.callParamList()
 
         if self.lexemToken == ")":
             self.getNextToken()
@@ -876,7 +877,8 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "("):
                 self.getNextToken()
 
-        self.callParamList()
+        if self.lexemToken in self.firstParamList:
+            self.callParamList()
 
         if self.lexemToken == ")":
             self.getNextToken()
@@ -901,8 +903,8 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
         self.callVarFunctionsProcedures()
-        self.callCommands()
-        self.callReturn()
+        if self.lexemToken in self.firstCommand or self.typeLexema in self.firstCommand:
+            self.callCommands()
 
         if self.lexemToken == "}":
             self.getNextToken()
@@ -941,8 +943,9 @@ class SyntaticAnalyzer:
                     self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", ""))
                 elif (self.typeLexema == "IDE"):
                     self.getNextToken()
-
-            self.callMoreParam()
+            
+            if self.lexemToken in self.firstMoreParam:
+                self.callMoreParam()
 
         else:
             while (not ((self.lexemToken in self.firstType) or (self.lexemToken in self.FollowParamList)) and (not self.lexemToken == None)):
