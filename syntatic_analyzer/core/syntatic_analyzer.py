@@ -1800,31 +1800,31 @@ class SyntaticAnalyzer:
     def errorMessage(self, lineError, typeError, expectedValue):
         string = ""
         if(typeError == "palavra"):
-            string = string + "Erro sintático na linha: " + str(lineError) + ". ## " + "Palavra esperada e não encontrada: " + "'" + expectedValue + "'."
+            string = string + "Erro sintático na linha: " + str(lineError+1) + ". ## " + "Palavra esperada e não encontrada: " + "'" + expectedValue + "'."
         
         elif(typeError == "simbolo"):
-            string = string + "Erro sintático na linha: " + str(lineError) + ". ## " + "Simbolo esperado e não encontrado: " + "'" + expectedValue + "'."
+            string = string + "Erro sintático na linha: " + str(lineError+1) + ". ## " + "Simbolo esperado e não encontrado: " + "'" + expectedValue + "'."
         
         elif(typeError == "identificador"):
-            string = string + "Erro sintático na linha: " + str(lineError) + ". ## " + "Tipo 'identitificador[IDE]' esperado e não encontrado."
+            string = string + "Erro sintático na linha: " + str(lineError+1) + ". ## " + "Tipo 'identitificador[IDE]' esperado e não encontrado."
 
         elif(typeError == "tipo"):
-            string = string + "Erro sintático na linha: " + str(lineError) + ". ## " + "Palavra esperada e não encontrada: " +  "'int', 'real', 'boolean' ou 'string'."
+            string = string + "Erro sintático na linha: " + str(lineError+1) + ". ## " + "Palavra esperada e não encontrada: " +  "'int', 'real', 'boolean' ou 'string'."
         
         elif(typeError == "parametros"):
             if (expectedValue == "R"):
-                string = string + "Erro sintático na linha: " + str(lineError) + ". ## " + "Palavra esperada e não encontrada: " +  "'local' ou 'global'."    
+                string = string + "Erro sintático na linha: " + str(lineError+1) + ". ## " + "Palavra esperada e não encontrada: " +  "'local' ou 'global'."    
             elif (expectedValue == "P"):
-                string = string + "Erro sintático na linha: " + str(lineError) + ". ## " + "Palavra esperada e não encontrada: " +  "[tipo: CADEIA DE CARACTERES], 'local' ou 'global'."
+                string = string + "Erro sintático na linha: " + str(lineError+1) + ". ## " + "Palavra esperada e não encontrada: " +  "[tipo: CADEIA DE CARACTERES], 'local' ou 'global'."
 
         elif(typeError == "modificador"):
-            string = string + "Erro sintático na linha: " + str(lineError) + ". ## " + "Palavra esperada e não encontrada: " +  "'local' ou 'global'."
+            string = string + "Erro sintático na linha: " + str(lineError+1) + ". ## " + "Palavra esperada e não encontrada: " +  "'local' ou 'global'."
 
         elif(typeError == "valor"):
-            string = string + "Erro sintático na linha: " + str(lineError) + ". ## " + "Valor esperado e não encontrado: " +  "[tipo: NUMERO], [tipo: CADEIA DE CARACTERES], 'true' ou 'false'."
+            string = string + "Erro sintático na linha: " + str(lineError+1) + ". ## " + "Valor esperado e não encontrado: " +  "[tipo: NUMERO], [tipo: CADEIA DE CARACTERES], 'true' ou 'false'."
 
         elif(typeError == "NRO_I"):    
-            string = string + "Erro sintático na linha: " + str(lineError) + ". ## " + "Valor esperado e não encontrado: " +  "[tipo: NUMERO INTEIRO]."
+            string = string + "Erro sintático na linha: " + str(lineError+1) + ". ## " + "Valor esperado e não encontrado: " +  "[tipo: NUMERO INTEIRO]."
 
         return string
 
@@ -1832,7 +1832,7 @@ class SyntaticAnalyzer:
     def errorMessagePanic(self, lineError, typeLexem, valuexem, expectativeCon):
         string = ""
 
-        string = string + "Erro sintático na linha: " + str(lineError) + ". ## " + "Palavra/caractere econtradado: " + "'" + valuexem + "'" + "[" + typeLexem + "]" + " ## " + "Palavras/caracteres esperados: "
+        string = string + "Erro sintático na linha: " + str(lineError+1) + ". ## " + "Palavra/caractere econtradado: " + "'" + valuexem + "'" + "[" + typeLexem + "]" + " ## " + "Palavras/caracteres esperados: "
 
         for aux in expectativeCon:
             if (aux == "IDE"):
