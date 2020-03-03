@@ -2,11 +2,11 @@
 ## Discentes: Aloisio Junior e Wanderson Silva
 
 
-## Problema 1 -  Uma competição misteriosa
-Este é o repositório contendo os arquivos do projeto do Problema 1 da disciplina EXA869 - MI - Processadores de Linguagem de Programação, semestre 2019.2, do curso de Engenharia de Computação da Universidade Estadual de Feira de Santana (UEFS).
+## Problema 3 -  Competir é mais importante do que ganhar, mas se não ganhar lhe dou um...
+Este é o repositório contendo os arquivos do projeto do Problema 3 da disciplina EXA869 - MI - Processadores de Linguagem de Programação, semestre 2019.2, do curso de Engenharia de Computação da Universidade Estadual de Feira de Santana (UEFS).
 
 ### Objetivos:
-Desenvolver um analisador léxico para uma linguagem que será apresentada em etapas. Esta etapa foi desenvolvida seguindo a tabela disponibilizada aos discentes contendo a estrutura léxica da linguagem.
+Desenvolver um analisador sintático descendente preditivo recursivo de acordo com a gramática construída no Problema 2.
 
 ### Linguagem de programação adotada para o desenvolvimento:
 Python.
