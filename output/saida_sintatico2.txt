@@ -1,0 +1,2 @@
+
+Erro sintático na linha: 19. ## Palavra/caractere encontrado: 'reojfqeorigb2co4igj2b'[IDE] ## Palavras/caracteres esperados: ')'

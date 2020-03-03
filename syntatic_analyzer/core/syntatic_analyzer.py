@@ -1893,3 +1893,6 @@ class SyntaticAnalyzer:
 
     def teste(self):
         print(self.listErrors)
+
+    def get_output_list(self):
+        return self.listErrors

@@ -37,6 +37,7 @@ def main():
         sa = SyntaticAnalyzer(all_tokens_list[index[0]])
         sa.letsWork()
         sa.teste()
+        save_lexical_file(output_path, sa.get_output_list(), index[0])
         del sa
         
         
@@ -96,6 +97,13 @@ def clear_output(path):
         if os.path.exists(path+file):
             os.remove(path+file)
 
+def save_lexical_file(path, output_list, index):
+    output_file = path+"saida_sintatico"+str(index+1)+".txt"
+    text = ''
+    for line in output_list:
+        text = text + '\n' + line
+    with open(output_file, 'w') as arquivo:
+        arquivo.write(text)
 
 if __name__ == "__main__":
     main()
