@@ -62,7 +62,9 @@ CORRECT TOKENS:
 17 DEL .
 17 IDE a
 17 REL =
-17 NRO 3
+17 PRE local
+17 DEL .
+17 IDE estrela
 17 DEL ;
 19 PRE while
 19 DEL (

@@ -211,7 +211,7 @@ class SyntaticAnalyzer:
         self.firstExpression.extend(self.firstAritmeticExp)
         self.firstExpression.extend(self.firstLogicalExp)
         self.firstAssign2.append("CDC")
-        #self.firstAssign2.append("NRO") #*
+        self.firstAssign2.append("NRO") #*
         self.firstAssign2.extend(self.firstCallProcedure_Function)
         self.firstAssign2.extend(self.firstExpression)
         self.firstValueParam.extend(self.firstNumber)
