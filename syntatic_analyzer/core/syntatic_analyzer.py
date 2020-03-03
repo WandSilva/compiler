@@ -137,6 +137,7 @@ class SyntaticAnalyzer:
         self.firstBooleanos.append("false")
         self.firstValueConst.append("NRO")
         self.firstValueConst.append("CDC")
+        self.firstNumber.append("NRO")
         self.firstValueConst.extend(self.firstBooleanos)
         self.firstVarValuesDeclaration.extend(self.firstType)
         self.firstVarValuesDeclaration.append("typedef")
@@ -290,7 +291,6 @@ class SyntaticAnalyzer:
        
         
     def getNextToken(self):
-        print(self.currentToken)
         if self.currentToken >= len(self.listTokens):
             self.lexemToken = None
         else:
@@ -630,7 +630,8 @@ class SyntaticAnalyzer:
                 elif (self.lexemToken == "]"):
                     self.getNextToken()
             
-            self.callArrayVarification()
+            if self.lexemToken in self.firstArrayVerification:
+                self.callArrayVarification()
 
         else:
             while(not((self.lexemToken in self.firstArrayVerification) or (self.lexemToken in self.FollowArrayVerification)) and (not self.lexemToken == None)):

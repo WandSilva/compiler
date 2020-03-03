@@ -5,7 +5,7 @@ const {
     string auxString = "Testando";
 } 
 var {
-    int auxNum, testeNum, next;
+    int auxNum[3], testeNum, next;
     string auxString;
 }
 
@@ -13,12 +13,21 @@ function int start(){
     var{
     }
     print("aloisio");
-    local.wand = a();
+    local.wand[1] = a();
     local.a = local.estrela;
     
-    while (){}
+    while (){
+        local.anta = "aluno";
+    }
     
-    if() then {} else{}
+    if() then {
+        global.carro = "fusca";
+        while (){
+            local.pc = "asus";
+        }
+    } else{
+        
+    }
     
     read(local.a);
     
