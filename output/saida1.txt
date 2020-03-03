@@ -50,7 +50,41 @@ CORRECT TOKENS:
 15 CDC "aloisio"
 15 DEL )
 15 DEL ;
-16 DEL }
+16 PRE local
+16 DEL .
+16 IDE wand
+16 REL =
+16 IDE a
+16 DEL (
+16 DEL )
+16 DEL ;
+18 PRE while
+18 DEL (
+18 DEL )
+18 DEL {
+18 DEL }
+20 PRE if
+20 DEL (
+20 DEL )
+20 PRE then
+20 DEL {
+20 DEL }
+20 PRE else
+20 DEL {
+20 DEL }
+22 PRE read
+22 DEL (
+22 PRE local
+22 DEL .
+22 IDE a
+22 DEL )
+22 DEL ;
+24 PRE return
+24 PRE local
+24 DEL .
+24 IDE wand
+24 DEL ;
+25 DEL }
 
 
 TOKENS WITH LEXICAL ERRORS:

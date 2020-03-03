@@ -13,4 +13,13 @@ function int start(){
     var{
     }
     print("aloisio");
+    local.wand = a();
+    
+    while (){}
+    
+    if() then {} else{}
+    
+    read(local.a);
+    
+    return local.wand;
 }
