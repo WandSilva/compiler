@@ -290,7 +290,6 @@ class SyntaticAnalyzer:
        
         
     def getNextToken(self):
-        print(self.currentToken)
         if self.currentToken >= len(self.listTokens):
             self.lexemToken = None
         else:
