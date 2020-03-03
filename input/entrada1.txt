@@ -14,6 +14,7 @@ function int start(){
     }
     print("aloisio");
     local.wand = a();
+    local.a = 3;
     
     while (){}
     

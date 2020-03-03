@@ -1418,6 +1418,8 @@ class SyntaticAnalyzer:
             self.callExpression()
         elif self.typeLexema == 'CDC':
             self.getNextToken()
+        elif self.typeLexema == "NRO":
+            self.getNextToken()
         else:
             pass
 
