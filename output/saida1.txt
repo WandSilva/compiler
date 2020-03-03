@@ -70,7 +70,6 @@ CORRECT TOKENS:
 17 DEL ;
 19 PRE while
 19 DEL (
-19 IDE reojfqeorigb2co4igj2b
 19 DEL )
 19 DEL {
 20 PRE local

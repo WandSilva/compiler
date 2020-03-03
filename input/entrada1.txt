@@ -16,7 +16,7 @@ function int start(){
     local.wand[1] = a();
     local.a = local.estrela;
     
-    while (reojfqeorigb2co4igj2b){
+    while (){
         local.anta = "aluno";
     }
     
