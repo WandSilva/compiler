@@ -4,11 +4,16 @@
 #   ANALISADOR SINTÁTICO
 
 import re
+from semantic_analyzer.semantic import semantic_analyzer
 
 
 class SyntaticAnalyzer:
     
     def __init__(self, listTokens):
+        semantic = semantic_analyzer()
+        semantic.add_var_scope('test')
+        semantic.add_var('test', 'int', 'idade', 23)
+        print(semantic.contains_var('test', 'c'))
         self.currentToken = 0
         self.previousToken = 0
         self.numberFile = 0
