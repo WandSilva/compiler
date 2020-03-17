@@ -11,9 +11,6 @@ class SyntaticAnalyzer:
     
     def __init__(self, listTokens):
         self.semantic = semantic_analyzer()
-        self.semantic.add_var_scope('test')
-        self.semantic.add_var('test', 'int', 'idade', 23)
-        print(semantic.contains_var('test', 'c'))
         self.currentToken = 0
         self.previousToken = 0
         self.numberFile = 0
@@ -753,7 +750,7 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "{"):
                 self.getNextToken()
 
-        self.callVarValuesDeclaration(escopo)
+        self.callVarValuesDeclaration("ALTERAR") #ALTERAR POSTERIORMENTE
 
         if self.lexemToken == "}":
             self.getNextToken()
@@ -1023,7 +1020,7 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "{"):
                 self.getNextToken()
         
-        self.callVarValuesDeclaration(escopo)
+        self.callVarValuesDeclaration("ALTERAR") #ALTERAR DEPOIS
 
         if self.lexemToken == "}":
             self.getNextToken()
