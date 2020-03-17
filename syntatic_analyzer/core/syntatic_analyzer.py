@@ -10,9 +10,9 @@ from semantic_analyzer.semantic import semantic_analyzer
 class SyntaticAnalyzer:
     
     def __init__(self, listTokens):
-        semantic = semantic_analyzer()
-        semantic.add_var_scope('test')
-        semantic.add_var('test', 'int', 'idade', 23)
+        self.semantic = semantic_analyzer()
+        self.semantic.add_var_scope('test')
+        self.semantic.add_var('test', 'int', 'idade', 23)
         print(semantic.contains_var('test', 'c'))
         self.currentToken = 0
         self.previousToken = 0
@@ -326,6 +326,7 @@ class SyntaticAnalyzer:
     def callGlobalValues(self):
         if self.lexemToken in self.firstGlobalValues:
             if self.lexemToken == "const":
+                self.semantic.add_var_scope("global_const")
                 self.getNextToken()
                 
                 if self.lexemToken == "{":
@@ -339,7 +340,7 @@ class SyntaticAnalyzer:
                     elif (self.lexemToken == "{"):
                         self.getNextToken()
                 
-                self.callConstValuesDeclaration()
+                self.callConstValuesDeclaration("global_const")
                 
                 if self.lexemToken == "}":
                     self.getNextToken()
@@ -353,6 +354,7 @@ class SyntaticAnalyzer:
                         self.getNextToken()
                 
                 if self.lexemToken == "var":
+                    self.semantic.add_var_scope("global_var")
                     self.getNextToken()
                 else:
                     while (not ((self.lexemToken == "var") or (self.lexemToken == "{") or (self.lexemToken in self.FollowGlobalValeus)) and (not self.lexemToken == None)):
@@ -374,7 +376,7 @@ class SyntaticAnalyzer:
                     elif (self.lexemToken == "{"):
                         self.getNextToken()
                     
-                self.callVarValuesDeclaration()
+                self.callVarValuesDeclaration("global_var")
                 
                 if self.lexemToken == "}":
                     self.getNextToken()
@@ -388,6 +390,7 @@ class SyntaticAnalyzer:
                         self.getNextToken()
                     
             elif self.lexemToken == "var":
+                self.semantic.add_var_scope("global_var")
                 self.getNextToken()
                 
                 if self.lexemToken == "{":
@@ -401,7 +404,7 @@ class SyntaticAnalyzer:
                     elif (self.lexemToken == "{"):
                         self.getNextToken()
                 
-                self.callVarValuesDeclaration()
+                self.callVarValuesDeclaration("global_var")
                 
                 if self.lexemToken == "}":
                     self.getNextToken()
@@ -415,6 +418,7 @@ class SyntaticAnalyzer:
                         self.getNextToken()
                 
                 if self.lexemToken == "const":
+                    self.semantic.add_var_scope("global_const")
                     self.getNextToken()
                 else:
                     while (not ((self.lexemToken == "const") or (self.lexemToken == "{") or (self.lexemToken in self.FollowGlobalValeus)) and (not self.lexemToken == None)):
@@ -436,7 +440,7 @@ class SyntaticAnalyzer:
                     elif (self.lexemToken == "{"):
                         self.getNextToken()
                 
-                self.callConstValuesDeclaration()
+                self.callConstValuesDeclaration("global_const")
                 
                 if self.lexemToken == "}":
                     self.getNextToken()
@@ -459,12 +463,13 @@ class SyntaticAnalyzer:
                 pass
                 
     
-    def callConstValuesDeclaration(self):
+    def callConstValuesDeclaration(self, escopo):
         if self.lexemToken in self.firstConstValuesDeclaration:
+            typeConst = self.lexemToken
             self.getNextToken()
             
-            self.callConstValuesAttribution()
-            self.callConstMoreAttributions()
+            self.callConstValuesAttribution(escopo, typeConst)
+            self.callConstMoreAttributions(escopo, typeConst)
             
             if self.lexemToken == ";":
                 self.getNextToken()
@@ -477,7 +482,7 @@ class SyntaticAnalyzer:
                 elif (self.lexemToken == ";"):
                     self.getNextToken()
 
-            self.callConstValuesDeclaration()
+            self.callConstValuesDeclaration(escopo)
 
         else:
             while (not ((self.lexemToken in self.firstConstValuesDeclaration) or (self.lexemToken in self.FollowConstValuesDeclaration)) and (not self.lexemToken == None)):
@@ -485,13 +490,14 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
             if self.lexemToken in self.firstConstValuesDeclaration:
-                self.callConstValuesDeclaration()
+                self.callConstValuesDeclaration(escopo)
             else:
                 pass
  
         
-    def callConstValuesAttribution(self):
+    def callConstValuesAttribution(self, escopo, typeConst):
         if self.typeLexema in self.firstConstValuesAttribution:
+            nameConst = self.lexemToken
             self.getNextToken()
         else:
             while (not ((self.typeLexema == "IDE") or (self.lexemToken == "=") or (self.lexemToken in self.FollowConstValuesAttribution)) and (not self.lexemToken == None)):
@@ -514,7 +520,10 @@ class SyntaticAnalyzer:
                 self.getNextToken()
             
         if (self.lexemToken in self.firstValueConst or self.typeLexema in self.firstValueConst):
+            valorConst = self.lexemToken
             self.getNextToken()
+            self.semantic.add_var(escopo, typeConst, nameConst, valorConst)
+
         else:
             while(not((self.lexemToken in self.firstValueConst or self.typeLexema in self.firstValueConst) or (self.lexemToken in self.FollowConstValuesAttribution)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstValueConst))
@@ -525,7 +534,7 @@ class SyntaticAnalyzer:
                 self.getNextToken()  
     
     
-    def callConstMoreAttributions(self):
+    def callConstMoreAttributions(self, escopo, typeConst):
         if self.lexemToken in self.firstVarMoreAttributions:
             self.getNextToken()
             self.callConstValuesAttribution
@@ -536,15 +545,17 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.FollowConstMoreAttributions))
                 self.getNextToken()
             if self.lexemToken in self.firstConstMoreAttributions:
-                self.callConstMoreAttributions()
+                self.callConstMoreAttributions(escopo, typeConst)
         
 
-    def callVarValuesDeclaration(self):
+    def callVarValuesDeclaration(self, escopo):
         if self.lexemToken in self.firstVarValuesDeclaration:
             if self.lexemToken in self.firstType:
+                typeVar = self.lexemToken
+
                 self.getNextToken()
-                self.callVarValuesAttribution()
-                self.callVarMoreAttributions()
+                self.callVarValuesAttribution(escopo, typeVar)
+                self.callVarMoreAttributions(escopo, typeVar)
                 if self.lexemToken == ";":
                     self.getNextToken()
                 else:
@@ -556,7 +567,7 @@ class SyntaticAnalyzer:
                     elif (self.lexemToken == ";"):
                         self.getNextToken()
                     
-                self.callVarValuesDeclaration()
+                self.callVarValuesDeclaration(escopo)
                 
             elif self.lexemToken == "typedef":
                 self.getNextToken()
@@ -572,12 +583,12 @@ class SyntaticAnalyzer:
                         self.getNextToken()
                 
                 self.callIDE_Struct()
-                self.callVarValuesDeclaration()
+                self.callVarValuesDeclaration(escopo)()
                 
             elif self.lexemToken == "struct":
                 self.getNextToken()
                 self.callIDE_Struct()
-                self.callVarValuesDeclaration()
+                self.callVarValuesDeclaration(escopo)()
 
         else:
             #token = self.lookNextToken()
@@ -590,13 +601,14 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.FollowVarValuesDeclaration))
                 self.getNextToken()
             if self.lexemToken in self.firstVarValuesDeclaration:
-                self.callVarValuesDeclaration()
+                self.callVarValuesDeclaration(escopo)()
             else:
                 pass
 
             
-    def callVarValuesAttribution(self):
+    def callVarValuesAttribution(self, escopo, typeVar):
         if self.typeLexema in self.firstVarValuesAttribution:
+            nameVar = self.lexemToken
             self.getNextToken()
         else:
             while (not ((self.typeLexema == "IDE") or (self.lexemToken in self.firstArrayVerification) or (self.lexemToken in self.FollowVarValuesAttribution)) and (not self.lexemToken == None)):
@@ -609,6 +621,7 @@ class SyntaticAnalyzer:
         if self.lexemToken in self.firstArrayVerification:
             self.callArrayVarification()
         
+        self.semantic.add_var(escopo, typeVar, nameVar, None)
             
     def callArrayVarification(self): 
         if self.lexemToken in self.firstArrayVerification:
@@ -648,11 +661,11 @@ class SyntaticAnalyzer:
                 pass
     
     
-    def callVarMoreAttributions(self):
+    def callVarMoreAttributions(self, escopo, typeVar):
         if self.lexemToken in self.firstVarMoreAttributions:
             self.getNextToken()
-            self.callVarValuesAttribution()
-            self.callVarMoreAttributions()
+            self.callVarValuesAttribution(escopo, typeVar)
+            self.callVarMoreAttributions(escopo, typeVar)
         else:
             while(not((self.lexemToken in self.firstVarMoreAttributions) or (self.lexemToken in self.FollowVarMoreAttributions)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.FollowVarMoreAttributions))
@@ -740,7 +753,7 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "{"):
                 self.getNextToken()
 
-        self.callVarValuesDeclaration()
+        self.callVarValuesDeclaration(escopo)
 
         if self.lexemToken == "}":
             self.getNextToken()
@@ -1010,7 +1023,7 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "{"):
                 self.getNextToken()
         
-        self.callVarValuesDeclaration()
+        self.callVarValuesDeclaration(escopo)
 
         if self.lexemToken == "}":
             self.getNextToken()
