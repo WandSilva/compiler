@@ -10,7 +10,9 @@ from semantic_analyzer.semantic import semantic_analyzer
 class SyntaticAnalyzer:
     
     def __init__(self, listTokens):
+        
         self.semantic = semantic_analyzer()
+
         self.currentToken = 0
         self.previousToken = 0
         self.numberFile = 0
