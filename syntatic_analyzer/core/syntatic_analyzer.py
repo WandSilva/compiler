@@ -325,7 +325,7 @@ class SyntaticAnalyzer:
     def callGlobalValues(self):
         if self.lexemToken in self.firstGlobalValues:
             if self.lexemToken == "const":
-                self.semantic.add_var_scope("global_const")
+                #self.semantic.add_var_scope("global_const")
                 self.getNextToken()
                 
                 if self.lexemToken == "{":
@@ -353,7 +353,7 @@ class SyntaticAnalyzer:
                         self.getNextToken()
                 
                 if self.lexemToken == "var":
-                    self.semantic.add_var_scope("global_var")
+                    #self.semantic.add_var_scope("global_var")
                     self.getNextToken()
                 else:
                     while (not ((self.lexemToken == "var") or (self.lexemToken == "{") or (self.lexemToken in self.FollowGlobalValeus)) and (not self.lexemToken == None)):
@@ -389,7 +389,7 @@ class SyntaticAnalyzer:
                         self.getNextToken()
                     
             elif self.lexemToken == "var":
-                self.semantic.add_var_scope("global_var")
+                #self.semantic.add_var_scope("global_var")
                 self.getNextToken()
                 
                 if self.lexemToken == "{":
@@ -417,7 +417,7 @@ class SyntaticAnalyzer:
                         self.getNextToken()
                 
                 if self.lexemToken == "const":
-                    self.semantic.add_var_scope("global_const")
+                    #self.semantic.add_var_scope("global_const")
                     self.getNextToken()
                 else:
                     while (not ((self.lexemToken == "const") or (self.lexemToken == "{") or (self.lexemToken in self.FollowGlobalValeus)) and (not self.lexemToken == None)):

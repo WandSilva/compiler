@@ -25,18 +25,29 @@ class semantic_analyzer:
     def contains_struct(self, ide, scope):
         return True if ide in self.table_struct[scope]['ide'] else False
 
-    def add_struct(self, scope, ide, type_atrributes, atrributes, extend):
+    #POSSIVEL?
+    def add_struct(self, scope, ide, variables, extend):
         if scope not in self.table_struct:
             self.__add_struct_scope(scope)
-        dict(ide = [], type_atrributes = [], atrributes = [], extend = [])
+        dict(ide = [], variables = [], extend = [])
         self.table_struct[scope]['ide'].append(ide)
-        self.table_struct[scope]['type_atrributes'].append(type_atrributes)
-        self.table_struct[scope]['atrributes'].append(atrributes)
+        self.table_struct[scope]['var'].append(variables)
         self.table_struct[scope]['extend'].append(extend)
 
     def __add_struct_scope(self, scope):
-        self.table_struct[scope] = dict(ide = [], type_atrributes = [], atrributes = [], extend = [])
+        self.table_struct[scope] = dict(ide = [], variables = [], extend = [])
 
+    #def add_struct(self, scope, ide, type_atrributes, atrributes, extend):
+    #    if scope not in self.table_struct:
+    #        self.__add_struct_scope(scope)
+    #    dict(ide = [], type_atrributes = [], atrributes = [], extend = [])
+    #    self.table_struct[scope]['ide'].append(ide)
+    #    self.table_struct[scope]['type_atrributes'].append(type_atrributes)
+    #    self.table_struct[scope]['atrributes'].append(atrributes)
+    #    self.table_struct[scope]['extend'].append(extend)
+
+    #def __add_struct_scope(self, scope):
+    #     self.table_struct[scope] = dict(ide = [], type_atrributes = [], atrributes = [], extend = [])
 
     
     #MÉTODOS PARA MANIPULAR A TABELA DE ARRAYS
