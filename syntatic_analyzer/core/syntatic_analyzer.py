@@ -581,12 +581,12 @@ class SyntaticAnalyzer:
                     elif (self.lexemToken == "struct"):
                         self.getNextToken()
                 
-                self.callIDE_Struct()
+                self.callIDE_Struct(escopo)
                 self.callVarValuesDeclaration(escopo)()
                 
             elif self.lexemToken == "struct":
                 self.getNextToken()
-                self.callIDE_Struct()
+                self.callIDE_Struct(escopo)
                 self.callVarValuesDeclaration(escopo)()
 
         else:
@@ -672,8 +672,9 @@ class SyntaticAnalyzer:
 
         
 
-    def callIDE_Struct(self):
+    def callIDE_Struct(self, escopo):
         if self.typeLexema in self.firstIDE_Struct:
+            nameStruct = self.lexemToken
             self.getNextToken()
         else:
             while(not((self.typeLexema in self.firstIDE_Struct) or (self.lexemToken in self.firstIDE_Struct2 or self.typeLexema in self.firstIDE_Struct2) or (self.lexemToken in self.FollowIDE_Struct)) and (not self.lexemToken == None)):
@@ -684,13 +685,13 @@ class SyntaticAnalyzer:
             elif (self.typeLexema == "IDE"):
                 self.getNextToken()
         
-        self.callIDE_Struct2()
+        self.callIDE_Struct2(escopo, nameStruct)
         
         
-    def callIDE_Struct2(self):
+    def callIDE_Struct2(self, escopo, nameStruct):
         if self.lexemToken in self.firstIDE_Struct2:
             if self.lexemToken == "{":
-                self.callIDE_Struct2Aux()
+                self.callIDE_Struct2Aux(escopo, nameStruct)
 
             elif self.lexemToken == "extends":
                 self.getNextToken()
@@ -706,21 +707,22 @@ class SyntaticAnalyzer:
                     elif (self.typeLexema == "IDE"):
                         self.getNextToken()
 
-                self.callIDE_Struct2Aux()
+                self.callIDE_Struct2Aux(escopo, nameStruct)
         
         else:
             while(not((self.lexemToken in self.firstIDE_Struct2) or (self.lexemToken in self.FollowIDE_Struct2)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstIDE_Struct2))
                 self.getNextToken()
             if self.lexemToken in self.firstIDE_Struct2:
-                self.callIDE_Struct2()
+                self.callIDE_Struct2(escopo, nameStruct)
             else:
                 pass
 
     
-    def callIDE_Struct2Aux(self):
+    def callIDE_Struct2Aux(self, escopo, nameStruct):
         if self.lexemToken == "{":
             self.getNextToken()
+            # CONSTRUIR O STRUCT AQUI
         else:
             while (not ((self.lexemToken == "{") or (self.lexemToken == "var") or (self.lexemToken in self.FollowIDE_Struct2Aux)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["{"]))
@@ -810,6 +812,7 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
         if self.typeLexema == "IDE" or self.lexemToken == "start":
+            functionName =  self.lexemToken
             self.getNextToken()
         else:
             while (not ((self.typeLexema == "IDE" or self.lexemToken == "start") or (self.lexemToken == "(") or (self.lexemToken in self.FollowFunction)) and (not self.lexemToken == None)):
@@ -856,7 +859,7 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "{"):
                 self.getNextToken()
 
-        self.callVarFunctionsProcedures()
+        self.callVarFunctionsProcedures(functionName)
         if self.lexemToken in self.firstCommand or self.typeLexema in self.firstCommand:
             self.callCommands()           
           
@@ -879,6 +882,7 @@ class SyntaticAnalyzer:
 
     def callProcedure(self):
         if self.typeLexema == "IDE":
+            procedureName = self.lexemToken
             self.getNextToken()
         else:
             while (not ((self.typeLexema == "IDE") or (self.lexemToken == "(") or (self.lexemToken in self.FollowProcedure)) and (not self.lexemToken == None)):
@@ -925,7 +929,7 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "{"):
                 self.getNextToken()
 
-        self.callVarFunctionsProcedures()
+        self.callVarFunctionsProcedures(procedureName)
         
         if self.lexemToken in self.firstCommand or self.typeLexema in self.firstCommand:
             self.callCommands()
@@ -999,7 +1003,7 @@ class SyntaticAnalyzer:
     def callParamListInFuncProc(self):
         pass
 
-    def callVarFunctionsProcedures(self):
+    def callVarFunctionsProcedures(self, escopo):
         if self.lexemToken == "var":
             self.getNextToken()
         else:
@@ -1022,7 +1026,7 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "{"):
                 self.getNextToken()
         
-        self.callVarValuesDeclaration("ALTERAR") #ALTERAR DEPOIS
+        self.callVarValuesDeclaration(escopo)
 
         if self.lexemToken == "}":
             self.getNextToken()
