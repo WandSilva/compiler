@@ -823,7 +823,9 @@ class SyntaticAnalyzer:
                 pass
 
     def callFunction(self):
+        typeFunction = ""
         if self.lexemToken in self.firstType:
+            typeFunction = self.lexemToken
             self.getNextToken()
         else:
             while (not ((self.lexemToken in self.firstType) or (self.typeLexema == "IDE") or (self.lexemToken in self.FollowFunction)) and (not self.lexemToken == None)):
@@ -834,6 +836,7 @@ class SyntaticAnalyzer:
             elif (self.lexemToken in self.firstType):
                 self.getNextToken()
 
+        functionName = ""
         if self.typeLexema == "IDE" or self.lexemToken == "start":
             functionName =  self.lexemToken
             self.getNextToken()
@@ -857,8 +860,12 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "("):
                 self.getNextToken()
         
+        type_params = []
+        params = []
+        num_params = []
+
         if self.lexemToken in self.firstParamList:
-            self.callParamList()
+            self.callParamList(type_params, params, num_params)
 
         if self.lexemToken == ")":
             self.getNextToken()
@@ -926,9 +933,13 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
             elif (self.lexemToken == "("):
                 self.getNextToken()
+        
+        type_params = []
+        params = []
+        num_params = []
 
         if self.lexemToken in self.firstParamList:
-            self.callParamList()
+            self.callParamList(type_params, params, num_params)
 
         if self.lexemToken == ")":
             self.getNextToken()
@@ -971,7 +982,7 @@ class SyntaticAnalyzer:
         self.callFunctionProcedure()
 
 
-    def callParamList(self):
+    def callParamList(self, type_params, params, num_params):
         if self.lexemToken in self.firstType:
             if self.lexemToken in self.firstType:
                 self.getNextToken()
@@ -996,29 +1007,29 @@ class SyntaticAnalyzer:
                     self.getNextToken()
             
             if self.lexemToken in self.firstMoreParam:
-                self.callMoreParam()
+                self.callMoreParam(type_params, params, num_params)
 
         else:
             while (not ((self.lexemToken in self.firstType) or (self.lexemToken in self.FollowParamList)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstType))
                 self.getNextToken()
             if (self.lexemToken in self.firstType):
-                self.callParamList()
+                self.callParamList(type_params, params, num_params)
             else:
                 pass
 
 
-    def callMoreParam(self):
+    def callMoreParam(self, type_params, params, num_params):
         if self.lexemToken == ",":
             self.getNextToken()
             
-            self.callParamList()
+            self.callParamList(type_params, params, num_params)
         else:
             while (not ((self.lexemToken == ",") or (self.lexemToken in self.FollowMoreParamList)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, [","]))
                 self.getNextToken()
             if self.lexemToken == ",":
-                self.callMoreParam()
+                self.callMoreParam(type_params, params, num_params)
             else:
                 pass
 
