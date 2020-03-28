@@ -12,6 +12,13 @@ class SyntaticAnalyzer:
     def __init__(self, listTokens):
         
         self.semantic = semantic_analyzer()
+        self.semantic.add_var('start', 'int', 'x', None)
+        self.semantic.add_var('start', 'int', 'y', '2')
+        print(self.semantic.get_vars())
+
+        self.semantic.assign_var('start', 'x', '1')
+        print(self.semantic.get_vars())
+
 
         self.currentToken = 0
         self.previousToken = 0

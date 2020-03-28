@@ -15,8 +15,9 @@ class semantic_analyzer:
         return False
 
     def add_var(self, scope, tipo, ide, value):
-        if scope not in self.table_var:
+        if scope not in self.table_var.keys():
             self.__add_var_scope(scope)
+            print("HHHHHHHHHHHHHHHHHHHHHHHHH")
 
         self.table_var[scope]['tipo'].append(tipo)
         self.table_var[scope]['ide'].append(ide)
@@ -24,6 +25,10 @@ class semantic_analyzer:
 
     def __add_var_scope(self, scope):
         self.table_var[scope] = dict(tipo = [], ide = [], value = [])
+
+    def assign_var(self, scope, ide, value):
+        index = self.table_var[scope]['ide'].index(ide)
+        self.table_var[scope]['value'][index] = value
 
 
     #MÉTODOS PARA MANIPULAR A TABELA DE STRUCTS
