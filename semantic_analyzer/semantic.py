@@ -83,6 +83,15 @@ class semantic_analyzer:
         self.table_func['params'].append(params)
         self.table_func['num_params'].append(len(params))
 
+    def var_verification_values(self):
+        pass
+
+    def const_verification_values(self):
+        pass
+
+    def structs_verification(self):
+        pass
+
     def msg_semantic_errors_var (self, escopo, name, valor, lineError, typeReturnFunction, typeError):
         if (typeError == "VAR_DV"):
             pass
