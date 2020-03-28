@@ -5,6 +5,7 @@ class semantic_analyzer:
         self.table_struct = dict()
         self.table_array = dict()
         self.table_func = dict(ide = [], tipo = [], type_params = [], params = [], num_params = [])
+        self.semantic_errors = []
 
     #MÉTODOS PARA MANIPULAR A TABELA DE VARIÁVEIS
     def contains_var(self, scope, ide):
@@ -77,7 +78,21 @@ class semantic_analyzer:
         self.table_func['params'].append(params)
         self.table_func['num_params'].append(len(params))
 
+    def msg_semantic_errors_var (self, escopo, name, valor, lineError, typeReturnFunction, typeError):
+        if (typeError == "VAR_DV"):
+            pass
+        elif (typeError == "VAR_ND"): #VARIÁVEL NÃO DECLARADA
+            pass
+        elif (typeError == "VAR_TAVI"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
+            pass
+        elif (typeError == "VAR_FRI"): #TIPO DE RETORNO DE FUNÇÃO INCOMPATÍVEL COM A VARIAVEL
+            pass
 
+    def msg_semantic_errors_const(self, name, typeConst, valor, typeError):
+        pass
+    
+    def print_semantic_errors(self):
+        pass
     #-------------------------- ARRUMAR ANTES DE ENVIAR -----------------------------------
     #PARA TESTE
     def get_structs(self):

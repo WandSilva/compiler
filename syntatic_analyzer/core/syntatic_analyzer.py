@@ -608,6 +608,7 @@ class SyntaticAnalyzer:
     def callVarValuesAttribution(self, escopo, typeVar):
         if self.typeLexema in self.firstVarValuesAttribution:
             nameVar = self.lexemToken
+            lineError = self.errorLineToken
             self.getNextToken()
         else:
             while (not ((self.typeLexema == "IDE") or (self.lexemToken in self.firstArrayVerification) or (self.lexemToken in self.FollowVarValuesAttribution)) and (not self.lexemToken == None)):
@@ -617,15 +618,30 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", ""))
             elif (self.typeLexema == "IDE"):
                 self.getNextToken()
-        if self.lexemToken in self.firstArrayVerification:
-            self.callArrayVarification()
         
-        self.semantic.add_var(escopo, typeVar, nameVar, None)
+        arrayControl = False
+        sizeArray = []
+
+        if self.lexemToken in self.firstArrayVerification:
+            arrayControl = True
+            self.callArrayVarification(sizeArray)
+
+        if (arrayControl == True):
+            if (self.semantic.contains_array(escopo,nameVar)):
+                self.semantic.msg_semantic_errors_var(escopo, nameVar, None, lineError, None, "VAR_DV")
+            else:
+                self.semantic.add_array(escopo,typeVar,nameVar,sizeArray,None)
+        else:
+            if (self.semantic.contains_var(escopo, nameVar)):
+                self.semantic.msg_semantic_errors_var(escopo, nameVar, None, lineError, None, "VAR_DV")
+            else:    
+                self.semantic.add_var(escopo, typeVar, nameVar, None)
             
-    def callArrayVarification(self): 
+    def callArrayVarification(self, sizeArray): 
         if self.lexemToken in self.firstArrayVerification:
             self.getNextToken()
             if self.typeNRO == "NRO_I":
+                sizeArray.append(self.lexemToken)
                 self.getNextToken()
             else:
                 while (not ((self.typeNRO == "NRO_I") or (self.lexemToken == "]") or (self.lexemToken in self.FollowArrayVerification)) and (not self.lexemToken == None)):
@@ -648,17 +664,17 @@ class SyntaticAnalyzer:
                     self.getNextToken()
             
             if self.lexemToken in self.firstArrayVerification:
-                self.callArrayVarification()
+                self.callArrayVarification(sizeArray)
 
         else:
             while(not((self.lexemToken in self.firstArrayVerification) or (self.lexemToken in self.FollowArrayVerification)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstArrayVerification))
                 self.getNextToken()
             if self.lexemToken in self.firstArrayVerification:
-                self.callArrayVarification()
+                self.callArrayVarification(sizeArray)
             else:
                 pass
-    
+        
     
     def callVarMoreAttributions(self, escopo, typeVar):
         if self.lexemToken in self.firstVarMoreAttributions:
