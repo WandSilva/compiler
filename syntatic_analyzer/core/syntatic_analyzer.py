@@ -319,11 +319,87 @@ class SyntaticAnalyzer:
 
     def start(self):
         self.creat_functionProcedures_TB()
+        self.back_to_begin()
+        self.getNextToken()
         self.callGlobalValues()
         self.callFunctionProcedure()
     
     def creat_functionProcedures_TB(self):
-        pass
+        while (not(self.lexemToken == None)):
+            if (not(self.lexemToken in self.firstFunctions_Procedures)):
+                self.getNextToken()
+            else:
+                if self.lexemToken == "function":
+                    self.getNextToken()
+
+                    typeFunction = ""
+                    if self.lexemToken in self.firstType:
+                        typeFunction = self.lexemToken
+                        self.getNextToken()
+                    
+                    functionName = ""
+                    if self.typeLexema == "IDE":
+                        functionName =  self.lexemToken
+                        self.getNextToken()
+
+                    if self.lexemToken == "(":
+                        self.getNextToken()
+
+                    type_params = []
+                    params = []
+                    if self.lexemToken in self.firstParamList:
+                        self.readParamList_TB(type_params, params)
+
+                    if self.lexemToken == ")":
+                        self.getNextToken()
+
+                    self.semantic.add_func(functionName, typeFunction, type_params, params)
+
+
+                elif self.lexemToken == "procedure":
+                    self.getNextToken()
+                    
+                    functionName = ""
+                    if self.typeLexema == "IDE" or self.lexemToken == "start":
+                        functionName =  self.lexemToken
+                        self.getNextToken()
+
+                    if self.lexemToken == "(":
+                        self.getNextToken()
+
+                    type_params = []
+                    params = []
+                    if self.lexemToken in self.firstParamList:
+                        self.readParamList_TB(type_params, params)
+
+                    if self.lexemToken == ")":
+                        self.getNextToken()
+
+                    self.semantic.add_func(functionName, None, type_params, params)
+
+
+    def readParamList_TB(self, type_params, params):
+        if self.lexemToken in self.firstType:
+            type_params.append(self.lexemToken)
+            self.getNextToken()
+
+        if self.typeLexema == "IDE":
+            params.append(self.lexemToken)
+            self.getNextToken()
+        
+        if self.lexemToken == ",":
+            self.getNextToken()
+            self.readParamList_TB(type_params, params)
+
+
+    def back_to_begin(self):
+        self.currentToken = 0
+        self.previousToken = 0
+        self.numberFile = 0
+        self.lexemToken = ""
+        self.typeLexema = ""
+        self.typeNRO = ""
+        self.errorLineToken = 0
     
     def callGlobalValues(self):
         if self.lexemToken in self.firstGlobalValues:
@@ -550,6 +626,82 @@ class SyntaticAnalyzer:
                 self.callConstMoreAttributions(escopo, typeConst)
         
 
+    def callVarValuesDeclaration_Struct(self, type_atrributes, atrributes): #FUNÇAO PRA TRATAMENTO DOS ATRIBUTOS DE STRUCTS
+        if self.lexemToken in self.firstVarValuesDeclaration:
+            if self.lexemToken in self.firstType:
+                type_atrributes.append(self.lexemToken)
+
+                self.getNextToken()
+                self.callVarValuesAttribution_Struct(type_atrributes, atrributes)
+                self.callVarMoreAttributions_Struct(type_atrributes, atrributes)
+                if self.lexemToken == ";":
+                    self.getNextToken()
+                else:
+                    while (not ((self.lexemToken == ";") or (self.lexemToken in self.FollowVarValuesDeclaration)) and (not self.lexemToken == None)):
+                        self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, [";"]))
+                        self.getNextToken()
+                    if (not self.lexemToken == ";"):
+                        self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ";"))
+                    elif (self.lexemToken == ";"):
+                        self.getNextToken()
+                    
+                self.callVarValuesDeclaration_Struct(type_atrributes, atrributes)
+
+        else:
+            #token = self.lookNextToken()
+            #token2 = self.lookNextNextToken()
+            #if token.tipo == "IDE" and token2.lexema in self.firstIDE_Struct2:
+            #    self.listErrors.append(self.errorMessage(self.errorLineToken, "palavra", "struct"))
+            #    self.callIDE_Struct()
+            #    self.callVarValuesDeclaration()
+            while (not (self.lexemToken in self.firstVarValuesDeclaration or self.lexemToken in self.FollowVarValuesDeclaration) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.FollowVarValuesDeclaration))
+                self.getNextToken()
+            if self.lexemToken in self.firstVarValuesDeclaration:
+                self.callVarValuesDeclaration(escopo)()
+            else:
+                pass
+
+
+    def callVarValuesAttribution_Struct(self, type_atrributes, atrributes): #NECESSITA MODIFICAR
+        if self.typeLexema in self.firstVarValuesAttribution:
+            nameVar = self.lexemToken
+            atrributes.append(self.lexemToken)
+            lineError = self.errorLineToken
+            self.getNextToken()
+        else:
+            while (not ((self.typeLexema == "IDE") or (self.lexemToken in self.firstArrayVerification) or (self.lexemToken in self.FollowVarValuesAttribution)) and (not self.lexemToken == None)):
+                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["IDE"]))
+                self.getNextToken()
+            if (not self.typeLexema == "IDE"):
+                self.listErrors.append(self.errorMessage(self.errorLineToken, "identificador", ""))
+            elif (self.typeLexema == "IDE"):
+                self.getNextToken()
+        
+        arrayControl = False
+        sizeArray = []
+
+        if self.lexemToken in self.firstArrayVerification:
+            arrayControl = True
+            self.callArrayVarification(sizeArray)
+
+        if (arrayControl == True):
+            if (self.semantic.contains_array(escopo,nameVar)):
+                self.semantic.msg_semantic_errors_var(escopo, nameVar, None, lineError, None, "VAR_DV")
+            else:
+                self.semantic.add_array(escopo,typeVar,nameVar,sizeArray,None)
+        else:
+            self.semantic.add_var(escopo, typeVar, nameVar, None)
+    
+
+    def callVarMoreAttributions_Struct(self, type_atrributes, atrributes): #MODIFICAR
+        pass
+
+
+    def callArrayVarification_Struct(self, sizeArray): #MODIFICAR
+        pass
+
+
     def callVarValuesDeclaration(self, escopo):
         if self.lexemToken in self.firstVarValuesDeclaration:
             if self.lexemToken in self.firstType:
@@ -635,10 +787,7 @@ class SyntaticAnalyzer:
             else:
                 self.semantic.add_array(escopo,typeVar,nameVar,sizeArray,None)
         else:
-            if (self.semantic.contains_var(escopo, nameVar)):
-                self.semantic.msg_semantic_errors_var(escopo, nameVar, None, lineError, None, "VAR_DV")
-            else:    
-                self.semantic.add_var(escopo, typeVar, nameVar, None)
+            self.semantic.add_var(escopo, typeVar, nameVar, None)
             
     def callArrayVarification(self, sizeArray): 
         if self.lexemToken in self.firstArrayVerification:
@@ -708,14 +857,16 @@ class SyntaticAnalyzer:
         
         
     def callIDE_Struct2(self, escopo, nameStruct):
+        name_extends = ""
         if self.lexemToken in self.firstIDE_Struct2:
             if self.lexemToken == "{":
-                self.callIDE_Struct2Aux(escopo, nameStruct)
+                self.callIDE_Struct2Aux(escopo, nameStruct, None)
 
             elif self.lexemToken == "extends":
                 self.getNextToken()
 
                 if self.typeLexema == "IDE":
+                    name_extends = self.lexemToken
                     self.getNextToken()
                 else:
                     while(not((self.typeLexema == "IDE") or (self.lexemToken in self.firstIDE_Struct2Aux) or (self.lexemToken in self.FollowIDE_Struct)) and (not self.lexemToken == None)):
@@ -726,7 +877,7 @@ class SyntaticAnalyzer:
                     elif (self.typeLexema == "IDE"):
                         self.getNextToken()
 
-                self.callIDE_Struct2Aux(escopo, nameStruct)
+                self.callIDE_Struct2Aux(escopo, nameStruct, name_extends)
         
         else:
             while(not((self.lexemToken in self.firstIDE_Struct2) or (self.lexemToken in self.FollowIDE_Struct2)) and (not self.lexemToken == None)):
@@ -738,10 +889,9 @@ class SyntaticAnalyzer:
                 pass
 
     
-    def callIDE_Struct2Aux(self, escopo, nameStruct):
+    def callIDE_Struct2Aux(self, escopo, nameStruct, name_extends):
         if self.lexemToken == "{":
             self.getNextToken()
-            # CONSTRUIR O STRUCT AQUI
         else:
             while (not ((self.lexemToken == "{") or (self.lexemToken == "var") or (self.lexemToken in self.FollowIDE_Struct2Aux)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, ["{"]))
@@ -772,8 +922,10 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "{"))
             elif (self.lexemToken == "{"):
                 self.getNextToken()
-
-        self.callVarValuesDeclaration("ALTERAR") #ALTERAR POSTERIORMENTE
+        
+        type_atrributes = []
+        atrributes = []
+        self.callVarValuesDeclaration_Struct(type_atrributes, atrributes) #FUNÇÃO INCOMPLETA, EM MODIFICAÇÃO
 
         if self.lexemToken == "}":
             self.getNextToken()
@@ -831,7 +983,7 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
         functionName = ""
-        if self.typeLexema == "IDE" or self.lexemToken == "start":
+        if self.typeLexema == "IDE":
             functionName =  self.lexemToken
             self.getNextToken()
         else:
@@ -901,7 +1053,7 @@ class SyntaticAnalyzer:
 
     def callProcedure(self):
         procedureName = ""
-        if self.typeLexema == "IDE":
+        if self.typeLexema == "IDE" or self.lexemToken == "start":
             procedureName = self.lexemToken
             self.getNextToken()
         else:
