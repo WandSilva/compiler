@@ -76,6 +76,10 @@ class semantic_analyzer:
     def contains_func(self, ide):
         return True if ide in self.table_func['ide'] else False
 
+    def contains_func_overload(self, ide, type_params, params, num_params):
+        for x in self.table_func[ide]:
+            if not (num_params == self.table_func[ide]['num_params']):
+
     def add_func(self, ide, tipo, type_params, params):
         self.table_func['ide'].append(ide)
         self.table_func['tipo'].append(tipo)

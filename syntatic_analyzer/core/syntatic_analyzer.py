@@ -906,11 +906,14 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "}"):
                 self.getNextToken()
             
+        if(self.semantic.contains_func(functionName)):
+            pass # CHAMADA DA FUNÇÃO PARA TRATAMENTO DE SOBRECARGA
 
         self.callFunctionProcedure()
 
 
     def callProcedure(self):
+        procedureName = ""
         if self.typeLexema == "IDE":
             procedureName = self.lexemToken
             self.getNextToken()
@@ -978,7 +981,10 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "}"))
             elif (self.lexemToken == "}"):
                 self.getNextToken()
-
+        
+        if(self.semantic.contains_func(procedureName)):
+            pass # CHAMADA DA FUNÇÃO PARA TRATAMENTO DE SOBRECARGA
+        
         self.callFunctionProcedure()
 
 
