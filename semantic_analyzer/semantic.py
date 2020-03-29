@@ -176,6 +176,49 @@ class semantic_analyzer:
             self.table_func['params'].append(params)
             self.table_func['num_params'].append(len(params))
 
+    def call_func(self, scope, ide_func, params, type_tokens_params):
+        type_params = self.__get_params_type(scope, params, type_tokens_params)
+        key_ide = ide_func
+        for item in type_params:
+            key_ide= key_ide+'_ç_'+item
+
+        if not self.__contains_func_key(key_ide):
+            print('FAZER A CHAMADA DO ERRO AQUI: #variável não declarada anteriormente') 
+
+
+    def __get_params_type(self, scope, params, type_tokens_params):
+        params_type = []
+
+        for i in range (0, len(params)-1):
+
+            if type_tokens_params[i] == 'IDE':
+                param = params[i]
+                if self.__contains_var(scope, params):
+                    index_var = self.table_var[scope]['ide'].index(param)
+                    tipo_var = self.table_var[scope]['tipo'][index_var]
+                    params_type.append(tipo_var)
+                else:
+                    print('FAZER A CHAMADA DO ERRO AQUI: #variável não declarada anteriormente') 
+
+            elif type_tokens_params[i] == 'NRO':
+                param = params[i]
+                if isinstance(int(param), int):
+                    params_type.append('int')
+                elif re.match(r'^-?\d+(?:\.\d+)$', param) is not None:
+                    params_type.append('float')
+
+            elif type_tokens_params[i] == 'CDC':
+                params_type.append('string')
+
+            elif type_tokens_params[i] == 'PRE':
+                params_type.append('boolean')
+        
+        return params_type
+
+
+
+    #MANIPULAÇÃO DOS ERROS
+
     def msg_semantic_errors_var (self, escopo, name, valor, lineError, typeReturnFunction, typeError):
         if (typeError == "VAR_DV"):
             pass
