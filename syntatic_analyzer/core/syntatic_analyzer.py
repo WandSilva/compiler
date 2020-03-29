@@ -1172,8 +1172,30 @@ class SyntaticAnalyzer:
                 pass
 
     
-    def callParamListInFuncProc(self):
-        pass
+    def callParamListInFuncProc(self, name_params, type_token_params):
+        if (self.typeLexema == "IDE"):
+            name_params.append(self.lexemToken)
+            type_token_params.append(self.typeLexema)
+
+        elif (self.typeLexema == "NRO"):
+            name_params.append(self.lexemToken)
+            type_token_params.append(self.typeLexema)
+
+
+        elif (self.typeLexema == "CDC"):
+            name_params.append(self.lexemToken)
+            type_token_params.append(self.typeLexema)
+
+        elif (self.typeLexema == "PRE" and (self.lexemToken == "true" or self.lexemToken == "false")):
+            name_params.append(self.lexemToken)
+            type_token_params.append(self.typeLexema)
+
+        self.getNextToken()
+
+        if (self.lexemToken == ","):
+            self.getNextToken()
+            self.callParamListInFuncProc(name_params, type_token_params)
+
 
     def callVarFunctionsProcedures(self, escopo):
         if self.lexemToken == "var":
@@ -1700,7 +1722,9 @@ class SyntaticAnalyzer:
 
     
     def callCallProcedureFunction(self):
+        nameFP = ""
         if (self.typeLexema == "IDE"):
+            nameFP = self.lexemToken
             self.getNextToken()
         else:
             pass
@@ -1715,8 +1739,11 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
             elif (self.lexemToken == "("):
                 self.getNextToken()
+
+        name_params = []
+        type_token_params = []
         if self.lexemToken in self.firstParamListInFuncProc or self.typeLexema in self.firstParamListInFuncProc:
-            self.callParamListInFuncProc()
+            self.callParamListInFuncProc(name_params, type_token_params)
 
         if (self.lexemToken == ")"):
             self.getNextToken()
@@ -1728,6 +1755,12 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", ")"))
             elif (self.lexemToken == ")"):
                 self.getNextToken()
+
+        if(__contains_func_ide(nameFP)): #EDITAR 
+            pass
+
+        else:
+            pass
 
 
     def callComandsExp(self):
