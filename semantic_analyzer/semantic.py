@@ -6,7 +6,7 @@ class semantic_analyzer:
         self.table_var = dict()
         self.table_struct = dict()
         self.table_array = dict()
-        self.table_func = dict(ide = [], tipo = [], type_params = [], params = [], num_params = [])
+        self.table_func = dict(key_ide = [], ide = [], tipo = [], type_params = [], params = [], num_params = [])
         self.semantic_errors = []
 
     #MÉTODOS PARA MANIPULAR A TABELA DE VARIÁVEIS
@@ -68,7 +68,7 @@ class semantic_analyzer:
                 print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
 
     def __assign_func_to_var(self, scope, ide, value):
-        if not self.__contains_func(value): #verifica se a função não existe
+        if not self.__contains_func_ide(value): #verifica se a função não existe
             print('FAZER A CHAMADA DO ERRO AQUI: #função não declarada') 
         else:
             index_var = self.table_var[scope]['ide'].index(ide)
@@ -154,28 +154,27 @@ class semantic_analyzer:
 
 
     #MÉTODOS PARA MANIPULAR A TABELA DE FUNÇÕES
-    def __contains_func(self, ide):
+    def __contains_func_key(self, key_ide):
+        return True if key_ide in self.table_func['key_ide'] else False
+
+    def __contains_func_ide(self, ide):
         return True if ide in self.table_func['ide'] else False
 
-    def contains_func_overload(self, ide, type_params, params, num_params):
-        for x in self.table_func[ide]:
-            if not (num_params == self.table_func[ide]['num_params']):
-
     def add_func(self, ide, tipo, type_params, params):
-        self.table_func['ide'].append(ide)
-        self.table_func['tipo'].append(tipo)
-        self.table_func['type_params'].append(type_params)
-        self.table_func['params'].append(params)
-        self.table_func['num_params'].append(len(params))
+        key_ide = ide
+        for item in type_params:
+            key_ide= key_ide+'_ç_'+item
+        print(key_ide)
 
-    def var_verification_values(self):
-        pass
-
-    def const_verification_values(self):
-        pass
-
-    def structs_verification(self):
-        pass
+        if self.__contains_func_key(key_ide):
+            print('FAZER A CHAMADA DO ERRO AQUI: #função existente')
+        else:
+            self.table_func['key_ide'].append(key_ide)
+            self.table_func['ide'].append(ide)
+            self.table_func['tipo'].append(tipo)
+            self.table_func['type_params'].append(type_params)
+            self.table_func['params'].append(params)
+            self.table_func['num_params'].append(len(params))
 
     def msg_semantic_errors_var (self, escopo, name, valor, lineError, typeReturnFunction, typeError):
         if (typeError == "VAR_DV"):

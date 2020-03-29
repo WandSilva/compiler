@@ -21,8 +21,9 @@ semantic = semantic_analyzer()
 
 #teste add retorno funcao
 semantic.add_var('start', 'int', 'x', None)
+semantic.add_func('add', 'int', ['int', 'int'], ['a', 'b'])
 semantic.add_func('add', 'float', ['int', 'int'], ['a', 'b'])
-semantic.assign_var('start', 'x', 'add', 'func')
+#semantic.assign_var('start', 'x', 'add', 'func')
 
 
 print(semantic.get_vars())
