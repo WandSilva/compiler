@@ -325,9 +325,12 @@ class SyntaticAnalyzer:
 
 
     def start(self):
+        self.creat_functionProcedures_TB()
         self.callGlobalValues()
         self.callFunctionProcedure()
     
+    def creat_functionProcedures_TB(self):
+        pass
     
     def callGlobalValues(self):
         if self.lexemToken in self.firstGlobalValues:
@@ -823,9 +826,7 @@ class SyntaticAnalyzer:
                 pass
 
     def callFunction(self):
-        typeFunction = ""
         if self.lexemToken in self.firstType:
-            typeFunction = self.lexemToken
             self.getNextToken()
         else:
             while (not ((self.lexemToken in self.firstType) or (self.typeLexema == "IDE") or (self.lexemToken in self.FollowFunction)) and (not self.lexemToken == None)):
@@ -859,13 +860,9 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
             elif (self.lexemToken == "("):
                 self.getNextToken()
-        
-        type_params = []
-        params = []
-        num_params = []
 
         if self.lexemToken in self.firstParamList:
-            self.callParamList(type_params, params, num_params)
+            self.callParamList()
 
         if self.lexemToken == ")":
             self.getNextToken()
@@ -904,10 +901,7 @@ class SyntaticAnalyzer:
             if (not self.lexemToken == "}"):
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "}"))
             elif (self.lexemToken == "}"):
-                self.getNextToken()
-            
-        if(self.semantic.contains_func(functionName)):
-            pass # CHAMADA DA FUNÇÃO PARA TRATAMENTO DE SOBRECARGA
+                self.getNextToken()    
 
         self.callFunctionProcedure()
 
@@ -936,13 +930,9 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "("))
             elif (self.lexemToken == "("):
                 self.getNextToken()
-        
-        type_params = []
-        params = []
-        num_params = []
 
         if self.lexemToken in self.firstParamList:
-            self.callParamList(type_params, params, num_params)
+            self.callParamList()
 
         if self.lexemToken == ")":
             self.getNextToken()
@@ -982,13 +972,10 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "}"):
                 self.getNextToken()
         
-        if(self.semantic.contains_func(procedureName)):
-            pass # CHAMADA DA FUNÇÃO PARA TRATAMENTO DE SOBRECARGA
-        
         self.callFunctionProcedure()
 
 
-    def callParamList(self, type_params, params, num_params):
+    def callParamList(self):
         if self.lexemToken in self.firstType:
             if self.lexemToken in self.firstType:
                 self.getNextToken()
@@ -1013,29 +1000,29 @@ class SyntaticAnalyzer:
                     self.getNextToken()
             
             if self.lexemToken in self.firstMoreParam:
-                self.callMoreParam(type_params, params, num_params)
+                self.callMoreParam()
 
         else:
             while (not ((self.lexemToken in self.firstType) or (self.lexemToken in self.FollowParamList)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstType))
                 self.getNextToken()
             if (self.lexemToken in self.firstType):
-                self.callParamList(type_params, params, num_params)
+                self.callParamList()
             else:
                 pass
 
 
-    def callMoreParam(self, type_params, params, num_params):
+    def callMoreParam(self):
         if self.lexemToken == ",":
             self.getNextToken()
             
-            self.callParamList(type_params, params, num_params)
+            self.callParamList()
         else:
             while (not ((self.lexemToken == ",") or (self.lexemToken in self.FollowMoreParamList)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, [","]))
                 self.getNextToken()
             if self.lexemToken == ",":
-                self.callMoreParam(type_params, params, num_params)
+                self.callMoreParam()
             else:
                 pass
 
