@@ -319,11 +319,87 @@ class SyntaticAnalyzer:
 
     def start(self):
         self.creat_functionProcedures_TB()
+        self.back_to_begin()
+        self.getNextToken()
         self.callGlobalValues()
         self.callFunctionProcedure()
     
     def creat_functionProcedures_TB(self):
-        pass
+        while (not(self.lexemToken == None)):
+            if (not(self.lexemToken in self.firstFunctions_Procedures)):
+                self.getNextToken()
+            else:
+                if self.lexemToken == "function":
+                    self.getNextToken()
+
+                    typeFunction = ""
+                    if self.lexemToken in self.firstType:
+                        typeFunction = self.lexemToken
+                        self.getNextToken()
+                    
+                    functionName = ""
+                    if self.typeLexema == "IDE":
+                        functionName =  self.lexemToken
+                        self.getNextToken()
+
+                    if self.lexemToken == "(":
+                        self.getNextToken()
+
+                    type_params = []
+                    params = []
+                    if self.lexemToken in self.firstParamList:
+                        self.readParamList_TB(type_params, params)
+
+                    if self.lexemToken == ")":
+                        self.getNextToken()
+
+                    self.semantic.add_func(functionName, typeFunction, type_params, params)
+
+
+                elif self.lexemToken == "procedure":
+                    self.getNextToken()
+                    
+                    functionName = ""
+                    if self.typeLexema == "IDE" or self.lexemToken == "start":
+                        functionName =  self.lexemToken
+                        self.getNextToken()
+
+                    if self.lexemToken == "(":
+                        self.getNextToken()
+
+                    type_params = []
+                    params = []
+                    if self.lexemToken in self.firstParamList:
+                        self.readParamList_TB(type_params, params)
+
+                    if self.lexemToken == ")":
+                        self.getNextToken()
+
+                    self.semantic.add_func(functionName, None, type_params, params)
+
+
+    def readParamList_TB(self, type_params, params):
+        if self.lexemToken in self.firstType:
+            type_params.append(self.lexemToken)
+            self.getNextToken()
+
+        if self.typeLexema == "IDE":
+            params.append(self.lexemToken)
+            self.getNextToken()
+        
+        if self.lexemToken == ",":
+            self.getNextToken()
+            self.readParamList_TB(type_params, params)
+
+
+    def back_to_begin(self):
+        self.currentToken = 0
+        self.previousToken = 0
+        self.numberFile = 0
+        self.lexemToken = ""
+        self.typeLexema = ""
+        self.typeNRO = ""
+        self.errorLineToken = 0
     
     def callGlobalValues(self):
         if self.lexemToken in self.firstGlobalValues:
@@ -635,10 +711,7 @@ class SyntaticAnalyzer:
             else:
                 self.semantic.add_array(escopo,typeVar,nameVar,sizeArray,None)
         else:
-            if (self.semantic.contains_var(escopo, nameVar)):
-                self.semantic.msg_semantic_errors_var(escopo, nameVar, None, lineError, None, "VAR_DV")
-            else:    
-                self.semantic.add_var(escopo, typeVar, nameVar, None)
+            self.semantic.add_var(escopo, typeVar, nameVar, None)
             
     def callArrayVarification(self, sizeArray): 
         if self.lexemToken in self.firstArrayVerification:
@@ -831,7 +904,7 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
         functionName = ""
-        if self.typeLexema == "IDE" or self.lexemToken == "start":
+        if self.typeLexema == "IDE":
             functionName =  self.lexemToken
             self.getNextToken()
         else:
@@ -901,7 +974,7 @@ class SyntaticAnalyzer:
 
     def callProcedure(self):
         procedureName = ""
-        if self.typeLexema == "IDE":
+        if self.typeLexema == "IDE" or self.lexemToken == "start":
             procedureName = self.lexemToken
             self.getNextToken()
         else:
