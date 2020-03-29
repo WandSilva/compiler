@@ -3,10 +3,10 @@
 
 #   ARQUIVO PRINCIPAL PARA CHAMADA DOS ANALISADORES
 
-#from semantic_analyzer.semantic import semantic_analyzer
+from semantic_analyzer.semantic import semantic_analyzer
 import re
 
-#semantic = semantic_analyzer()
+semantic = semantic_analyzer()
 
 #teste add primitivo
 #semantic.add_var('start', 'int', 'x', None)
@@ -21,12 +21,14 @@ import re
 
 
 #teste add retorno funcao
-#semantic.add_var('start', 'int', 'x', None)
-#semantic.add_func('add', 'int', ['int', 'int'], ['a', 'b'])
+semantic.add_var('start', 'int', 'x', '1')
+semantic.add_var('start', 'int', 'y', '2')
+semantic.add_func('add', 'int', ['int', 'int'], ['a', 'b'])
 #semantic.add_func('add', 'float', ['int', 'int'], ['a', 'b'])
 #semantic.assign_var('start', 'x', 'add', 'func')
+
+semantic.call_func('start', 'add', ['x', 'y'], ['IDE', 'IDE'])
 
 
 #print(semantic.get_vars())
 
-print(re.match(r'^-?\d+(?:\.\d+)$', '12'))

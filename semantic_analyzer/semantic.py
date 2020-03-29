@@ -164,8 +164,6 @@ class semantic_analyzer:
         key_ide = ide
         for item in type_params:
             key_ide= key_ide+'_ç_'+item
-        print(key_ide)
-
         if self.__contains_func_key(key_ide):
             print('FAZER A CHAMADA DO ERRO AQUI: #função existente')
         else:
@@ -183,17 +181,17 @@ class semantic_analyzer:
             key_ide= key_ide+'_ç_'+item
 
         if not self.__contains_func_key(key_ide):
-            print('FAZER A CHAMADA DO ERRO AQUI: #variável não declarada anteriormente') 
+            print('FAZER A CHAMADA DO ERRO AQUI: #funcao não declarada anteriormente') 
 
 
     def __get_params_type(self, scope, params, type_tokens_params):
         params_type = []
 
-        for i in range (0, len(params)-1):
+        for i in range (0, len(params)):
 
             if type_tokens_params[i] == 'IDE':
                 param = params[i]
-                if self.__contains_var(scope, params):
+                if self.__contains_var(scope, param):
                     index_var = self.table_var[scope]['ide'].index(param)
                     tipo_var = self.table_var[scope]['tipo'][index_var]
                     params_type.append(tipo_var)
