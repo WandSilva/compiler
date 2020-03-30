@@ -672,7 +672,7 @@ class SyntaticAnalyzer:
             self.callArrayVarification_Struct(sizeArray)
 
         if (arrayControl == True):
-            if (self.semantic.contains_array(escopo,nameVar)):
+            if (self.semantic.__contains_array(escopo,nameVar)):
                 self.semantic.msg_semantic_errors_var(escopo, nameVar, None, lineError, None, "VAR_DV")
             else:
                 self.semantic.add_array(escopo,typeVar,nameVar,sizeArray,None)
@@ -768,7 +768,7 @@ class SyntaticAnalyzer:
             self.callArrayVarification(sizeArray)
 
         if (arrayControl == True):
-            if (self.semantic.contains_array(escopo,nameVar)):
+            if (self.semantic.__contains_array(escopo,nameVar)):
                 self.semantic.msg_semantic_errors_var(escopo, nameVar, None, lineError, None, "VAR_DV")
             else:
                 self.semantic.add_array(escopo,typeVar,nameVar,sizeArray,None)
@@ -1023,7 +1023,7 @@ class SyntaticAnalyzer:
         if self.lexemToken in self.firstCommand or self.typeLexema in self.firstCommand:
             self.callCommands(functionName)           
           
-        self.callReturn()
+        self.callReturn(functionName)
 
         if self.lexemToken == "}":
             self.getNextToken()
@@ -1279,7 +1279,7 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "("):
                 self.getNextToken()
         
-        self.callRelationalExp()
+        self.callRelationalExp(escopo)
 
         if self.lexemToken == ')':
             self.getNextToken()
@@ -1371,7 +1371,7 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "("):
                 self.getNextToken()
 
-        self.callRelationalExp()
+        self.callRelationalExp(escopo)
         
         if self.lexemToken == ')':
             self.getNextToken()
@@ -1433,7 +1433,7 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "("):
                 self.getNextToken()
         
-        self.callReadParam()
+        self.callReadParam(escopo)
 
         if self.lexemToken == ")":
             self.getNextToken()
@@ -1458,11 +1458,14 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
 
-    def callReadParam(self):
+    def callReadParam(self, escopo):
         if self.lexemToken in self.firstReadParam:
-            self.callCallVariable()
+            real_escopo = ""
+            variable = ""
+            self.callCallVariable(escopo, real_escopo, variable)
+            #ERRO SEMANTICO BUSCA VARIAVEL
             if self.lexemToken in self.firstMoreReadParams:
-                self.callMoreReadParams()
+                self.callMoreReadParams(escopo)
         else:
             while (not ((self.lexemToken in self.firstReadParam) or (self.lexemToken in self.FollowReadParam)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstReadParam))
@@ -1470,13 +1473,13 @@ class SyntaticAnalyzer:
             if (not self.lexemToken in self.firstReadParam):
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "parametros", "R"))
             elif (self.lexemToken in self.firstReadParam):
-                self.callReadParam()
+                self.callReadParam(escopo)
 
     
-    def callMoreReadParams(self):
+    def callMoreReadParams(self, escopo):
         if self.lexemToken in self.firstMoreReadParams:
             self.getNextToken()
-            self.callReadParam()
+            self.callReadParam(escopo)
         else:
             while (not ((self.lexemToken in self.firstMoreReadParams) or (self.lexemToken in self.FollowMoreReadParams)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstMoreReadParams))
@@ -1510,7 +1513,7 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "("):
                 self.getNextToken()
         
-        self.callPrintParams()
+        self.callPrintParams(escopo)
 
         if self.lexemToken == ")":
             self.getNextToken()
@@ -1535,12 +1538,12 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
 
-    def callPrintParams(self):
+    def callPrintParams(self, escopo):
         if self.lexemToken in self.firstPrintParams or self.typeLexema in self.firstPrintParams:
-            self.callPrintParam()
+            self.callPrintParam(escopo)
             
             if self.lexemToken in self.firstMorePrintParams:
-                self.callMorePrintParams()
+                self.callMorePrintParams(escopo)
         else:
             while (not ((self.lexemToken in self.firstPrintParams) or (self.lexemToken in self.FollowPrintParams)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstPrintParam))
@@ -1548,15 +1551,18 @@ class SyntaticAnalyzer:
             if (not self.lexemToken in self.firstPrintParams):
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "parametros", "P"))
             elif (self.lexemToken in self.firstPrintParams):
-                self.callPrintParams()
+                self.callPrintParams(escopo)
 
 
-    def callPrintParam(self):
+    def callPrintParam(self, escopo):
         if self.lexemToken in self.firstPrintParam or self.typeLexema in self.firstPrintParam:
             if (self.typeLexema == "CDC"):
                 self.getNextToken()
             elif (self.lexemToken in self.firstCallVariable):
-                self.callCallVariable()
+                real_escopo = ""
+                variable = ""
+                self.callCallVariable(escopo, real_escopo, variable)
+                #ERRO SEMANTICO BUSCA VARIAVEL
         else:
             while (not ((self.lexemToken in self.firstPrintParam) or (self.lexemToken in self.FollowPrintParam)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstPrintParam))
@@ -1564,24 +1570,27 @@ class SyntaticAnalyzer:
             if (not self.lexemToken in self.firstPrintParam):
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "parametros", "P"))
             elif (self.lexemToken in self.firstPrintParam):
-                self.callReadParam()   
+                self.callPrintParam(escopo)   
 
 
-    def callMorePrintParams(self):
+    def callMorePrintParams(self, escopo):
         if (self.lexemToken in self.firstMorePrintParams):
             self.getNextToken()
-            self.callPrintParams
+            self.callPrintParams(escopo)
         else:
             while (not ((self.lexemToken in self.firstMorePrintParams) or (self.lexemToken in self.FollowMorePrintParams)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstMorePrintParams))
                 self.getNextToken()
             if (self.lexemToken in self.firstMorePrintParams):
-                self.callMorePrintParams()
+                self.callMorePrintParams(escopo)
 
 
     def callAssignment(self, escopo):
         if self.lexemToken in self.firstCallVariable:
-            self.callCallVariable()
+            variable = ""
+            real_escopo = ""
+            self.callCallVariable(escopo, real_escopo, variable)
+            #ERRO SEMANTICO BUSCA VARIAVEL
             if self.lexemToken == '=':
                 self.getNextToken()
             else:
@@ -1610,7 +1619,7 @@ class SyntaticAnalyzer:
                     self.getNextToken()
 
         elif self.lexemToken in self.firstUnaryOP:
-            self.callUnaryOp()
+            self.callUnaryOp(escopo)
         else:
             pass
 
@@ -1619,7 +1628,7 @@ class SyntaticAnalyzer:
         if self.typeLexema in self.firstCallProcedure_Function:
             self.callCallProcedureFunction(escopo)
         elif self.lexemToken in self.firstExpression:
-            self.callExpression()
+            self.callExpression(escopo)
         elif self.typeLexema == 'CDC':
             self.getNextToken()
         elif self.typeLexema == "NRO":
@@ -1629,7 +1638,7 @@ class SyntaticAnalyzer:
 
 
 
-    def callStruct(self):
+    def callStruct(self, escopo):
         if self.lexemToken == '.':
             self.getNextToken()
         else:
@@ -1653,7 +1662,7 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
         if self.lexemToken in self.firstPaths:
-            self.callPaths()
+            self.callPaths(escopo)
         else:
             while (not ((self.lexemToken in self.firstPaths) or (self.lexemToken in self.FollowStruct)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstPaths))
@@ -1664,26 +1673,26 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
 
-    def callPaths(self):
+    def callPaths(self, escopo):
         if self.lexemToken == '.':
-            self.callStruct()
+            self.callStruct(escopo)
         
         elif self.lexemToken in self.firstMatrAssign:
-            self.callMatrAssign()
+            self.callMatrAssign(escopo)
         
 
-    def callMatrAssign(self):
+    def callMatrAssign(self, escopo):
         if self.lexemToken == '[':
-            self.callCell()
+            self.callCell(escopo)
         else:
             pass
         if self.lexemToken in self.firstPaths:
-            self.callPaths()
+            self.callPaths(escopo)
         else:
             pass
 
 
-    def callCell(self):
+    def callCell(self, escopo):
         if self.lexemToken == ('['):
             self.getNextToken()
             if self.typeLexema == 'NRO':
@@ -1698,7 +1707,10 @@ class SyntaticAnalyzer:
         elif self.lexemToken == ('['):
             self.getNextToken()
             if self.typeLexema in self.firstCallVariable:
-                self.callCallVariable()
+                real_escopo = ""
+                variable = ""
+                self.callCallVariable(escopo, real_escopo, variable)
+                #ERRO SEMANTICO BUSCA VARIAVEL
             else:
                 pass
             if self.lexemToken == ']':
@@ -1749,36 +1761,36 @@ class SyntaticAnalyzer:
         
 
 
-    def callComandsExp(self):
+    def callComandsExp(self, escopo):
         if self.lexemToken in self.firstAritmeticExp:
-                self.callRelationalExp()
+                self.callRelationalExp(escopo)
         elif self.lexemToken in self.firstLogicalOperators:
-             self.callOptLogicalExp()
+             self.callOptLogicalExp(escopo)
         else:
             pass        
 
     
-    def callExpression(self):
+    def callExpression(self, escopo):
         if self.lexemToken in self.firstLogicalExp:
-                self.callLogicalExp()
+                self.callLogicalExp(escopo)
         elif self.lexemToken in self.firstAritmeticExp:
-            self.callAritmeticExp()
+            self.callAritmeticExp(escopo)
         else:
             pass
 
 
-    def callRelationalExp(self):
+    def callRelationalExp(self, escopo):
         if self.lexemToken in self.firstAritmeticExp:
-            self.callAritmeticExp()
+            self.callAritmeticExp(escopo)
             if self.lexemToken in self.firstPossRelExp:
-                self.callPosRelExp()
+                self.callPosRelExp(escopo)
             else:
                 pass    
         
         elif self.lexemToken == '(':
             self.getNextToken
             if self.lexemToken in self.firstLogicalExp:
-                self.callLogicalExp()
+                self.callLogicalExp(escopo)
             else:
                 pass
             if self.getNextToken == ')':
@@ -1789,103 +1801,103 @@ class SyntaticAnalyzer:
             pass
 
 
-    def callOptLogicalExp(self):
+    def callOptLogicalExp(self, escopo):
         if self.lexemToken in self.firstLogicalOperators:
                 self.getNextToken()
         else:
             pass
         if self.lexemToken in self.firstLogicalExp:
-                self.callLogicalExp()
+                self.callLogicalExp(escopo)
         else:
             pass
         
 
-    def callLogicalExp(self):
+    def callLogicalExp(self, escopo):
         if self.lexemToken in self.firstAritmeticExp:
-            self.callRelationalExp()
+            self.callRelationalExp(escopo)
         else:
             pass
         if self.lexemToken in self.firstLogicalOperators:
-             self.callOptLogicalExp()
+             self.callOptLogicalExp(escopo)
         else:
             pass        
 
 
-    def callPosRelExp(self):
+    def callPosRelExp(self, escopo):
         if self.lexemToken in self.firstRelationalLessPrec:
             self.getNextToken()
             if self.lexemToken in self.firstAritmeticExp:
-                self.callAritmeticExp()
+                self.callAritmeticExp(escopo)
             else:
                 pass
             if self.lexemToken in self.firstRelationalMorePrec:
-                self.callInequalityExp()
+                self.callInequalityExp(escopo)
             else:
                 pass
             if self.lexemToken in self.firstRelationalLessPrec:
-                self.callEqualityExp()
+                self.callEqualityExp(escopo)
             else:
                 pass
 
         elif self.lexemToken in self.firstRelationalMorePrec:
             self.getNextToken()
             if self.lexemToken in self.firstAritmeticExp:
-                self.callAritmeticExp()
+                self.callAritmeticExp(escopo)
             else:
                 pass
             if self.lexemToken in self.firstRelationalMorePrec:
-                self.callInequalityExp()
+                self.callInequalityExp(escopo)
             else:
                 pass
         else:
             pass
 
 
-    def callEqualityExp(self):
+    def callEqualityExp(self, escopo):
         if self.lexemToken in self.firstRelationalLessPrec:
             self.getNextToken()
         else:
             pass
         if self.lexemToken in self.firstAritmeticExp:
-            self.callAritmeticExp()
+            self.callAritmeticExp(escopo)
         else:
             pass
         if self.lexemToken in self.firstRelationalMorePrec:
-            self.callInequalityExp()
+            self.callInequalityExp(escopo)
         else:
             pass
         if self.lexemToken in self.firstRelationalLessPrec:
-            self.callEqualityExp()
+            self.callEqualityExp(escopo)
         else:
             pass
 
 
-    def callInequalityExp(self):
+    def callInequalityExp(self, escopo):
         if self.lexemToken in self.firstRelationalMorePrec:
             self.getNextToken()
         else:
             pass
         if self.lexemToken in self.firstAritmeticExp:
-            self.callAritmeticExp()
+            self.callAritmeticExp(escopo)
         else:
             pass
         if self.lexemToken in self.firstRelationalLessPrec:
-            self.callEqualityExp()
+            self.callEqualityExp(escopo)
         else:
             pass
 
 
-    def callAritmeticExp(self):
+    def callAritmeticExp(self, escopo):
         if self.lexemToken in self.firstOpUnary:
-            self.callOperation()
+            self.callOperation(escopo)
             if self.lexemToken in self.firstPlusMinus:
-                self.callOpSum()
+                self.callOpSum(escopo)
             else:
                 pass
         elif self.lexemToken == '(':
             self.getNextToken()
             if self.lexemToken in self.firstAritmeticExp:
-                self.callRelationalExp()
+                self.callRelationalExp(escopo)
             else: 
                 pass
             if self.lexemToken == ')':
@@ -1896,24 +1908,24 @@ class SyntaticAnalyzer:
             pass    
 
 
-    def callOperation(self):
+    def callOperation(self, escopo):
         if self.lexemToken in self.firstOpUnary:
-            self.callOpUnary()
+            self.callOpUnary(escopo)
         else:
             pass
         if self.lexemToken in self.firstTimesDivision:
-            self.callOpMultiplication()
+            self.callOpMultiplication(escopo)
         else: 
             pass
 
 
-    def callOpSum(self):
+    def callOpSum(self, escopo):
         if self.lexemToken in self.firstPlusMinus:
             self.getNextToken()
         else:
             pass
         if self.lexemToken in self.firstOpUnary:
-            self.callOperation()
+            self.callOperation(escopo)
         else:
             pass
         if self.lexemToken in self.firstPlusMinus:
@@ -1922,28 +1934,28 @@ class SyntaticAnalyzer:
             pass  
         
 
-    def callOpMultiplication(self):
+    def callOpMultiplication(self, escopo):
         if self.lexemToken in self.firstTimesDivision:
             self.getNextToken()
         else:
             pass
         if self.lexemToken in self.firstUnaryOP:
-            self.callOpUnary()
+            self.callOpUnary(escopo)
         else:
             pass
         if self.lexemToken in self.firstTimesDivision:
-            self.callOpMultiplication() 
+            self.callOpMultiplication(escopo) 
 
 
-    def callOpUnary(self):
+    def callOpUnary(self, escopo):
         if self.lexemToken in self.firstUnaryOP:
-            self.callUnaryOp()
+            self.callUnaryOp(escopo)
         elif self.lexemToken in self.firstFinalValue:
-            self.callFinalValue()
+            self.callFinalValue(escopo)
         elif self.lexemToken == '(':
             self.getNextToken()
             if self.lexemToken in self.firstAritmeticExp:
-                self.callAritmeticExp()
+                self.callAritmeticExp(escopo)
             else:
                 pass
             if self.lexemToken == ')':
@@ -1952,23 +1964,28 @@ class SyntaticAnalyzer:
             pass
 
 
-    def callUnaryOp(self):
+    def callUnaryOp(self, escopo):
         if self.lexemToken in self.firstUnaryOP:
             self.getNextToken()
             if self.lexemToken in self.firstFinalValue:
-                self.callFinalValue()
+                self.callFinalValue(escopo)
         elif self.lexemToken in self.firstFinalValue:
-            self.callFinalValue()
+            self.callFinalValue(escopo)
             if self.lexemToken in self.firstUnaryOP:
                 self.getNextToken()
         elif self.lexemToken == '!':
             if self.lexemToken in self.firstCallVariable:
-                self.callCallVariable()
+                real_escopo = ""
+                variable = ""
+                self.callCallVariable(escopo, real_escopo, variable)
+                #ERRO SEMANTICO BUSCA VARIAVEL
 
 
-    def callFinalValue(self):
+    def callFinalValue(self, escopo):
         if self.lexemToken in self.firstCallVariable:
-            self.callCallVariable()
+            real_escopo = ""
+            variable = ""
+            self.callCallVariable(escopo, real_escopo, variable)
         elif self.typeLexema == 'NRO':
             self.getNextToken()
         elif self.getNextToken in self.firstBooleanos:
@@ -1977,8 +1994,12 @@ class SyntaticAnalyzer:
             pass
 
 
-    def callCallVariable(self):
+    def callCallVariable(self, escopo, real_escopo, variable):
         if self.lexemToken in self.firstModifier:
+            if (self.lexemToken == "local"):
+                real_escopo = self.lexemToken
+            else:
+                real_escopo = "global_var"
             self.getNextToken()
         else:
             while (not ((self.lexemToken in self.firstModifier) or (self.lexemToken == ".") or (self.lexemToken in self.FollowCallVariable)) and (not self.lexemToken == None)):
@@ -2001,6 +2022,7 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
         if self.typeLexema == "IDE":
+            variable = self.lexemToken
             self.getNextToken()
         else:
             while (not ((self.typeLexema == "IDE") or (self.lexemToken in self.firstPaths) or (self.lexemToken in self.FollowCallVariable)) and (not self.lexemToken == None)):
@@ -2011,10 +2033,10 @@ class SyntaticAnalyzer:
             elif (self.typeLexema == "IDE"):
                 self.getNextToken()
         if self.lexemToken in self.firstPaths:
-            self.callPaths()
+            self.callPaths(escopo)
 
     
-    def callReturn(self):
+    def callReturn(self, escopo):
         if self.lexemToken in self.firstReturn:
             self.getNextToken()
         else:
@@ -2025,8 +2047,10 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "palavra", "return"))
             elif (self.lexemToken == "return"):
                 self.getNextToken()
-        
-        self.callCallVariable() #Pois "callExpression" não funciona
+        real_escopo = ""
+        variable = ""
+        self.callCallVariable(escopo, real_escopo, variable) #Pois "callExpression" não funciona
+        #ERRO SEMANTICO BUSCA VARIAVEL
         #self.callExpression()
 
         if self.lexemToken == ";":
