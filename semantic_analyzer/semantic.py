@@ -249,7 +249,18 @@ class semantic_analyzer:
             if(tipo_array1 != tipo_array2):
                 print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
 
+    def check_return (self, scope, ide):
+        if(not (self.__contains_var(scope, ide))):
+            print('FAZER A CHAMADA DO ERRO AQUI: #variavel não declarada no escopo')
+        else:
+            index_var1 = self.table_var[scope]['ide'].index(ide)
+            tipo_var1 = self.table_var[scope]['tipo'][index_var1]
 
+            index_func = self.table_func[scope]['ide'].index(scope)
+            tipo_func = self.table_func[scope]['tipo'][index_func]
+
+            if (not(tipo_var1 == tipo_func)):
+                print('FAZER A CHAMADA DO ERRO AQUI: #variável de retorno tem tipo diferente da função ')
 
 
 
