@@ -48,6 +48,9 @@ class semantic_analyzer:
             elif(assign_type == 'func'): 
                 self.__assign_func_to_var(scope, ide, value)
 
+            elif(assign_type == 'array'):
+                self.__assign_array_to_var(scope,ide, value)
+
             elif(assign_type == 'exp'):
                 pass
 
@@ -65,6 +68,19 @@ class semantic_analyzer:
             if(tipo_var1 == tipo_var2):
                 self.table_var[scope]['value'][index_var1] = value_var2 #bota na tabela
             else:
+                print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
+
+    def __assign_array_to_var(self, scope, ide, value):
+        if not self.__contains_array(scope, value): #verifica se o array não existe
+            print('FAZER A CHAMADA DO ERRO AQUI: #array não declarado anteriormente') 
+        else:
+            index_var = self.table_var[scope]['ide'].index(ide)
+            tipo_var = self.table_var[scope]['tipo'][index_var]
+
+            index_array = self.table_array[scope]['ide'].index(value)
+            tipo_array = self.table_array[scope]['tipo'][index_array]
+            
+            if(tipo_var != tipo_array):
                 print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
 
     def __assign_func_to_var(self, scope, ide, value):
@@ -113,7 +129,7 @@ class semantic_analyzer:
     
 
     #MÉTODOS PARA MANIPULAR A TABELA DE STRUCTS
-    def contains_struct(self, ide, scope):
+    def __contains_struct(self, ide, scope):
         struct_key = ide+'ç'+scope
         return True if struct_key in self.table_struct.keys() else False
        
@@ -123,34 +139,50 @@ class semantic_analyzer:
         if struct_key not in self.table_struct:
             self.__add_struct_key(struct_key)
 
-        self.table_struct[struct_key]['ide'] = ide
-        self.table_struct[struct_key]['scope'] = scope
-        self.table_struct[struct_key]['type_atrributes'].append(type_atrributes)
-        self.table_struct[struct_key]['atrributes'].append(atrributes)
-        self.table_struct[struct_key]['extend'] = extend
+        if self.__contains_struct(ide, scope):
+            print('FAZER A CHAMADA DO ERRO AQUI: #sctruct ja declarada')
+        else:
+            self.table_struct[struct_key]['ide'] = ide
+            self.table_struct[struct_key]['scope'] = scope
+            self.table_struct[struct_key]['type_atrributes'].append(type_atrributes)
+            self.table_struct[struct_key]['atrributes'].append(atrributes)
+            self.table_struct[struct_key]['extend'] = extend
 
     def __add_struct_key(self, strcut_key):
         self.table_struct[strcut_key] = dict(ide = None, scope = None, extend = None, type_atrributes = [], atrributes = [])
 
     
     #MÉTODOS PARA MANIPULAR A TABELA DE ARRAYS
-    def contains_array(self, scope, ide):
+    def __contains_array(self, scope, ide):
         if scope in self.table_array.keys():
             if ide in self.table_array[scope]['ide']:
                 return True
         return False
 
-    def add_array(self, scope, tipo, ide, size, value):
+    def add_array(self, scope, tipo, ide, size1, size2, size3):
         if scope not in self.table_array:
             self.__add_array_scope(scope)
 
+        if self.__contains_array(scope, ide):
+            print('FAZER A CHAMADA DO ERRO AQUI: #array ja declarado')
+            return None
+
+        if (size1[0].isdigit() and size2[0].isdigit() and size1[0].isdigit()):
+            if not (isinstance(int(size1), int) and isinstance(int(size2), int) and isinstance(int(size3), int)):
+                print('FAZER A CHAMADA DO ERRO AQUI: #array dim deve ser um int')
+                return None
+        else:
+            print('FAZER A CHAMADA DO ERRO AQUI: #array dim deve ser um int')
+            return None
+
         self.table_array[scope]['tipo'].append(tipo)
         self.table_array[scope]['ide'].append(ide)
-        self.table_array[scope]['value'].append(value)
-        self.table_array[scope]['size'].append(size)
+        self.table_array[scope]['size1'].append(size1)
+        self.table_array[scope]['size2'].append(size2)
+        self.table_array[scope]['size3'].append(size3)
 
     def __add_array_scope(self, scope): 
-        self.table_array[scope] = dict(tipo = [], ide = [], size = [], value = [])
+        self.table_array[scope] = dict(tipo = [], ide = [], size1 = [], size2 = [], size3 = [])
 
 
     #MÉTODOS PARA MANIPULAR A TABELA DE FUNÇÕES
@@ -212,7 +244,6 @@ class semantic_analyzer:
                 params_type.append('boolean')
         
         return params_type
-
 
 
     #MANIPULAÇÃO DOS ERROS
