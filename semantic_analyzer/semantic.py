@@ -31,70 +31,70 @@ class semantic_analyzer:
         self.table_var[scope] = dict(tipo = [], ide = [], value = [])
 
     #método pra atribuir valor
-    def assign_var(self, scope, ide, value, assign_type):
-        if not self.__contains_var(scope, ide): #verifica se a variavel não existe
+    def assign_var(self, ide, scope1, value, scope2, assign_type):
+        if not self.__contains_var(scope1, ide): #verifica se a variavel não existe
             print('FAZER A CHAMADA DO ERRO AQUI: #variável não declarada anteriormente') 
         else:
             if(assign_type == 'primitivo'): #se for uma atribuição com valores normais
-                if self.__is_corect_type(scope, ide, value, 'var'): #verifica se o tipo ta certo
-                    index = self.table_var[scope]['ide'].index(ide)
-                    self.table_var[scope]['value'][index] = value #bota na tabela
+                if self.__is_corect_type(scope1, ide, value, 'var'): #verifica se o tipo ta certo
+                    index = self.table_var[scope1]['ide'].index(ide)
+                    self.table_var[scope1]['value'][index] = value #bota na tabela
                 else:
                     print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
         
             elif(assign_type == 'variavel'): 
-                self.__assign_var_to_var(scope, ide, value)
+                self.__assign_var_to_var(scope1, ide, value, scope2)
 
             elif(assign_type == 'func'): 
-                self.__assign_func_to_var(scope, ide, value)
+                self.__assign_func_to_var(scope1, ide, value)
 
             elif(assign_type == 'array'):
-                self.__assign_array_to_var(scope,ide, value)
+                self.__assign_array_to_var(scope1, ide, value, scope2)
 
             elif(assign_type == 'exp'):
                 pass
 
-    def __assign_var_to_var(self, scope, ide, value):
-        if not self.__contains_var(scope, value): #verifica se a variavel não existe
+    def __assign_var_to_var(self, scope1, ide, value, scope2):
+        if not self.__contains_var(scope2, value): #verifica se a variavel não existe
             print('FAZER A CHAMADA DO ERRO AQUI: #variável não declarada anteriormente') 
         else:
-            index_var1 = self.table_var[scope]['ide'].index(ide)
-            tipo_var1 = self.table_var[scope]['tipo'][index_var1]
+            index_var1 = self.table_var[scope1]['ide'].index(ide)
+            tipo_var1 = self.table_var[scope1]['tipo'][index_var1]
 
-            index_var2 = self.table_var[scope]['ide'].index(value)
-            tipo_var2 = self.table_var[scope]['tipo'][index_var2]
-            value_var2 = self.table_var[scope]['value'][index_var2]
+            index_var2 = self.table_var[scope2]['ide'].index(value)
+            tipo_var2 = self.table_var[scope2]['tipo'][index_var2]
+            value_var2 = self.table_var[scope2]['value'][index_var2]
             
             if(tipo_var1 == tipo_var2):
-                self.table_var[scope]['value'][index_var1] = value_var2 #bota na tabela
+                self.table_var[scope1]['value'][index_var1] = value_var2 #bota na tabela
             else:
                 print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
 
-    def __assign_array_to_var(self, scope, ide, value):
-        if not self.__contains_array(scope, value): #verifica se o array não existe
+    def __assign_array_to_var(self, scope1, ide, value, scope2):
+        if not self.__contains_array(scope2, value): #verifica se o array não existe
             print('FAZER A CHAMADA DO ERRO AQUI: #array não declarado anteriormente') 
         else:
-            index_var = self.table_var[scope]['ide'].index(ide)
-            tipo_var = self.table_var[scope]['tipo'][index_var]
+            index_var = self.table_var[scope1]['ide'].index(ide)
+            tipo_var = self.table_var[scope1]['tipo'][index_var]
 
-            index_array = self.table_array[scope]['ide'].index(value)
-            tipo_array = self.table_array[scope]['tipo'][index_array]
+            index_array = self.table_array[scope2]['ide'].index(value)
+            tipo_array = self.table_array[scope2]['tipo'][index_array]
             
             if(tipo_var != tipo_array):
                 print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
 
-    def __assign_func_to_var(self, scope, ide, value):
+    def __assign_func_to_var(self, scope1, ide, value):
         if not self.__contains_func_ide(value): #verifica se a função não existe
             print('FAZER A CHAMADA DO ERRO AQUI: #função não declarada') 
         else:
-            index_var = self.table_var[scope]['ide'].index(ide)
-            tipo_var = self.table_var[scope]['tipo'][index_var]
+            index_var = self.table_var[scope1]['ide'].index(ide)
+            tipo_var = self.table_var[scope1]['tipo'][index_var]
 
             index_func = self.table_func['ide'].index(value)
             tipo_func = self.table_func['tipo'][index_func]
             
             if(tipo_var == tipo_func):
-                self.table_var[scope]['value'][index_var] = value #verificar oq vai ficar armazenado
+                self.table_var[scope1]['value'][index_var] = value #verificar oq vai ficar armazenado
             else:
                 print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
 
@@ -190,45 +190,45 @@ class semantic_analyzer:
     def __add_array_scope(self, scope): 
         self.table_array[scope] = dict(tipo = [], ide = [], size1 = [], size2 = [], size3 = [])
 
-    def assign_array(self, scope, ide, value, assign_type):
-        if not self.__contains_array(scope, ide): #verifica se o array não existe
+    def assign_array(self, ide, scope1, value, scope2, assign_type):
+        if not self.__contains_array(scope1, ide): #verifica se o array não existe
             print('FAZER A CHAMADA DO ERRO AQUI: #array não declarado anteriormente') 
         else:
             if(assign_type == 'primitivo'): #se for uma atribuição com valores normais
-                if not self.__is_corect_type(scope, ide, value, 'array'): #verifica se o tipo ta certo
+                if not self.__is_corect_type(scope1, ide, value, 'array'): #verifica se o tipo ta certo
                     print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
         
             elif(assign_type == 'variavel'): 
-                self.__assign_var_to_array(scope, ide, value)
+                self.__assign_var_to_array(ide, scope1, value, scope2)
 
             elif(assign_type == 'func'): 
-                self.__assign_func_to_array(scope, ide, value)
+                self.__assign_func_to_array(ide, scope1, value)
 
             elif(assign_type == 'array'):
-                self.__assign_array_to_array(scope,ide, value)
+                self.__assign_array_to_array(ide, scope1, value, scope2)
 
             elif(assign_type == 'exp'):
                 pass
 
-    def __assign_var_to_array(self, scope, ide, value):
-        if not self.__contains_var(scope, value): #verifica se a variavel não existe
+    def __assign_var_to_array(self, ide, scope1, value, scope2):
+        if not self.__contains_var(scope2, value): #verifica se a variavel não existe
             print('FAZER A CHAMADA DO ERRO AQUI: #variável não declarada anteriormente') 
         else:
-            index_array = self.table_array[scope]['ide'].index(ide)
-            tipo_array = self.table_array[scope]['tipo'][index_array]
+            index_array = self.table_array[scope1]['ide'].index(ide)
+            tipo_array = self.table_array[scope1]['tipo'][index_array]
 
-            index_var2 = self.table_var[scope]['ide'].index(value)
-            tipo_var2 = self.table_var[scope]['tipo'][index_var2]
+            index_var2 = self.table_var[scope2]['ide'].index(value)
+            tipo_var2 = self.table_var[scope2]['tipo'][index_var2]
             
             if(tipo_array != tipo_var2):
                 print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
 
-    def __assign_func_to_array(self, scope, ide, value):
+    def __assign_func_to_array(self, ide, scope1, value):
         if not self.__contains_func_ide(value): #verifica se a função não existe
             print('FAZER A CHAMADA DO ERRO AQUI: #função não declarada') 
         else:
-            index_array = self.table_array[scope]['ide'].index(ide)
-            tipo_array = self.table_array[scope]['tipo'][index_array]
+            index_array = self.table_array[scope1]['ide'].index(ide)
+            tipo_array = self.table_array[scope1]['tipo'][index_array]
 
             index_func = self.table_func['ide'].index(value)
             tipo_func = self.table_func['tipo'][index_func]
@@ -236,20 +236,20 @@ class semantic_analyzer:
             if not (tipo_array == tipo_func):
                 print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
 
-    def __assign_array_to_array(self, scope,ide, value):
-        if not self.__contains_array(scope, value): #verifica se o array não existe
+    def __assign_array_to_array(self, ide, scope1, value, scope2):
+        if not self.__contains_array(scope2, value): #verifica se o array não existe
             print('FAZER A CHAMADA DO ERRO AQUI: #array não declarado anteriormente') 
         else:
-            index_array1 = self.table_array[scope]['ide'].index(ide)
-            tipo_array1 = self.table_array[scope]['tipo'][index_array1]
+            index_array1 = self.table_array[scope1]['ide'].index(ide)
+            tipo_array1 = self.table_array[scope1]['tipo'][index_array1]
 
-            index_array2 = self.table_array[scope]['ide'].index(value)
-            tipo_array2 = self.table_array[scope]['tipo'][index_array2]
+            index_array2 = self.table_array[scope2]['ide'].index(value)
+            tipo_array2 = self.table_array[scope2]['tipo'][index_array2]
             
             if(tipo_array1 != tipo_array2):
                 print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
 
-
+    
 
 
 
