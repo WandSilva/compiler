@@ -20,9 +20,11 @@ semantic = semantic_analyzer()
 #semantic.assign_var('start', 'x', 'y', 'variavel')
 
 #teste add array
-semantic.add_var('start', 'int', 'x', '1')
-semantic.add_array('start', 'int', 'lista', 'x', '0', '0')
-semantic.assign_var('start', 'x', 'lista', 'array')
+semantic.add_var('start', 'float', 'x', '1')
+semantic.add_array('start', 'int', 'lista', '2', '0', '0')
+semantic.add_array('start', 'float', 'lista2', '2', '0', '0')
+semantic.add_func('add', 'string', ['string', 'boolean'], ['a', 'b'])
+semantic.assign_array('start', 'lista', 'add', 'func')
 
 
 #teste add retorno funcao
