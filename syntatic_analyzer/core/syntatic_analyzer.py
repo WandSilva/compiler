@@ -647,20 +647,6 @@ class SyntaticAnalyzer:
                     
                 self.callVarValuesDeclaration_Struct(type_atrributes, atrributes)
 
-        else:
-            #token = self.lookNextToken()
-            #token2 = self.lookNextNextToken()
-            #if token.tipo == "IDE" and token2.lexema in self.firstIDE_Struct2:
-            #    self.listErrors.append(self.errorMessage(self.errorLineToken, "palavra", "struct"))
-            #    self.callIDE_Struct()
-            #    self.callVarValuesDeclaration()
-            while (not (self.lexemToken in self.firstVarValuesDeclaration or self.lexemToken in self.FollowVarValuesDeclaration) and (not self.lexemToken == None)):
-                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.FollowVarValuesDeclaration))
-                self.getNextToken()
-            if self.lexemToken in self.firstVarValuesDeclaration:
-                self.callVarValuesDeclaration(escopo)()
-            else:
-                pass
 
 
     def callVarValuesAttribution_Struct(self, type_atrributes, atrributes): #NECESSITA MODIFICAR
@@ -683,7 +669,7 @@ class SyntaticAnalyzer:
 
         if self.lexemToken in self.firstArrayVerification:
             arrayControl = True
-            self.callArrayVarification(sizeArray)
+            self.callArrayVarification_Struct(sizeArray)
 
         if (arrayControl == True):
             if (self.semantic.contains_array(escopo,nameVar)):
@@ -949,6 +935,8 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "}"):
                 self.getNextToken()
 
+        self.semantic.add_struct(nameStruct,escopo, name_extends, type_atrributes, atrributes)
+
             
     def callFunctionProcedure(self):
         if self.lexemToken in self.firstFunctions_Procedures:
@@ -1033,7 +1021,7 @@ class SyntaticAnalyzer:
 
         self.callVarFunctionsProcedures(functionName)
         if self.lexemToken in self.firstCommand or self.typeLexema in self.firstCommand:
-            self.callCommands()           
+            self.callCommands(functionName)           
           
         self.callReturn()
 
@@ -1104,7 +1092,7 @@ class SyntaticAnalyzer:
         self.callVarFunctionsProcedures(procedureName)
         
         if self.lexemToken in self.firstCommand or self.typeLexema in self.firstCommand:
-            self.callCommands()
+            self.callCommands(procedureName)
 
         if self.lexemToken == "}":
             self.getNextToken()
@@ -1234,41 +1222,41 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
     
-    def callCommands(self):
+    def callCommands(self, escopo):
         if self.lexemToken in self.firstCommand or self.typeLexema in self.firstCommand:
-            self.callCommand()
+            self.callCommand(escopo)
             if self.lexemToken in self.firstCommands:
-                self.callCommands()
+                self.callCommands(escopo)
 
         else:
             while (not ((self.lexemToken in self.firstCommand) or (self.typeLexema in self.firstCommand) or (self.lexemToken in self.FollowCommand)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstCommand))
                 self.getNextToken()
             if self.lexemToken in self.firstCommand or self.typeLexema in self.firstCommand:
-                self.callCommands()
+                self.callCommands(escopo)
 
 
-    def callCommand(self):
+    def callCommand(self, escopo):
         if self.lexemToken in self.firstCommandIf:
-            self.callIfStatement()
+            self.callIfStatement(escopo)
 
         elif self.lexemToken in self.firstCommandWhile:
-            self.callWhileStatement()
+            self.callWhileStatement(escopo)
 
         elif self.lexemToken in self.firstCommandRead:
-            self.callReadStatement()
+            self.callReadStatement(escopo)
 
         elif self.lexemToken in self.firstCommandPrint:
-            self.calPrintStatement()
+            self.calPrintStatement(escopo)
 
         elif self.lexemToken in self.firstAssignment or self.typeLexema in self.firstAssignment:
-            self.callAssignment()
+            self.callAssignment(escopo)
 
         elif self.typeLexema in self.firstCallProcedure_Function:
-            self.callCallProcedureFunction()            
+            self.callCallProcedureFunction(escopo)            
 
     
-    def callIfStatement(self):
+    def callIfStatement(self, escopo):
         if self.lexemToken in self.firstCommandIf:
             self.getNextToken()
         else:
@@ -1327,7 +1315,7 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
         if self.lexemToken in self.firstCommand or self.typeLexema in self.firstCommand:
-            self.callCommands()
+            self.callCommands(escopo)
         
         if self.lexemToken == '}':
             self.getNextToken()
@@ -1341,10 +1329,10 @@ class SyntaticAnalyzer:
                 self.getNextToken()
         
         if self.lexemToken == "else":
-            self.callElseStatement()
+            self.callElseStatement(escopo)
 
     
-    def callElseStatement(self):
+    def callElseStatement(self, escopo):
         self.getNextToken()
         
         if self.lexemToken == "{":
@@ -1353,14 +1341,14 @@ class SyntaticAnalyzer:
           pass  
         
         if self.lexemToken in self.firstCommands or self.typeLexema in self.firstCommand:
-            self.callCommands()
+            self.callCommands(escopo)
             
         if self.lexemToken == "}":
             self.getNextToken()
         else:
           pass  
     
-    def callWhileStatement(self):
+    def callWhileStatement(self, escopo):
         if self.lexemToken in self.firstCommandWhile:
             self.getNextToken()
         else:
@@ -1408,7 +1396,7 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
         if self.lexemToken in self.firstCommand or self.typeLexema in self.firstCommand:
-            self.callCommands()
+            self.callCommands(escopo)
         
         if self.lexemToken == '}':
             self.getNextToken()
@@ -1422,7 +1410,7 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
     
-    def callReadStatement(self):
+    def callReadStatement(self, escopo):
         if self.lexemToken in self.firstCommandRead:
             self.getNextToken()
         else:
@@ -1499,7 +1487,7 @@ class SyntaticAnalyzer:
                 pass
 
 
-    def calPrintStatement(self):
+    def calPrintStatement(self, escopo):
         if self.lexemToken in self.firstCommandPrint:
             self.getNextToken()
         else:
@@ -1591,7 +1579,7 @@ class SyntaticAnalyzer:
                 self.callMorePrintParams()
 
 
-    def callAssignment(self):
+    def callAssignment(self, escopo):
         if self.lexemToken in self.firstCallVariable:
             self.callCallVariable()
             if self.lexemToken == '=':
@@ -1606,7 +1594,7 @@ class SyntaticAnalyzer:
                     self.getNextToken()
 
             if (self.lexemToken in self.firstAssign2 or self.typeLexema in self.firstAssign2):
-                self.callAssign2()
+                self.callAssign2(escopo)
             else:
                 pass
             
@@ -1627,9 +1615,9 @@ class SyntaticAnalyzer:
             pass
 
     
-    def callAssign2(self):
+    def callAssign2(self, escopo):
         if self.typeLexema in self.firstCallProcedure_Function:
-            self.callCallProcedureFunction()
+            self.callCallProcedureFunction(escopo)
         elif self.lexemToken in self.firstExpression:
             self.callExpression()
         elif self.typeLexema == 'CDC':
@@ -1721,7 +1709,7 @@ class SyntaticAnalyzer:
             pass
 
     
-    def callCallProcedureFunction(self):
+    def callCallProcedureFunction(self, escopo): ##
         nameFP = ""
         if (self.typeLexema == "IDE"):
             nameFP = self.lexemToken
@@ -1741,9 +1729,9 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
         name_params = []
-        type_token_params = []
+        type_tokens_params = []
         if self.lexemToken in self.firstParamListInFuncProc or self.typeLexema in self.firstParamListInFuncProc:
-            self.callParamListInFuncProc(name_params, type_token_params)
+            self.callParamListInFuncProc(name_params, type_tokens_params)
 
         if (self.lexemToken == ")"):
             self.getNextToken()
@@ -1756,11 +1744,9 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == ")"):
                 self.getNextToken()
 
-        if(__contains_func_ide(nameFP)): #EDITAR 
-            pass
+        self.semantic.call_func(escopo, nameFP, name_params, type_tokens_params)
 
-        else:
-            pass
+        
 
 
     def callComandsExp(self):
