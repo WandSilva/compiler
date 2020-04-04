@@ -626,14 +626,14 @@ class SyntaticAnalyzer:
                 self.callConstMoreAttributions(escopo, typeConst)
         
 
-    def callVarValuesDeclaration_Struct(self, type_atrributes, atrributes): #FUNÇAO PRA TRATAMENTO DOS ATRIBUTOS DE STRUCTS
+    def callVarValuesDeclaration_Struct(self, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array): #FUNÇAO PRA TRATAMENTO DOS ATRIBUTOS DE STRUCTS
         if self.lexemToken in self.firstVarValuesDeclaration:
             if self.lexemToken in self.firstType:
                 type_atrributes.append(self.lexemToken)
 
                 self.getNextToken()
-                self.callVarValuesAttribution_Struct(type_atrributes, atrributes)
-                self.callVarMoreAttributions_Struct(type_atrributes, atrributes)
+                self.callVarValuesAttribution_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array)
+                self.callVarMoreAttributions_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array)
                 if self.lexemToken == ";":
                     self.getNextToken()
                 else:
@@ -645,13 +645,12 @@ class SyntaticAnalyzer:
                     elif (self.lexemToken == ";"):
                         self.getNextToken()
                     
-                self.callVarValuesDeclaration_Struct(type_atrributes, atrributes)
+                self.callVarValuesDeclaration_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array)
 
 
 
-    def callVarValuesAttribution_Struct(self, type_atrributes, atrributes): #NECESSITA MODIFICAR
+    def callVarValuesAttribution_Struct(self, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array): #NECESSITA MODIFICAR
         if self.typeLexema in self.firstVarValuesAttribution:
-            nameVar = self.lexemToken
             atrributes.append(self.lexemToken)
             lineError = self.errorLineToken
             self.getNextToken()
@@ -669,23 +668,27 @@ class SyntaticAnalyzer:
 
         if self.lexemToken in self.firstArrayVerification:
             arrayControl = True
-            self.callArrayVarification_Struct(sizeArray)
+            self.callArrayVarification(sizeArray)
 
         if (arrayControl == True):
-            if (self.semantic.__contains_array(escopo,nameVar)):
-                self.semantic.msg_semantic_errors_var(escopo, nameVar, None, lineError, None, "VAR_DV")
-            else:
-                self.semantic.add_array(escopo,typeVar,nameVar,sizeArray,None)
+            tipo_array.append(type_atrributes[len(type_atrributes) - 1]) #Coloca o tipo na lista de array
+            type_atrributes.pop(len(type_atrributes) - 1) #Remove o tipo da lista de variaveis
+
+            ide_array.append(atrributes[len(atrributes) - 1]) #Coloca o nome na lista de array
+            atrributes.pop(len(atrributes) - 1) #Remove o nome da lista de variaveis
+
+            size1_array.append(sizeArray[0])
+            size2_array.append(sizeArray[1])
+            size3_array.append(sizeArray[2])
         else:
-            self.semantic.add_var(escopo, typeVar, nameVar, None)
+            pass
     
 
-    def callVarMoreAttributions_Struct(self, type_atrributes, atrributes): #MODIFICAR
-        pass
-
-
-    def callArrayVarification_Struct(self, sizeArray): #MODIFICAR
-        pass
+    def callVarMoreAttributions_Struct(self, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array): #MODIFICAR
+        if self.lexemToken in self.firstVarMoreAttributions:
+            self.getNextToken()
+            self.callVarValuesAttribution_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array)
+            self.callVarMoreAttributions_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array)
 
 
     def callVarValuesDeclaration(self, escopo):
@@ -768,10 +771,7 @@ class SyntaticAnalyzer:
             self.callArrayVarification(sizeArray)
 
         if (arrayControl == True):
-            if (self.semantic.__contains_array(escopo,nameVar)):
-                self.semantic.msg_semantic_errors_var(escopo, nameVar, None, lineError, None, "VAR_DV")
-            else:
-                self.semantic.add_array(escopo,typeVar,nameVar,sizeArray,None)
+            self.semantic.add_array(escopo,typeVar,nameVar,sizeArray[0],sizeArray[1],sizeArray[2])
         else:
             self.semantic.add_var(escopo, typeVar, nameVar, None)
             
@@ -911,7 +911,12 @@ class SyntaticAnalyzer:
         
         type_atrributes = []
         atrributes = []
-        self.callVarValuesDeclaration_Struct(type_atrributes, atrributes) #FUNÇÃO INCOMPLETA, EM MODIFICAÇÃO
+        tipo_array = []
+        ide_array = []
+        size1_array = []
+        size2_array = []
+        size3_array = []
+        self.callVarValuesDeclaration_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array) #FUNÇÃO INCOMPLETA, EM MODIFICAÇÃO
 
         if self.lexemToken == "}":
             self.getNextToken()
@@ -935,7 +940,7 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "}"):
                 self.getNextToken()
 
-        self.semantic.add_struct(nameStruct,escopo, name_extends, type_atrributes, atrributes)
+        self.semantic.add_struct(nameStruct, escopo, name_extends, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array) #ALTERAR NO SEMANTICO
 
             
     def callFunctionProcedure(self):
