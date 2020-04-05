@@ -47,6 +47,8 @@ CORRECT TOKENS:
 13 DEL {
 14 PRE int
 14 IDE wand
+14 DEL ,
+14 IDE wand
 14 DEL ;
 15 DEL }
 16 PRE print

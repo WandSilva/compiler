@@ -11,7 +11,7 @@ var {
 
 function int start(){
     var{
-	int wand;
+	int wand, wand;
     }
     print("aloisio");
     local.wand[3] = a();
