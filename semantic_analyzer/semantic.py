@@ -34,6 +34,11 @@ class semantic_analyzer:
     def assign_var(self, ide, scope1, value, scope2, assign_type, line):
         if not self.__contains_var(scope1, ide): #verifica se a variavel não existe
             self.__msg_error_var ('VAR_ND', scope1, ide, line)
+
+        elif scope1 == 'global_const':
+            self.__msg_error_var('VAR_CONST', scope1, ide, line)
+        elif scope2 == 'global_const':
+            self.__msg_error_var('VAR_CONST', scope2, value, line)
     
         else:
             if(assign_type == 'primitivo'): #se for uma atribuição com valores normais
@@ -297,6 +302,11 @@ class semantic_analyzer:
         return True if ide in self.table_func['ide'] else False
 
     def add_func(self, ide, tipo, type_params, params, line):
+        if ide == 'start':
+            if 'start' in self.table_func['ide']:
+                self.__msg_error_func('FUNC_START', ide, line)
+                return None
+
         key_ide = ide
         for item in type_params:
             key_ide= key_ide+'_ç_'+item
@@ -375,6 +385,9 @@ class semantic_analyzer:
             self.semantic_errors.append(error)
         elif (typeError == "FUNC_RETURN"): #RETORNO INCOMPATÍVEL
             error = 'retorno não compativel com o tipo da funcao ' + ide + '. linha '+lineError
+            self.semantic_errors.append(error)
+        elif (typeError == "FUNC_SART"): #RETORNO INCOMPATÍVEL
+            error = 'o programa já contem uma procedimento Start. linha '+lineError
             self.semantic_errors.append(error)
 
     def __msg_error_struct(self, typeError, scope, ide, lineError):
