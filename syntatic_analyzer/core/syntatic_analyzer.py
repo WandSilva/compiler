@@ -1617,6 +1617,7 @@ class SyntaticAnalyzer:
             real_escopo = ""
             structs_name = ""
             array_size = []
+            line = self.errorLineToken
             self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
             #CHAMAR VERIFICAÇÃO DE ERRO SEMÂNTICO AQUI
             if self.lexemToken == '=':
@@ -1637,11 +1638,15 @@ class SyntaticAnalyzer:
                 self.callAssign2(escopo, tipo_assign, value, escopo2)
             else:
                 pass
+
             # VER COMO FICARÁ TRATAMENTO DE STRUCT
-            if (len(array_size) > 0):
-                self.semantic.assign_array(variable,real_escopo,)
+            if (len(array_size) > 0) and structs_name == "":
+                self.semantic.assign_array(variable,real_escopo,value,escopo2, tipo_assign,line)
+            elif (len(array_size) == 0) and structs_name == "":
+                self.semantic.assign_var(variable,real_escopo,value,escopo2,tipo_assign,line)
             else:
-                self.semantic.assign_var()
+                #Tratar lado esquerdo da atribuição do tipo struct
+                pass
             
             if self.lexemToken == ';':
                 self.getNextToken()
@@ -1665,6 +1670,7 @@ class SyntaticAnalyzer:
             tipo_assign = 'func'
             value = self.lexemToken
             self.callCallProcedureFunction(escopo)
+        
         elif self.lexemToken in self.firstModifier:
             variable = ""
             real_escopo = ""
@@ -1672,19 +1678,31 @@ class SyntaticAnalyzer:
             array_size = []
             self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
 
-            if (len(array_size) > 0):
+            if (len(array_size) > 0) and structs_name == "":
                 tipo_assign = 'array'
+                value = variable
+                escopo2 = real_escopo
+            elif (len(array_size) == 0) and structs_name == "":
+                tipo_assign == 'variavel'
+                value = variable
+                escopo2 = real_escopo
+            elif (len(structs_name) > 0):
+                #Tratar struct do lado esquerdo da atribuição
+                pass
 
         elif self.lexemToken in self.firstExpression:
             self.callExpression(escopo)
+        
         elif self.typeLexema == 'CDC':
             tipo_assign = 'primitivo'
             value = self.lexemToken
             self.getNextToken()
+        
         elif self.typeLexema == "NRO":
             tipo_assign = 'primitivo'
             value = self.lexemToken
             self.getNextToken()
+        
         else:
             pass
 
