@@ -5,15 +5,16 @@ const {
     string auxString = "Testando";
 } 
 var {
-    int auxNum[3], testeNum, next;
+    int auxNum, testeNum, next;
     string auxString;
 }
 
 function int start(){
     var{
+	int wand;
     }
     print("aloisio");
-    local.wand[1] = a();
+    local.wand = a();
     local.a = local.estrela;
     
     while (){
