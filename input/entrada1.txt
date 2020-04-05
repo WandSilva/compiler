@@ -9,28 +9,13 @@ var {
     string auxString;
 }
 
-function int start(){
+procedure start(){
     var{
-	int wand, wand;
+	int wand;
     }
     print("aloisio");
-    local.wand[3] = a();
-    local.a = local.estrela;
+    local.wand = local.b;
     
-    while (){
-        local.anta = "aluno";
-    }
+    read(local.wand);
     
-    if() then {
-        global.carro = "fusca";
-        while (){
-            local.pc = "asus";
-        }
-    } else{
-        
-    }
-    
-    read(local.a);
-    
-    return local.wand;
 }

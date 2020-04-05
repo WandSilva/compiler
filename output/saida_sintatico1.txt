@@ -1,3 +1,0 @@
-
-Erro sintático na linha: 12. ## Tipo 'identitificador[IDE]' esperado e não encontrado.
-Erro sintático na linha: 12. ## Palavra/caractere encontrado: 'start'[PRE] ## Palavras/caracteres esperados: '('
