@@ -37,8 +37,7 @@ CORRECT TOKENS:
 9 IDE auxString
 9 DEL ;
 10 DEL }
-12 PRE function
-12 PRE int
+12 PRE procedure
 12 PRE start
 12 DEL (
 12 DEL )
@@ -58,7 +57,9 @@ CORRECT TOKENS:
 17 DEL .
 17 IDE wand
 17 REL =
-17 NRO 3
+17 PRE local
+17 DEL .
+17 IDE b
 17 DEL ;
 19 PRE read
 19 DEL (
@@ -67,12 +68,7 @@ CORRECT TOKENS:
 19 IDE wand
 19 DEL )
 19 DEL ;
-21 PRE return
-21 PRE local
-21 DEL .
-21 IDE wand
-21 DEL ;
-22 DEL }
+21 DEL }
 
 
 TOKENS WITH LEXICAL ERRORS:

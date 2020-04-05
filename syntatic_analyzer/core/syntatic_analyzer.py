@@ -1666,10 +1666,6 @@ class SyntaticAnalyzer:
                 if (len(values_struct_right)>0):
                     self.semantic.assign_var(variable,real_escopo,values_struct_right,escopo2,tipo_assign,line)
                 else:
-                    print("________________________")
-                    print(variable)
-                    print(real_escopo)
-                    print("________________________")
                     self.semantic.assign_var(variable,real_escopo,value,escopo2,tipo_assign,line)
             
             else:
@@ -2122,7 +2118,7 @@ class SyntaticAnalyzer:
     def callCallVariable(self, escopo, real_escopo, variable, structs_name, array_size):
         if self.lexemToken in self.firstModifier:
             if (self.lexemToken == "local"):
-                real_escopo = self.lexemToken
+                real_escopo = escopo
             else:
                 real_escopo = "global_var"
             self.getNextToken()

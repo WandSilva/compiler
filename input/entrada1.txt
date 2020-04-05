@@ -9,14 +9,13 @@ var {
     string auxString;
 }
 
-function int start(){
+procedure start(){
     var{
 	int wand;
     }
     print("aloisio");
-    local.wand = 3;
+    local.wand = local.b;
     
     read(local.wand);
     
-    return local.wand;
 }
