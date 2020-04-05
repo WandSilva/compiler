@@ -41,17 +41,17 @@ class semantic_analyzer:
                     index = self.table_var[scope1]['ide'].index(ide)
                     self.table_var[scope1]['value'][index] = value #bota na tabela
                 else:
+                    #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
                     self.__msg_error_var ('VAR_TI', scope1, ide, line)
-                    print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
         
             elif(assign_type == 'variavel'): 
-                self.__assign_var_to_var(scope1, ide, value, scope2)
+                self.__assign_var_to_var(scope1, ide, value, scope2, line)
 
             elif(assign_type == 'func'): 
-                self.__assign_func_to_var(scope1, ide, value)
+                self.__assign_func_to_var(scope1, ide, value, line)
 
             elif(assign_type == 'array'):
-                self.__assign_array_to_var(scope1, ide, value, scope2)
+                self.__assign_array_to_var(scope1, ide, value, scope2, line)
 
             elif(assign_type == 'exp'):
                 pass
@@ -90,7 +90,8 @@ class semantic_analyzer:
 
     def __assign_func_to_var(self, scope1, ide, value, line):
         if not self.__contains_func_ide(value): #verifica se a função não existe
-            print('FAZER A CHAMADA DO ERRO AQUI: #função não declarada') 
+            #print('FAZER A CHAMADA DO ERRO AQUI: #função não declarada') 
+             self.__msg_error_func('FUNC_ND', value, line)
         else:
             index_var = self.table_var[scope1]['ide'].index(ide)
             tipo_var = self.table_var[scope1]['tipo'][index_var]
@@ -152,7 +153,8 @@ class semantic_analyzer:
             self.__add_struct_key(struct_key)
 
         if self.__contains_struct(ide, scope):
-            print('FAZER A CHAMADA DO ERRO AQUI: #sctruct ja declarada')
+            #print('FAZER A CHAMADA DO ERRO AQUI: #sctruct ja declarada')
+            self.__msg_error_struct('STRUCT_JD', scope, ide, line)
         else:
             self.table_struct[struct_key]['ide'] = ide
             self.table_struct[struct_key]['scope'] = scope
@@ -173,7 +175,7 @@ class semantic_analyzer:
 
     def add_array(self, scope, tipo, ide, size1, size2, size3, line):
         if scope not in self.table_array:
-            self.__add_array_scope(scope)
+            self.__add_array_scope(scope, line)
 
         if self.__contains_array(scope, ide):
             print('FAZER A CHAMADA DO ERRO AQUI: #array ja declarado')
@@ -193,7 +195,7 @@ class semantic_analyzer:
         self.table_array[scope]['size2'].append(size2)
         self.table_array[scope]['size3'].append(size3)
 
-    def __add_array_scope(self, scope): 
+    def __add_array_scope(self, scope, line): 
         self.table_array[scope] = dict(tipo = [], ide = [], size1 = [], size2 = [], size3 = [])
 
     def assign_array(self, ide, scope1, value, scope2, assign_type, line):
@@ -205,20 +207,22 @@ class semantic_analyzer:
                     print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
         
             elif(assign_type == 'variavel'): 
-                self.__assign_var_to_array(ide, scope1, value, scope2)
+                self.__assign_var_to_array(ide, scope1, value, scope2, line)
 
             elif(assign_type == 'func'): 
-                self.__assign_func_to_array(ide, scope1, value)
+                self.__assign_func_to_array(ide, scope1, value, line)
 
             elif(assign_type == 'array'):
-                self.__assign_array_to_array(ide, scope1, value, scope2)
+                self.__assign_array_to_array(ide, scope1, value, scope2, line)
 
             elif(assign_type == 'exp'):
                 pass
 
-    def __assign_var_to_array(self, ide, scope1, value, scope2):
+    def __assign_var_to_array(self, ide, scope1, value, scope2, line):
         if not self.__contains_var(scope2, value): #verifica se a variavel não existe
-            print('FAZER A CHAMADA DO ERRO AQUI: #variável não declarada anteriormente') 
+            #print('FAZER A CHAMADA DO ERRO AQUI: #variável não declarada anteriormente') 
+            self.__msg_error_var ('VAR_ND', scope2, value, line)
+
         else:
             index_array = self.table_array[scope1]['ide'].index(ide)
             tipo_array = self.table_array[scope1]['tipo'][index_array]
@@ -229,9 +233,10 @@ class semantic_analyzer:
             if(tipo_array != tipo_var2):
                 print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
 
-    def __assign_func_to_array(self, ide, scope1, value):
+    def __assign_func_to_array(self, ide, scope1, value, line):
         if not self.__contains_func_ide(value): #verifica se a função não existe
-            print('FAZER A CHAMADA DO ERRO AQUI: #função não declarada') 
+            #print('FAZER A CHAMADA DO ERRO AQUI: #função não declarada') 
+            self.__msg_error_func('FUNC_ND', value, line)
         else:
             index_array = self.table_array[scope1]['ide'].index(ide)
             tipo_array = self.table_array[scope1]['tipo'][index_array]
@@ -242,7 +247,7 @@ class semantic_analyzer:
             if not (tipo_array == tipo_func):
                 print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
 
-    def __assign_array_to_array(self, ide, scope1, value, scope2):
+    def __assign_array_to_array(self, ide, scope1, value, scope2, line):
         if not self.__contains_array(scope2, value): #verifica se o array não existe
             print('FAZER A CHAMADA DO ERRO AQUI: #array não declarado anteriormente') 
         else:
@@ -257,7 +262,9 @@ class semantic_analyzer:
 
     def check_return (self, scope, ide, line):
         if(not (self.__contains_var(scope, ide))):
-            print('FAZER A CHAMADA DO ERRO AQUI: #variavel não declarada no escopo')
+            #print('FAZER A CHAMADA DO ERRO AQUI: #variavel não declarada no escopo')
+            self.__msg_error_var ('VAR_ND', scope, ide, line)
+
         else:
             index_var1 = self.table_var[scope]['ide'].index(ide)
             tipo_var1 = self.table_var[scope]['tipo'][index_var1]
@@ -266,7 +273,9 @@ class semantic_analyzer:
             tipo_func = self.table_func['tipo'][index_func]
 
             if (not(tipo_var1 == tipo_func)):
-                print('FAZER A CHAMADA DO ERRO AQUI: #variável de retorno tem tipo diferente da função ')
+                #print('FAZER A CHAMADA DO ERRO AQUI: #variável de retorno tem tipo diferente da função ')
+                self.__msg_error_func('FUNCT_RETURN', '', line)
+
 
 
 
@@ -285,7 +294,8 @@ class semantic_analyzer:
         for item in type_params:
             key_ide= key_ide+'_ç_'+item
         if self.__contains_func_key(key_ide):
-            print('FAZER A CHAMADA DO ERRO AQUI: #função existente')
+            #print('FAZER A CHAMADA DO ERRO AQUI: #função existente')
+            self.__msg_error_func('FUNC_JD', ide, line)
         else:
             self.table_func['key_ide'].append(key_ide)
             self.table_func['ide'].append(ide)
@@ -295,16 +305,17 @@ class semantic_analyzer:
             self.table_func['num_params'].append(len(params))
 
     def call_func(self, scope, ide_func, params, type_tokens_params, line):
-        type_params = self.__get_params_type(scope, params, type_tokens_params)
+        type_params = self.__get_params_type(scope, params, type_tokens_params, line)
         key_ide = ide_func
         for item in type_params:
             key_ide= key_ide+'_ç_'+item
 
         if not self.__contains_func_key(key_ide):
-            print('FAZER A CHAMADA DO ERRO AQUI: #funcao não declarada anteriormente') 
+            #print('FAZER A CHAMADA DO ERRO AQUI: #funcao não declarada anteriormente') 
+            self.__msg_error_func('FUNC_ND', ide_func, line)
 
 
-    def __get_params_type(self, scope, params, type_tokens_params):
+    def __get_params_type(self, scope, params, type_tokens_params, line):
         params_type = []
 
         for i in range (0, len(params)):
@@ -316,7 +327,8 @@ class semantic_analyzer:
                     tipo_var = self.table_var[scope]['tipo'][index_var]
                     params_type.append(tipo_var)
                 else:
-                    print('FAZER A CHAMADA DO ERRO AQUI: #variável não declarada anteriormente') 
+                    #print('FAZER A CHAMADA DO ERRO AQUI: #variável não declarada anteriormente') 
+                    self.__msg_error_var('VAR_ND', scope, params, line)
 
             elif type_tokens_params[i] == 'NRO':
                 param = params[i]
