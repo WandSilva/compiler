@@ -382,6 +382,7 @@ class SyntaticAnalyzer:
                     self.semantic.add_func(procedureName, None, type_params, params, line)
 
         #CHAMADA PARA VERIFICAÇÃO DO START
+        self.semantic.check_start()
 
 
     def readParamList_TB(self, escopo, type_params, params):

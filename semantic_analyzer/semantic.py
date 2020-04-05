@@ -37,12 +37,10 @@ class semantic_analyzer:
 
         elif scope1 == 'global_const':
             self.__msg_error_var('VAR_CONST', scope1, ide, line)
-        elif scope2 == 'global_const':
-            self.__msg_error_var('VAR_CONST', scope2, value, line)
     
         else:
             if(assign_type == 'primitivo'): #se for uma atribuição com valores normais
-                if self.__is_corect_type(scope1, ide, value, 'var'): #verifica se o tipo ta certo
+                if self.__is_corect_type(scope1, ide, value, None, 'var'): #verifica se o tipo ta certo
                     index = self.table_var[scope1]['ide'].index(ide)
                     self.table_var[scope1]['value'][index] = value #bota na tabela
                 else:
@@ -111,7 +109,7 @@ class semantic_analyzer:
                 self.__msg_error_var ('VAR_TI', scope1, ide, line)
 
 
-    def __is_corect_type(self, scope, ide, value, tipo_busca):
+    def __is_corect_type(self, scope, ide, value, att_if_struct, tipo_busca):
         index = 0
         tipo = ''
         if tipo_busca == 'var':
@@ -120,6 +118,10 @@ class semantic_analyzer:
         elif tipo_busca == 'array':
             index = self.table_array[scope]['ide'].index(ide)
             tipo = self.table_array[scope]['tipo'][index]
+        elif tipo_busca == 'struct':
+            key = ide+'ç'+scope
+            index = self.table_struct[key]['attribute'].index(att_if_struct)
+            tipo = self.table_struct[key]['type_attribute'][index]
 
         if tipo == 'int':
             if isinstance(int(value), int):
@@ -146,10 +148,14 @@ class semantic_analyzer:
                 return False
     
 
-    #MÉTODOS PARA MANIPULAR A TABELA DE STRUCTS
+    ##################   MÉTODOS PARA MANIPULAR A TABELA DE STRUCTS ######################
     def __contains_struct(self, ide, scope):
         struct_key = ide+'ç'+scope
         return True if struct_key in self.table_struct.keys() else False
+
+    def __contains_struct_attribute(self, ide, scope, attribute):
+        struct_key = ide+'ç'+scope
+        return True if attribute in self.table_struct[struct_key]['attributes'] else False
        
 
     def add_struct(self, ide, scope, extend, line, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, lines_arrays):
@@ -159,19 +165,97 @@ class semantic_analyzer:
 
         if self.__contains_struct(ide, scope):
             #print('FAZER A CHAMADA DO ERRO AQUI: #sctruct ja declarada')
-            self.__msg_error_struct('STRUCT_JD', scope, ide, line)
+            self.__msg_error_struct('STRUCT_JD', scope, ide, None, line)
         else:
             self.table_struct[struct_key]['ide'] = ide
             self.table_struct[struct_key]['scope'] = scope
-            self.table_struct[struct_key]['type_atrributes'].append(type_atrributes)
-            self.table_struct[struct_key]['atrributes'].append(atrributes)
+            self.table_struct[struct_key]['type_attributes'].append(type_atrributes)
+            self.table_struct[struct_key]['attributes'].append(atrributes)
             self.table_struct[struct_key]['extend'] = extend
 
     def __add_struct_key(self, strcut_key):
         self.table_struct[strcut_key] = dict(ide = None, scope = None, extend = None, type_atrributes = [], atrributes = [])
 
+    def assign_struct(self, struct, scope1, value, scope2, assign_type, line):
+        if not self.__contains_struct(scope1, struct[0]): #verifica se a variavel não existe
+            self.__msg_error_var ('STARCT_ND', scope1, struct[0], line)
     
-    #MÉTODOS PARA MANIPULAR A TABELA DE ARRAYS
+        else:
+            if(assign_type == 'primitivo'): #se for uma atribuição com valores normais
+                if self.__is_corect_type(scope1, struct[0], value, struct[1], 'var'): #verifica se o tipo ta certo
+                    index = self.table_var[scope1]['ide'].index(struct[0])
+                    self.table_var[scope1]['value'][index] = value #bota na tabela
+                else:
+                    #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
+                    self.__msg_error_struct('STRUCT_ATT_TI', scope1, struct[0], struct[1], line)
+        
+            elif(assign_type == 'variavel'): 
+                self.__assign_var_to_struct(scope1, struct, value, scope2, line)
+
+            elif(assign_type == 'func'): 
+                self.__assign_func_to_struct(scope1, struct, value, line)
+
+            elif(assign_type == 'array'):
+                self.__assign_array_to_struct(scope1, struct, value, scope2, line)
+
+            elif(assign_type == 'exp'):
+                pass
+
+
+    def __assign_var_to_struct(self, struct, scope1, value, scope2, line):
+        if not self.__contains_var(scope2, value): #verifica se a variavel não existe
+            #print('FAZER A CHAMADA DO ERRO AQUI: #variável não declarada anteriormente') 
+            self.__msg_error_var ('VAR_ND', scope2, value, line)
+
+        else:
+            key = struct[0] + 'ç' + scope1
+            index_att = self.table_struct[key]['attributes'].index(struct[1])
+            tipo_attribute = self.table_struct[key]['type_atrributes'][index_att]
+
+            index_var2 = self.table_var[scope2]['ide'].index(value)
+            tipo_var2 = self.table_var[scope2]['tipo'][index_var2]
+            
+            if(tipo_attribute != tipo_var2):
+                #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
+                self.__msg_error_struct('STRCUT_ATT_TI', scope1, struct[0], struct[1], line)
+
+    def __assign_func_to_struct(self, struct, scope1, value, line):
+        if not self.__contains_func_ide(value): #verifica se a função não existe
+            #print('FAZER A CHAMADA DO ERRO AQUI: #função não declarada') 
+            self.__msg_error_func('FUNC_ND', value, line)
+        else:
+            key = struct[0] + 'ç' + scope1
+            index_att = self.table_struct[key]['attributes'].index(struct[1])
+            tipo_attribute = self.table_struct[key]['type_atrributes'][index_att]
+
+            index_func = self.table_func['ide'].index(value)
+            tipo_func = self.table_func['tipo'][index_func]
+            
+            if not (tipo_attribute == tipo_func):
+                #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
+                self.__msg_error_struct('STRCUT_ATT_TI', scope1, struct[0], struct[1], line)
+
+    def __assign_array_to_struct(self, struct, scope1, value, scope2, line):
+        if not self.__contains_array(scope2, value): #verifica se o array não existe
+            #print('FAZER A CHAMADA DO ERRO AQUI: #array não declarado anteriormente') 
+            self.__msg_error_array('ARRAY_ND', scope2, value, line)
+        else:
+            key = struct[0] + 'ç' + scope1
+            index_att = self.table_struct[key]['attributes'].index(struct[1])
+            tipo_attribute = self.table_struct[key]['type_atrributes'][index_att]
+
+            index_array2 = self.table_array[scope2]['ide'].index(value)
+            tipo_array2 = self.table_array[scope2]['tipo'][index_array2]
+            
+            if(tipo_attribute != tipo_array2):
+                #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
+                self.__msg_error_struct('STRCUT_ATT_TI', scope1, struct[0], struct[1], line)
+
+
+
+
+    
+    #########################   MÉTODOS PARA MANIPULAR A TABELA DE ARRAYS    ##################
     def __contains_array(self, scope, ide):
         if scope in self.table_array.keys():
             if ide in self.table_array[scope]['ide']:
@@ -210,7 +294,7 @@ class semantic_analyzer:
             self.__msg_error_array('ARRAY_ND', scope1, ide, line)
         else:
             if(assign_type == 'primitivo'): #se for uma atribuição com valores normais
-                if not self.__is_corect_type(scope1, ide, value, 'array'): #verifica se o tipo ta certo
+                if not self.__is_corect_type(scope1, ide, value, None, 'array'): #verifica se o tipo ta certo
                     self.__msg_error_array('ARRAY_TI', scope1, ide, line)
         
             elif(assign_type == 'variavel'): 
@@ -288,15 +372,18 @@ class semantic_analyzer:
                 self.__msg_error_func('FUNCT_RETURN', '', line)
 
 
-    def assign_struct(self, values_struct_left, real_escopo, value, escopo2, tipo_assign, line):
-        pass
-
-    #MÉTODOS PARA MANIPULAR A TABELA DE FUNÇÕES
+    ######################     MÉTODOS PARA MANIPULAR A TABELA DE FUNÇÕES     ########################
     def __contains_func_key(self, key_ide):
         return True if key_ide in self.table_func['key_ide'] else False
 
     def __contains_func_ide(self, ide):
         return True if ide in self.table_func['ide'] else False
+
+    def check_start(self):
+        if 'start' not in self.table_func['ide']:
+            self.__msg_error_func('FUNC_START_2', None, None)
+
+
 
     def add_func(self, ide, tipo, type_params, params, line):
         if ide == 'start':
@@ -383,17 +470,32 @@ class semantic_analyzer:
         elif (typeError == "FUNC_RETURN"): #RETORNO INCOMPATÍVEL
             error = 'retorno não compativel com o tipo da funcao ' + "'" + ide + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
-        elif (typeError == "FUNC_SART"): #RETORNO INCOMPATÍVEL
-            error = 'o programa já contem uma procedimento Start. linha '+lineError
+        elif (typeError == "FUNC_START"): 
+            error = 'o programa já contem um procedimento Start. linha '+lineError
+            self.semantic_errors.append(error)
+        elif (typeError == "FUNC_START_2"): 
+            error = 'o programa não contem um procedimento Start.'
             self.semantic_errors.append(error)
 
-    def __msg_error_struct(self, typeError, scope, ide, lineError):
+    def __msg_error_struct(self, typeError, scope, ide, attribute, lineError):
         if (typeError == "STRUCT_JD"): #STRUCT JÁ DECLARADA
             error = 'struct ' + "'" + ide + "'" + ' ja declarada no escopo '+ "'" + scope + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "STRUCT_ND"): #STRUCT NÃO DECLARADA
             error = 'struct ' + "'" + ide + "'" + ' nao declarada no escopo '+ "'" + scope + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
+        elif (typeError == "STRUCT_ATT_ND"): #STRUCT ATT NÃO DECLARADO
+            error = 'Atributo ' + attribute+ ' da struct ' + ide + ' nao foi declarado. linha '+ str(lineError)
+            self.semantic_errors.append(error)
+
+        elif (typeError == "STRUCT_ATT_JD"): #STRUCT ATT JÁ DECLARADO
+            error = 'Atributo ' + attribute+ ' da struct ' + ide + ' já foi declarado. linha '+ str(lineError)
+            self.semantic_errors.append(error)
+
+        elif (typeError == "STRCUT_ATT_TI"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
+            error = 'atribuição não compativel com o tipo de ' + ide + '.' + attribute + '. linha '+ str(lineError)
+            self.semantic_errors.append(error)
+
 
     def __msg_error_array(self, typeError, scope, ide, lineError):
         if (typeError == "ARRAY_JD"): #ARRAY JÁ DECLARADO
@@ -424,7 +526,10 @@ class semantic_analyzer:
             if not self.__contains_array(scope, variable):
                 self.__msg_error_var('ARRAY_ND',scope, variable, line)
         elif structs_name != '':
-            pass
+            if not self.__contains_struct(scope, variable):
+                self.__msg_error_struct('STRUCT_ND', scope, variable, structs_name, line)
+            elif not self.__contains_struct_attribute(variable, scope, structs_name):
+                self.__msg_error_struct('STRUCT_ATT_ND', scope, variable, structs_name, line)
 
 
     #-------------------------- ARRUMAR ANTES DE ENVIAR -----------------------------------
