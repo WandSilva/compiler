@@ -287,7 +287,8 @@ class semantic_analyzer:
     def check_read_print(self, escopo, variable, structs_name, array_size, line): # Caso seja uma variavel de uma struct, variable é o nome da struct e structs_name o nome da variavel / array_size é uma lista com os tamanhos do array
         pass
 
-
+    def assign_struct(self, values_struct_left, real_escopo, value, escopo2, tipo_assign, line):
+        pass
 
     #MÉTODOS PARA MANIPULAR A TABELA DE FUNÇÕES
     def __contains_func_key(self, key_ide):

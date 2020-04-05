@@ -1647,19 +1647,34 @@ class SyntaticAnalyzer:
             tipo_assign = ""
             value = ""
             escopo2 = ""
+            values_struct_left = []
+            values_struct_right = []
             if (self.lexemToken in self.firstAssign2 or self.typeLexema in self.firstAssign2):
-                self.callAssign2(escopo, tipo_assign, value, escopo2)
+                self.callAssign2(escopo, tipo_assign, value, escopo2, values_struct_right)
             else:
                 pass
 
             # VER COMO FICARÁ TRATAMENTO DE STRUCT
             if (len(array_size) > 0) and structs_name == "":
-                self.semantic.assign_array(variable,real_escopo,value,escopo2, tipo_assign,line)
+                if (len(values_struct_right)>0):
+                    self.semantic.assign_array(variable,real_escopo,values_struct_right,escopo2, tipo_assign,line)
+                else:
+                    self.semantic.assign_array(variable,real_escopo,value,escopo2, tipo_assign,line)
+            
             elif (len(array_size) == 0) and structs_name == "":
-                self.semantic.assign_var(variable,real_escopo,value,escopo2,tipo_assign,line)
+                if (len(values_struct_right)>0):
+                    self.semantic.assign_var(variable,real_escopo,values_struct_right,escopo2,tipo_assign,line)
+                else:
+                    self.semantic.assign_var(variable,real_escopo,value,escopo2,tipo_assign,line)
+            
             else:
-                #Tratar lado esquerdo da atribuição do tipo struct
-                pass
+                values_struct_left[0] = value
+                values_struct_left[1] = structs_name
+                if (len(values_struct_right) > 0):
+                    self.semantic.assign_struct(values_struct_left, real_escopo, values_struct_right, escopo2, tipo_assign, line)
+                else:
+                    self.semantic.assign_struct(values_struct_left, real_escopo, value, escopo2, tipo_assign, line)
+                
             
             if self.lexemToken == ';':
                 self.getNextToken()
@@ -1678,7 +1693,7 @@ class SyntaticAnalyzer:
             pass
 
     
-    def callAssign2(self, escopo, tipo_assign, value, escopo2):
+    def callAssign2(self, escopo, tipo_assign, value, escopo2, values_struct_right):
         if self.typeLexema in self.firstCallProcedure_Function:
             tipo_assign = 'func'
             value = self.lexemToken
@@ -1700,8 +1715,9 @@ class SyntaticAnalyzer:
                 value = variable
                 escopo2 = real_escopo
             elif (len(structs_name) > 0):
-                #Tratar struct do lado esquerdo da atribuição
-                pass
+                tipo_assign == 'struct'
+                values_struct_right[0] = variable
+                values_struct_right[1] = structs_name
 
         elif self.lexemToken in self.firstExpression:
             self.callExpression(escopo)
