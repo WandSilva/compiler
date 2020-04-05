@@ -374,7 +374,7 @@ class SyntaticAnalyzer:
                     type_params = []
                     params = []
                     if self.lexemToken in self.firstParamList:
-                        self.readParamList_TB(procedureName)
+                        self.readParamList_TB(procedureName, type_params, params)
 
                     if self.lexemToken == ")":
                         self.getNextToken()
@@ -382,16 +382,18 @@ class SyntaticAnalyzer:
                     self.semantic.add_func(procedureName, None, type_params, params, line)
 
 
-    def readParamList_TB(self, escopo):
+    def readParamList_TB(self, escopo, type_params, params):
         type_param = ""
         param = ""
         line = ""
         if self.lexemToken in self.firstType:
             type_param = self.lexemToken
+            type_params.append(self.lexemToken)
             self.getNextToken()
 
         if self.typeLexema == "IDE":
             param = self.lexemToken
+            params.append(self.lexemToken)
             line = self.errorLineToken
             self.getNextToken()
         
@@ -399,7 +401,7 @@ class SyntaticAnalyzer:
 
         if self.lexemToken == ",":
             self.getNextToken()
-            self.readParamList_TB(escopo)
+            self.readParamList_TB(escopo, type_params, params)
 
 
     def back_to_begin(self):
