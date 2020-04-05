@@ -187,7 +187,7 @@ class semantic_analyzer:
             self.__msg_error_array('ARRAY_JD', scope, ide, line)
             return None
 
-        if (size1[0].isdigit() and size2[0].isdigit() and size1[0].isdigit()):
+        if (size1[0].isdigit() and size2[0].isdigit() and size3[0].isdigit()):
             if not (isinstance(int(size1), int) and isinstance(int(size2), int) and isinstance(int(size3), int)):
                 #   print('FAZER A CHAMADA DO ERRO AQUI: #array dim deve ser um int')
                 self.__msg_error_array('ARRAY_DIM', scope, ide, line)
@@ -292,7 +292,8 @@ class semantic_analyzer:
     def check_read_print(self, escopo, variable, structs_name, array_size, line): # Caso seja uma variavel de uma struct, variable é o nome da struct e structs_name o nome da variavel / array_size é uma lista com os tamanhos do array
         pass
 
-
+    def assign_struct(self, values_struct_left, real_escopo, value, escopo2, tipo_assign, line):
+        pass
 
     #MÉTODOS PARA MANIPULAR A TABELA DE FUNÇÕES
     def __contains_func_key(self, key_ide):
@@ -367,24 +368,24 @@ class semantic_analyzer:
 
     def __msg_error_var (self, typeError, scope, ide, lineError):
         if (typeError == "VAR_JD"): #VARIÁVEL JÁ DECLARADA
-            error = 'variavel ' + ide + ' ja declarada no escopo '+ scope + '. linha '+lineError
+            error = 'variavel ' + ide + ' ja declarada no escopo '+ scope + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "VAR_ND"): #VARIÁVEL NÃO DECLARADA
-            error = 'variavel ' + ide + ' nao declarada no escopo '+ scope + '. linha '+lineError
+            error = 'variavel ' + ide + ' nao declarada no escopo '+ scope + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "VAR_TI"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
-            error = 'atribuição não compativel com o tipo da variavel ' + ide + '. linha '+lineError
+            error = 'atribuição não compativel com o tipo da variavel ' + ide + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
 
     def __msg_error_func(self, typeError, ide, lineError):
         if (typeError == "FUNC_JD"): #FUNC JÁ DECLARADA
-            error = 'funcao ' + ide + ' ja declarada. linha '+lineError
+            error = 'funcao ' + ide + ' ja declarada. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "FUNC_ND"): #FUNC NÃO DECLARADA
-            error = 'funcao ' + ide + ' nao declarada. linha '+lineError
+            error = 'funcao ' + ide + ' nao declarada. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "FUNC_RETURN"): #RETORNO INCOMPATÍVEL
-            error = 'retorno não compativel com o tipo da funcao ' + ide + '. linha '+lineError
+            error = 'retorno não compativel com o tipo da funcao ' + ide + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "FUNC_SART"): #RETORNO INCOMPATÍVEL
             error = 'o programa já contem uma procedimento Start. linha '+lineError
@@ -392,24 +393,24 @@ class semantic_analyzer:
 
     def __msg_error_struct(self, typeError, scope, ide, lineError):
         if (typeError == "STRUCT_JD"): #STRUCT JÁ DECLARADA
-            error = 'struct ' + ide + ' ja declarada no escopo '+ scope + '. linha '+lineError
+            error = 'struct ' + ide + ' ja declarada no escopo '+ scope + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "STRUCT_ND"): #STRUCT NÃO DECLARADA
-            error = 'struct ' + ide + ' nao declarada no escopo '+ scope + '. linha '+lineError
+            error = 'struct ' + ide + ' nao declarada no escopo '+ scope + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
 
     def __msg_error_array(self, typeError, scope, ide, lineError):
         if (typeError == "ARRAY_JD"): #ARRAY JÁ DECLARADO
-            error = 'array ' + ide + ' ja declarado no escopo '+ scope + '. linha '+lineError
+            error = 'array ' + ide + ' ja declarado no escopo '+ scope + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "ARRAY_ND"): #ARRAY NÃO DECLARADA
-            error = 'array ' + ide + ' nao declarado no escopo '+ scope + '. linha '+lineError
+            error = 'array ' + ide + ' nao declarado no escopo '+ scope + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "ARRAY_TI"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
-            error = 'atribuição não compativel com o tipo da array ' + ide + '. linha '+lineError
+            error = 'atribuição não compativel com o tipo da array ' + ide + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "ARRAY_DIM"): #var inválida pra acesso ao array
-            error = 'a variável de acesso a posicao do array deve ser um inteiro. linha '+lineError
+            error = 'a variável de acesso a posicao do array deve ser um inteiro. linha '+ str(lineError)
             self.semantic_errors.append(error)
 
     def __msg_semantic_errors_const(self, name, typeConst, valor, typeError):
