@@ -27,6 +27,7 @@ CORRECT TOKENS:
 7 DEL {
 8 PRE int
 8 IDE auxNum
+8 NRO 2
 8 DEL ,
 8 IDE testeNum
 8 DEL ,
@@ -56,6 +57,7 @@ CORRECT TOKENS:
 17 PRE local
 17 DEL .
 17 IDE wand
+17 NRO 3
 17 REL =
 17 IDE a
 17 DEL (
@@ -123,5 +125,7 @@ CORRECT TOKENS:
 
 TOKENS WITH LEXICAL ERRORS:
 
-No tokens were found with errors lexical.
-### SUCCESS! ###
+8 INVALID_CLASS [
+8 INVALID_CLASS ]
+17 INVALID_CLASS [
+17 INVALID_CLASS ]

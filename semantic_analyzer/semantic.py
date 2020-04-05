@@ -182,7 +182,7 @@ class semantic_analyzer:
             self.__msg_error_array('ARRAY_JD', scope, ide, line)
             return None
 
-        if (size1[0].isdigit() and size2[0].isdigit() and size1[0].isdigit()):
+        if (size1[0].isdigit() and size2[0].isdigit() and size3[0].isdigit()):
             if not (isinstance(int(size1), int) and isinstance(int(size2), int) and isinstance(int(size3), int)):
                 #   print('FAZER A CHAMADA DO ERRO AQUI: #array dim deve ser um int')
                 self.__msg_error_array('ARRAY_DIM', scope, ide, line)

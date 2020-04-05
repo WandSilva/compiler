@@ -784,7 +784,20 @@ class SyntaticAnalyzer:
             self.callArrayVarification(sizeArray)
 
         if (arrayControl == True):
-            self.semantic.add_array(escopo,typeVar,nameVar,sizeArray[0],sizeArray[1],sizeArray[2], line)
+            i = len(sizeArray)
+            sizeArray1 = '0'
+            sizeArray2 = '0'
+            sizeArray3 = '0'
+            if (i > 0):
+                sizeArray1 = str(sizeArray[i-1])
+                i = i - 1
+                if (i > 0):
+                    sizeArray2 = str(sizeArray[i-1])
+                    i = i - 1
+                    if (i > 0):
+                        sizeArray3 = str(sizeArray[i-1])
+
+            self.semantic.add_array(escopo,typeVar,nameVar,sizeArray1,sizeArray2,sizeArray3, line)
         else:
             self.semantic.add_var(escopo, typeVar, nameVar, None, line)
             
