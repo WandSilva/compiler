@@ -178,15 +178,17 @@ class semantic_analyzer:
             self.__add_array_scope(scope, line)
 
         if self.__contains_array(scope, ide):
-            print('FAZER A CHAMADA DO ERRO AQUI: #array ja declarado')
+            #print('FAZER A CHAMADA DO ERRO AQUI: #array ja declarado')
+            self.__msg_error_array('ARRAY_JD', scope, ide, line)
             return None
 
         if (size1[0].isdigit() and size2[0].isdigit() and size1[0].isdigit()):
             if not (isinstance(int(size1), int) and isinstance(int(size2), int) and isinstance(int(size3), int)):
-                print('FAZER A CHAMADA DO ERRO AQUI: #array dim deve ser um int')
+                #   print('FAZER A CHAMADA DO ERRO AQUI: #array dim deve ser um int')
+                self.__msg_error_array('ARRAY_DIM', scope, ide, line)
                 return None
         else:
-            print('FAZER A CHAMADA DO ERRO AQUI: #array dim deve ser um int')
+            self.__msg_error_array('ARRAY_DIM', scope, ide, line)
             return None
 
         self.table_array[scope]['tipo'].append(tipo)
@@ -200,11 +202,11 @@ class semantic_analyzer:
 
     def assign_array(self, ide, scope1, value, scope2, assign_type, line):
         if not self.__contains_array(scope1, ide): #verifica se o array não existe
-            print('FAZER A CHAMADA DO ERRO AQUI: #array não declarado anteriormente') 
+            self.__msg_error_array('ARRAY_ND', scope1, ide, line)
         else:
             if(assign_type == 'primitivo'): #se for uma atribuição com valores normais
                 if not self.__is_corect_type(scope1, ide, value, 'array'): #verifica se o tipo ta certo
-                    print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
+                    self.__msg_error_array('ARRAY_TI', scope1, ide, line)
         
             elif(assign_type == 'variavel'): 
                 self.__assign_var_to_array(ide, scope1, value, scope2, line)
@@ -231,7 +233,8 @@ class semantic_analyzer:
             tipo_var2 = self.table_var[scope2]['tipo'][index_var2]
             
             if(tipo_array != tipo_var2):
-                print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
+                #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
+                self.__msg_error_array('ARRAY_TI', scope1, ide, line)
 
     def __assign_func_to_array(self, ide, scope1, value, line):
         if not self.__contains_func_ide(value): #verifica se a função não existe
@@ -245,11 +248,13 @@ class semantic_analyzer:
             tipo_func = self.table_func['tipo'][index_func]
             
             if not (tipo_array == tipo_func):
-                print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
+                #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
+                self.__msg_error_array('ARRAY_TI', scope1, ide, line)
 
     def __assign_array_to_array(self, ide, scope1, value, scope2, line):
         if not self.__contains_array(scope2, value): #verifica se o array não existe
-            print('FAZER A CHAMADA DO ERRO AQUI: #array não declarado anteriormente') 
+            #print('FAZER A CHAMADA DO ERRO AQUI: #array não declarado anteriormente') 
+            self.__msg_error_array('ARRAY_ND', scope2, value, line)
         else:
             index_array1 = self.table_array[scope1]['ide'].index(ide)
             tipo_array1 = self.table_array[scope1]['tipo'][index_array1]
@@ -258,7 +263,8 @@ class semantic_analyzer:
             tipo_array2 = self.table_array[scope2]['tipo'][index_array2]
             
             if(tipo_array1 != tipo_array2):
-                print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
+                #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
+                self.__msg_error_array('ARRAY_TI', scope1, ide, line)
 
     def check_return (self, scope, ide, line):
         if(not (self.__contains_var(scope, ide))):
@@ -376,6 +382,20 @@ class semantic_analyzer:
             self.semantic_errors.append(error)
         elif (typeError == "STRUCT_ND"): #STRUCT NÃO DECLARADA
             error = 'struct ' + ide + ' nao declarada no escopo '+ scope + '. linha '+lineError
+            self.semantic_errors.append(error)
+
+    def __msg_error_array(self, typeError, scope, ide, lineError):
+        if (typeError == "ARRAY_JD"): #ARRAY JÁ DECLARADO
+            error = 'array ' + ide + ' ja declarado no escopo '+ scope + '. linha '+lineError
+            self.semantic_errors.append(error)
+        elif (typeError == "ARRAY_ND"): #ARRAY NÃO DECLARADA
+            error = 'array ' + ide + ' nao declarado no escopo '+ scope + '. linha '+lineError
+            self.semantic_errors.append(error)
+        elif (typeError == "ARRAY_TI"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
+            error = 'atribuição não compativel com o tipo da array ' + ide + '. linha '+lineError
+            self.semantic_errors.append(error)
+        elif (typeError == "ARRAY_DIM"): #var inválida pra acesso ao array
+            error = 'a variável de acesso a posicao do array deve ser um inteiro. linha '+lineError
             self.semantic_errors.append(error)
 
     def __msg_semantic_errors_const(self, name, typeConst, valor, typeError):
