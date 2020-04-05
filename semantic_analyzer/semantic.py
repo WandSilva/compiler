@@ -288,10 +288,6 @@ class semantic_analyzer:
                 self.__msg_error_func('FUNCT_RETURN', '', line)
 
 
-
-    def check_read_print(self, escopo, variable, structs_name, array_size, line): # Caso seja uma variavel de uma struct, variable é o nome da struct e structs_name o nome da variavel / array_size é uma lista com os tamanhos do array
-        pass
-
     def assign_struct(self, values_struct_left, real_escopo, value, escopo2, tipo_assign, line):
         pass
 
@@ -412,12 +408,22 @@ class semantic_analyzer:
         elif (typeError == "ARRAY_DIM"): #var inválida pra acesso ao array
             error = 'a variável de acesso a posicao do array deve ser um inteiro. linha '+ str(lineError)
             self.semantic_errors.append(error)
-
-    def __msg_semantic_errors_const(self, name, typeConst, valor, typeError):
-        pass
     
     def __print_semantic_errors(self):
         print(self.semantic_errors)
+
+    def check_read_print(self, scope, variable, structs_name, array_size, line): # Caso seja uma variavel de uma struct, variable é o nome da struct e structs_name o nome da variavel / array_size é uma lista com os tamanhos do array
+        if structs_name == '' and len(array_size) == 0:
+            if not self.__contains_var(scope, variable):
+                self.__msg_error_var('VAR_ND',scope, variable, line)
+        
+        elif len(array_size) > 0:
+            if not self.__contains_array(scope, variable):
+                self.__msg_error_var('ARRAY_ND',scope, variable, line)
+        elif structs_name != '':
+            pass
+
+
     #-------------------------- ARRUMAR ANTES DE ENVIAR -----------------------------------
     #PARA TESTE
     def get_structs(self):
