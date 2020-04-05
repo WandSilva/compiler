@@ -1482,8 +1482,10 @@ class SyntaticAnalyzer:
         if self.lexemToken in self.firstReadParam:
             real_escopo = ""
             variable = ""
-            self.callCallVariable(escopo, real_escopo, variable)
-            #ERRO SEMANTICO BUSCA VARIAVEL
+            structs_name = ""
+            array_size = []
+            self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
+            self.semantic.check_read_print(real_escopo, variable, structs_name, array_size)
             if self.lexemToken in self.firstMoreReadParams:
                 self.callMoreReadParams(escopo)
         else:
@@ -1581,8 +1583,10 @@ class SyntaticAnalyzer:
             elif (self.lexemToken in self.firstCallVariable):
                 real_escopo = ""
                 variable = ""
-                self.callCallVariable(escopo, real_escopo, variable)
-                #ERRO SEMANTICO BUSCA VARIAVEL
+                structs_name = ""
+                array_size = []
+                self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
+                self.semantic.check_read_print(real_escopo, variable, structs_name, array_size)
         else:
             while (not ((self.lexemToken in self.firstPrintParam) or (self.lexemToken in self.FollowPrintParam)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstPrintParam))
@@ -1609,8 +1613,10 @@ class SyntaticAnalyzer:
         if self.lexemToken in self.firstCallVariable:
             variable = ""
             real_escopo = ""
-            self.callCallVariable(escopo, real_escopo, variable)
-            #ERRO SEMANTICO BUSCA VARIAVEL
+            structs_name = ""
+            array_size = []
+            self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
+            #CHAMAR VERIFICAÇÃO DE ERRO SEMÂNTICO AQUI
             if self.lexemToken == '=':
                 self.getNextToken()
             else:
@@ -1658,7 +1664,7 @@ class SyntaticAnalyzer:
 
 
 
-    def callStruct(self, escopo):
+    def callStruct(self, escopo, structs_name, array_size):
         if self.lexemToken == '.':
             self.getNextToken()
         else:
@@ -1671,6 +1677,7 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
         if self.typeLexema == 'IDE':
+            structs_name = self.lexemToken
             self.getNextToken()
         else:
             while (not ((self.typeLexema == "IDE") or (self.lexemToken in self.firstPaths) or (self.lexemToken in self.FollowStruct)) and (not self.lexemToken == None)):
@@ -1682,7 +1689,7 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
         if self.lexemToken in self.firstPaths:
-            self.callPaths(escopo)
+            self.callPaths(escopo, structs_name, array_size)
         else:
             while (not ((self.lexemToken in self.firstPaths) or (self.lexemToken in self.FollowStruct)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstPaths))
@@ -1693,29 +1700,30 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
 
-    def callPaths(self, escopo):
+    def callPaths(self, escopo, structs_name, array_size):
         if self.lexemToken == '.':
-            self.callStruct(escopo)
+            self.callStruct(escopo, structs_name, array_size)
         
         elif self.lexemToken in self.firstMatrAssign:
-            self.callMatrAssign(escopo)
+            self.callMatrAssign(escopo, structs_name, array_size)
         
 
-    def callMatrAssign(self, escopo):
+    def callMatrAssign(self, escopo, structs_name, array_size):
         if self.lexemToken == '[':
-            self.callCell(escopo)
+            self.callCell(escopo, array_size)
         else:
             pass
         if self.lexemToken in self.firstPaths:
-            self.callPaths(escopo)
+            self.callPaths(escopo, structs_name, array_size)
         else:
             pass
 
 
-    def callCell(self, escopo):
+    def callCell(self, escopo, array_size):
         if self.lexemToken == ('['):
             self.getNextToken()
             if self.typeLexema == 'NRO':
+                array_size.append(self.lexemToken)
                 self.getNextToken()
             else:
                 pass
@@ -1729,8 +1737,10 @@ class SyntaticAnalyzer:
             if self.typeLexema in self.firstCallVariable:
                 real_escopo = ""
                 variable = ""
-                self.callCallVariable(escopo, real_escopo, variable)
-                #ERRO SEMANTICO BUSCA VARIAVEL
+                structs_name = ""
+                array_size = []
+                self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
+                self.semantic.check_read_print(real_escopo, variable, structs_name, array_size)
             else:
                 pass
             if self.lexemToken == ']':
@@ -1999,15 +2009,20 @@ class SyntaticAnalyzer:
             if self.lexemToken in self.firstCallVariable:
                 real_escopo = ""
                 variable = ""
-                self.callCallVariable(escopo, real_escopo, variable)
-                #ERRO SEMANTICO BUSCA VARIAVEL
+                structs_name = ""
+                array_size = []
+                self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
+                self.semantic.check_read_print(real_escopo, variable, structs_name, array_size)
 
 
     def callFinalValue(self, escopo):
         if self.lexemToken in self.firstCallVariable:
             real_escopo = ""
             variable = ""
-            self.callCallVariable(escopo, real_escopo, variable)
+            structs_name = ""
+            array_size = []
+            self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
+            self.semantic.check_read_print(real_escopo, variable, structs_name, array_size)
         elif self.typeLexema == 'NRO':
             self.getNextToken()
         elif self.getNextToken in self.firstBooleanos:
@@ -2016,7 +2031,7 @@ class SyntaticAnalyzer:
             pass
 
 
-    def callCallVariable(self, escopo, real_escopo, variable):
+    def callCallVariable(self, escopo, real_escopo, variable, structs_name, array_size):
         if self.lexemToken in self.firstModifier:
             if (self.lexemToken == "local"):
                 real_escopo = self.lexemToken
@@ -2055,7 +2070,7 @@ class SyntaticAnalyzer:
             elif (self.typeLexema == "IDE"):
                 self.getNextToken()
         if self.lexemToken in self.firstPaths:
-            self.callPaths(escopo)
+            self.callPaths(escopo, structs_name, array_size)
 
     
     def callReturn(self, escopo):
@@ -2069,9 +2084,13 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "palavra", "return"))
             elif (self.lexemToken == "return"):
                 self.getNextToken()
+        
         real_escopo = ""
         variable = ""
-        self.callCallVariable(escopo, real_escopo, variable) #Pois "callExpression" não funciona
+        structs_name = ""
+        array_size = []
+        self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
+        # CHAMAR ERRO DO RETORNO AQUI
         #ERRO SEMANTICO BUSCA VARIAVEL
         #self.callExpression()
 

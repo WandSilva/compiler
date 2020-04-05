@@ -278,7 +278,8 @@ class semantic_analyzer:
 
 
 
-
+    def check_read_print(self, escopo, variable, structs_name, array_size): # Caso seja uma variavel de uma struct, variable é o nome da struct e structs_name o nome da variavel / array_size é uma lista com os tamanhos do array
+        pass
 
 
 
