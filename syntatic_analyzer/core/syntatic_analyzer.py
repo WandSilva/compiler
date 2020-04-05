@@ -350,7 +350,7 @@ class SyntaticAnalyzer:
                     type_params = []
                     params = []
                     if self.lexemToken in self.firstParamList:
-                        self.readParamList_TB(functionName)
+                        self.readParamList_TB(functionName, type_params, params)
 
                     if self.lexemToken == ")":
                         self.getNextToken()
