@@ -38,7 +38,7 @@ class SyntaticAnalyzer:
         self.firstFunction = []
         self.firstProcedure = []
         self.firstValueConst = []
-        self.firstNumber = []  #a lista ta vazia
+        self.firstNumber = []  
         self.firstBooleanos = []
         self.firstModifier = []
         self.firstCommandIf = []
@@ -216,7 +216,7 @@ class SyntaticAnalyzer:
         self.firstExpression.extend(self.firstAritmeticExp)
         self.firstExpression.extend(self.firstLogicalExp)
         self.firstAssign2.append("CDC")
-        self.firstAssign2.append("NRO") #*
+        self.firstAssign2.append("NRO") 
         self.firstAssign2.extend(self.firstCallProcedure_Function)
         self.firstAssign2.extend(self.firstExpression)
         self.firstValueParam.extend(self.firstNumber)
@@ -248,7 +248,6 @@ class SyntaticAnalyzer:
         self.FollowIDE_Struct2.extend(self.FollowIDE_Struct)
         self.FollowIDE_Struct2Aux.extend(self.FollowIDE_Struct2)
         self.FollowArrayVerification.extend(self.FollowVarValuesAttribution)
-        #self.FollowFunctionProcedure.append("Ç") # Adicionar o simbolo no final de lexico e elterar os tratamentos pra final de codigo no sintatico
         self.FollowFunction.extend(self.firstFunctions_Procedures)
         self.FollowProcedure.extend(self.firstFunctions_Procedures)
         self.FollowCommand.extend(self.firstCommands)
@@ -268,9 +267,9 @@ class SyntaticAnalyzer:
         self.FollowPrintParams.append(")")
         self.FollowPrintParam.extend(self.firstMorePrintParams)
         self.FollowMorePrintParams.extend(self.FollowPrintParams)
-        self.FollowUnary_Op # EDITAR
-        self.FollowFinal_Value # EDITAR
-        self.FollowRealParam # EDITAR
+        self.FollowUnary_Op
+        self.FollowFinal_Value
+        self.FollowRealParam 
         self.FollowCallVariable.extend(self.FollowUnary_Op)
         self.FollowCallVariable.extend(self.FollowFinal_Value)
         self.FollowCallVariable.extend(self.FollowMoreReadParams)
@@ -323,6 +322,7 @@ class SyntaticAnalyzer:
         self.getNextToken()
         self.callGlobalValues()
         self.callFunctionProcedure()
+        self.semantic.print_semantic_errors()
     
     def creat_functionProcedures_TB(self):
         while (not(self.lexemToken == None)):
@@ -381,6 +381,8 @@ class SyntaticAnalyzer:
 
                     self.semantic.add_func(procedureName, None, type_params, params, line)
 
+        #CHAMADA PARA VERIFICAÇÃO DO START
+
 
     def readParamList_TB(self, escopo, type_params, params):
         type_param = ""
@@ -416,7 +418,6 @@ class SyntaticAnalyzer:
     def callGlobalValues(self):
         if self.lexemToken in self.firstGlobalValues:
             if self.lexemToken == "const":
-                #self.semantic.add_var_scope("global_const")
                 self.getNextToken()
                 
                 if self.lexemToken == "{":
@@ -444,7 +445,6 @@ class SyntaticAnalyzer:
                         self.getNextToken()
                 
                 if self.lexemToken == "var":
-                    #self.semantic.add_var_scope("global_var")
                     self.getNextToken()
                 else:
                     while (not ((self.lexemToken == "var") or (self.lexemToken == "{") or (self.lexemToken in self.FollowGlobalValeus)) and (not self.lexemToken == None)):
@@ -480,7 +480,6 @@ class SyntaticAnalyzer:
                         self.getNextToken()
                     
             elif self.lexemToken == "var":
-                #self.semantic.add_var_scope("global_var")
                 self.getNextToken()
                 
                 if self.lexemToken == "{":
@@ -508,7 +507,6 @@ class SyntaticAnalyzer:
                         self.getNextToken()
                 
                 if self.lexemToken == "const":
-                    #self.semantic.add_var_scope("global_const")
                     self.getNextToken()
                 else:
                     while (not ((self.lexemToken == "const") or (self.lexemToken == "{") or (self.lexemToken in self.FollowGlobalValeus)) and (not self.lexemToken == None)):
@@ -747,12 +745,6 @@ class SyntaticAnalyzer:
                 self.callVarValuesDeclaration(escopo)()
 
         else:
-            #token = self.lookNextToken()
-            #token2 = self.lookNextNextToken()
-            #if token.tipo == "IDE" and token2.lexema in self.firstIDE_Struct2:
-            #    self.listErrors.append(self.errorMessage(self.errorLineToken, "palavra", "struct"))
-            #    self.callIDE_Struct()
-            #    self.callVarValuesDeclaration()
             while (not (self.lexemToken in self.firstVarValuesDeclaration or self.lexemToken in self.FollowVarValuesDeclaration) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.FollowVarValuesDeclaration))
                 self.getNextToken()
