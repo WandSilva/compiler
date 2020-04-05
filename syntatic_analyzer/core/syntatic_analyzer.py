@@ -338,8 +338,10 @@ class SyntaticAnalyzer:
                         self.getNextToken()
                     
                     functionName = ""
+                    line = ""
                     if self.typeLexema == "IDE":
                         functionName =  self.lexemToken
+                        line = self.errorLineToken
                         self.getNextToken()
 
                     if self.lexemToken == "(":
@@ -348,20 +350,22 @@ class SyntaticAnalyzer:
                     type_params = []
                     params = []
                     if self.lexemToken in self.firstParamList:
-                        self.readParamList_TB(type_params, params)
+                        self.readParamList_TB(functionName)
 
                     if self.lexemToken == ")":
                         self.getNextToken()
 
-                    self.semantic.add_func(functionName, typeFunction, type_params, params)
+                    self.semantic.add_func(functionName, typeFunction, type_params, params, line)
 
 
                 elif self.lexemToken == "procedure":
                     self.getNextToken()
                     
-                    functionName = ""
+                    procedureName = ""
+                    line = ""
                     if self.typeLexema == "IDE" or self.lexemToken == "start":
-                        functionName =  self.lexemToken
+                        procedureName =  self.lexemToken
+                        line = self.errorLineToken
                         self.getNextToken()
 
                     if self.lexemToken == "(":
@@ -370,26 +374,32 @@ class SyntaticAnalyzer:
                     type_params = []
                     params = []
                     if self.lexemToken in self.firstParamList:
-                        self.readParamList_TB(type_params, params)
+                        self.readParamList_TB(procedureName)
 
                     if self.lexemToken == ")":
                         self.getNextToken()
 
-                    self.semantic.add_func(functionName, None, type_params, params)
+                    self.semantic.add_func(procedureName, None, type_params, params, line)
 
 
-    def readParamList_TB(self, type_params, params):
+    def readParamList_TB(self, escopo):
+        type_param = ""
+        param = ""
+        line = ""
         if self.lexemToken in self.firstType:
-            type_params.append(self.lexemToken)
+            type_param = self.lexemToken
             self.getNextToken()
 
         if self.typeLexema == "IDE":
-            params.append(self.lexemToken)
+            param = self.lexemToken
+            line = self.errorLineToken
             self.getNextToken()
         
+        self.semantic.add_var(escopo, type_param, param, None, line)
+
         if self.lexemToken == ",":
             self.getNextToken()
-            self.readParamList_TB(type_params, params)
+            self.readParamList_TB(escopo)
 
 
     def back_to_begin(self):
@@ -576,6 +586,7 @@ class SyntaticAnalyzer:
     def callConstValuesAttribution(self, escopo, typeConst):
         if self.typeLexema in self.firstConstValuesAttribution:
             nameConst = self.lexemToken
+            line = self.errorLineToken
             self.getNextToken()
         else:
             while (not ((self.typeLexema == "IDE") or (self.lexemToken == "=") or (self.lexemToken in self.FollowConstValuesAttribution)) and (not self.lexemToken == None)):
@@ -600,7 +611,7 @@ class SyntaticAnalyzer:
         if (self.lexemToken in self.firstValueConst or self.typeLexema in self.firstValueConst):
             valorConst = self.lexemToken
             self.getNextToken()
-            self.semantic.add_var(escopo, typeConst, nameConst, valorConst)
+            self.semantic.add_var(escopo, typeConst, nameConst, valorConst, line)
 
         else:
             while(not((self.lexemToken in self.firstValueConst or self.typeLexema in self.firstValueConst) or (self.lexemToken in self.FollowConstValuesAttribution)) and (not self.lexemToken == None)):
@@ -626,14 +637,14 @@ class SyntaticAnalyzer:
                 self.callConstMoreAttributions(escopo, typeConst)
         
 
-    def callVarValuesDeclaration_Struct(self, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array): #FUNÇAO PRA TRATAMENTO DOS ATRIBUTOS DE STRUCTS
+    def callVarValuesDeclaration_Struct(self, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line): #FUNÇAO PRA TRATAMENTO DOS ATRIBUTOS DE STRUCTS
         if self.lexemToken in self.firstVarValuesDeclaration:
             if self.lexemToken in self.firstType:
                 type_atrributes.append(self.lexemToken)
 
                 self.getNextToken()
-                self.callVarValuesAttribution_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array)
-                self.callVarMoreAttributions_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array)
+                self.callVarValuesAttribution_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line)
+                self.callVarMoreAttributions_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line)
                 if self.lexemToken == ";":
                     self.getNextToken()
                 else:
@@ -645,14 +656,14 @@ class SyntaticAnalyzer:
                     elif (self.lexemToken == ";"):
                         self.getNextToken()
                     
-                self.callVarValuesDeclaration_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array)
+                self.callVarValuesDeclaration_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line)
 
 
 
-    def callVarValuesAttribution_Struct(self, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array): #NECESSITA MODIFICAR
+    def callVarValuesAttribution_Struct(self, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line): #NECESSITA MODIFICAR
         if self.typeLexema in self.firstVarValuesAttribution:
             atrributes.append(self.lexemToken)
-            lineError = self.errorLineToken
+            line.append(self.errorLineToken)
             self.getNextToken()
         else:
             while (not ((self.typeLexema == "IDE") or (self.lexemToken in self.firstArrayVerification) or (self.lexemToken in self.FollowVarValuesAttribution)) and (not self.lexemToken == None)):
@@ -684,11 +695,11 @@ class SyntaticAnalyzer:
             pass
     
 
-    def callVarMoreAttributions_Struct(self, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array): #MODIFICAR
+    def callVarMoreAttributions_Struct(self, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line): #MODIFICAR
         if self.lexemToken in self.firstVarMoreAttributions:
             self.getNextToken()
-            self.callVarValuesAttribution_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array)
-            self.callVarMoreAttributions_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array)
+            self.callVarValuesAttribution_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line)
+            self.callVarMoreAttributions_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line)
 
 
     def callVarValuesDeclaration(self, escopo):
@@ -752,7 +763,7 @@ class SyntaticAnalyzer:
     def callVarValuesAttribution(self, escopo, typeVar):
         if self.typeLexema in self.firstVarValuesAttribution:
             nameVar = self.lexemToken
-            lineError = self.errorLineToken
+            line = self.errorLineToken
             self.getNextToken()
         else:
             while (not ((self.typeLexema == "IDE") or (self.lexemToken in self.firstArrayVerification) or (self.lexemToken in self.FollowVarValuesAttribution)) and (not self.lexemToken == None)):
@@ -771,9 +782,9 @@ class SyntaticAnalyzer:
             self.callArrayVarification(sizeArray)
 
         if (arrayControl == True):
-            self.semantic.add_array(escopo,typeVar,nameVar,sizeArray[0],sizeArray[1],sizeArray[2])
+            self.semantic.add_array(escopo,typeVar,nameVar,sizeArray[0],sizeArray[1],sizeArray[2], line)
         else:
-            self.semantic.add_var(escopo, typeVar, nameVar, None)
+            self.semantic.add_var(escopo, typeVar, nameVar, None, line)
             
     def callArrayVarification(self, sizeArray): 
         if self.lexemToken in self.firstArrayVerification:
@@ -829,6 +840,7 @@ class SyntaticAnalyzer:
     def callIDE_Struct(self, escopo):
         if self.typeLexema in self.firstIDE_Struct:
             nameStruct = self.lexemToken
+            lineStruct = self.errorLineToken
             self.getNextToken()
         else:
             while(not((self.typeLexema in self.firstIDE_Struct) or (self.lexemToken in self.firstIDE_Struct2 or self.typeLexema in self.firstIDE_Struct2) or (self.lexemToken in self.FollowIDE_Struct)) and (not self.lexemToken == None)):
@@ -839,14 +851,14 @@ class SyntaticAnalyzer:
             elif (self.typeLexema == "IDE"):
                 self.getNextToken()
         
-        self.callIDE_Struct2(escopo, nameStruct)
+        self.callIDE_Struct2(escopo, nameStruct, lineStruct)
         
         
-    def callIDE_Struct2(self, escopo, nameStruct):
+    def callIDE_Struct2(self, escopo, nameStruct, line):
         name_extends = ""
         if self.lexemToken in self.firstIDE_Struct2:
             if self.lexemToken == "{":
-                self.callIDE_Struct2Aux(escopo, nameStruct, None)
+                self.callIDE_Struct2Aux(escopo, nameStruct, None, line)
 
             elif self.lexemToken == "extends":
                 self.getNextToken()
@@ -863,19 +875,19 @@ class SyntaticAnalyzer:
                     elif (self.typeLexema == "IDE"):
                         self.getNextToken()
 
-                self.callIDE_Struct2Aux(escopo, nameStruct, name_extends)
+                self.callIDE_Struct2Aux(escopo, nameStruct, name_extends, line)
         
         else:
             while(not((self.lexemToken in self.firstIDE_Struct2) or (self.lexemToken in self.FollowIDE_Struct2)) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstIDE_Struct2))
                 self.getNextToken()
             if self.lexemToken in self.firstIDE_Struct2:
-                self.callIDE_Struct2(escopo, nameStruct)
+                self.callIDE_Struct2(escopo, nameStruct, line)
             else:
                 pass
 
     
-    def callIDE_Struct2Aux(self, escopo, nameStruct, name_extends):
+    def callIDE_Struct2Aux(self, escopo, nameStruct, name_extends, line):
         if self.lexemToken == "{":
             self.getNextToken()
         else:
@@ -916,7 +928,8 @@ class SyntaticAnalyzer:
         size1_array = []
         size2_array = []
         size3_array = []
-        self.callVarValuesDeclaration_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array) #FUNÇÃO INCOMPLETA, EM MODIFICAÇÃO
+        lines_arrays = []
+        self.callVarValuesDeclaration_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line) #FUNÇÃO INCOMPLETA, EM MODIFICAÇÃO
 
         if self.lexemToken == "}":
             self.getNextToken()
@@ -940,7 +953,7 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "}"):
                 self.getNextToken()
 
-        self.semantic.add_struct(nameStruct, escopo, name_extends, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array) #ALTERAR NO SEMANTICO
+        self.semantic.add_struct(nameStruct, escopo, name_extends, line, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, lines_arrays) #ALTERAR NO SEMANTICO
 
             
     def callFunctionProcedure(self):
@@ -1728,8 +1741,10 @@ class SyntaticAnalyzer:
     
     def callCallProcedureFunction(self, escopo): ##
         nameFP = ""
+        line = ""
         if (self.typeLexema == "IDE"):
             nameFP = self.lexemToken
+            line = self.errorLineToken
             self.getNextToken()
         else:
             pass
@@ -1761,7 +1776,7 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == ")"):
                 self.getNextToken()
 
-        self.semantic.call_func(escopo, nameFP, name_params, type_tokens_params)
+        self.semantic.call_func(escopo, nameFP, name_params, type_tokens_params, line)
 
         
 

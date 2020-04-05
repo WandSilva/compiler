@@ -146,7 +146,7 @@ class semantic_analyzer:
         return True if struct_key in self.table_struct.keys() else False
        
 
-    def add_struct(self, ide, scope, extend, type_atrributes, atrributes, line):
+    def add_struct(self, ide, scope, extend, line, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, lines_arrays):
         struct_key = ide+'ç'+scope
         if struct_key not in self.table_struct:
             self.__add_struct_key(struct_key)
