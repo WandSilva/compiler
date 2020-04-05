@@ -9,7 +9,7 @@ class semantic_analyzer:
         self.table_func = dict(key_ide = [], ide = [], tipo = [], type_params = [], params = [], num_params = [])
         self.semantic_errors = []
 
-    #MÉTODOS PARA MANIPULAR A TABELA DE VARIÁVEIS
+    ######################   MÉTODOS PARA MANIPULAR A TABELA DE VARIÁVEIS  ################
     def __contains_var(self, scope, ide):
         if scope in self.table_var.keys():
             if ide in self.table_var[scope]['ide']:
@@ -59,9 +59,12 @@ class semantic_analyzer:
             elif(assign_type == 'exp'):
                 pass
 
+            elif(assign_type == 'struct'):
+                self.__assign_struct_to_var(scope1, ide ,value, scope2, line)
+
     def __assign_var_to_var(self, scope1, ide, value, scope2, line):
         if not self.__contains_var(scope2, value): #verifica se a variavel não existe
-            self.__msg_error_var ('VAR_ND', scope2, value, line)
+            self.__msg_error_var('VAR_ND', scope2, value, line)
             #print('FAZER A CHAMADA DO ERRO AQUI: #variável não declarada anteriormente') 
         else:
             index_var1 = self.table_var[scope1]['ide'].index(ide)
@@ -103,6 +106,26 @@ class semantic_analyzer:
             tipo_func = self.table_func['tipo'][index_func]
             
             if(tipo_var == tipo_func):
+                self.table_var[scope1]['value'][index_var] = value #verificar oq vai ficar armazenado
+            else:
+                #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
+                self.__msg_error_var ('VAR_TI', scope1, ide, line)
+
+    def __assign_struct_to_var(self, scope1, ide, value, scope2, line):
+        if not self.__contains_struct(value[0], scope2):
+            self.__msg_error_struct('STRUCT_ND', scope2, value[0], None, line)
+        elif not self.__contains_struct_attribute(value[0], scope2, value[1]):
+            self.__msg_error_struct('STRUCT_ATT_ND', scope2, value[0], value[1], line)
+
+        else:
+            index_var = self.table_var[scope1]['ide'].index(ide)
+            tipo_var = self.table_var[scope1]['tipo'][index_var]
+
+            key = value[0] + 'ç' + scope1
+            index_att = self.table_struct[key]['attributes'].index(value[1])
+            tipo_attribute = self.table_struct[key]['type_atrributes'][index_att]
+            
+            if(tipo_var == tipo_attribute):
                 self.table_var[scope1]['value'][index_var] = value #verificar oq vai ficar armazenado
             else:
                 #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
@@ -156,9 +179,21 @@ class semantic_analyzer:
     def __contains_struct_attribute(self, ide, scope, attribute):
         struct_key = ide+'ç'+scope
         return True if attribute in self.table_struct[struct_key]['attributes'] else False
+
+    def check_struct_extend(self, scope, ide, extend, line):
+        struct_key1 = ide+'ç'+scope
+        struct_key2 = ide+'ç'+extend
+        if not self.__contains_struct(extend, scope):
+            self.__msg_error_struct('STRUCT_ND', scope, extend, None, line)
+        else:
+            atributos1 = self.table_struct[struct_key1]['attributes']
+            atributos2 = self.table_struct[struct_key2]['attributes']
+            for item in atributos1:
+                if item in atributos2:
+                    self.__msg_error_struct('STRCUT_EXTEND', None, None, item, line)
        
 
-    def add_struct(self, ide, scope, extend, line, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, lines_arrays):
+    def add_struct(self, ide, scope, type_atrributes, atrributes, extend, line):
         struct_key = ide+'ç'+scope
         if struct_key not in self.table_struct:
             self.__add_struct_key(struct_key)
@@ -200,6 +235,9 @@ class semantic_analyzer:
 
             elif(assign_type == 'exp'):
                 pass
+            
+            elif(assign_type == 'struct'):
+                self.__assign_struct_to_struct(struct, scope1, value, scope2, line)
 
 
     def __assign_var_to_struct(self, struct, scope1, value, scope2, line):
@@ -250,6 +288,24 @@ class semantic_analyzer:
             if(tipo_attribute != tipo_array2):
                 #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
                 self.__msg_error_struct('STRCUT_ATT_TI', scope1, struct[0], struct[1], line)
+
+    def __assign_struct_to_struct(self, struct, scope1, value, scope2, line):
+        if not self.__contains_struct(value[0], scope2):
+            self.__msg_error_struct('STRUCT_ND', scope2, value[0], None, line)
+        elif not self.__contains_struct_attribute(value[0], scope2, value[1]):
+            self.__msg_error_struct('STRUCT_ATT_ND', scope2, value[0], value[1], line)
+
+        key1 = struct[0] + 'ç' + scope1
+        index_att1 = self.table_struct[key1]['attributes'].index(struct[1])
+        tipo_attribute1 = self.table_struct[key1]['type_atrributes'][index_att1]
+        
+        key2 = value[0] + 'ç' + scope1
+        index_att2 = self.table_struct[key2]['attributes'].index(value[1])
+        tipo_attribute2 = self.table_struct[key2]['type_atrributes'][index_att2]
+
+        if(tipo_attribute1 != tipo_attribute2):
+            #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
+            self.__msg_error_struct('STRCUT_ATT_TI', scope1, struct[0], struct[1], line)
 
 
 
@@ -309,6 +365,9 @@ class semantic_analyzer:
             elif(assign_type == 'exp'):
                 pass
 
+            elif(assign_type == 'struct'):
+                self.__assign_struct_to_array(ide, scope1, value, scope2, line)
+
     def __assign_var_to_array(self, ide, scope1, value, scope2, line):
         if not self.__contains_var(scope2, value): #verifica se a variavel não existe
             #print('FAZER A CHAMADA DO ERRO AQUI: #variável não declarada anteriormente') 
@@ -354,6 +413,26 @@ class semantic_analyzer:
             if(tipo_array1 != tipo_array2):
                 #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
                 self.__msg_error_array('ARRAY_TI', scope1, ide, line)
+    
+    def __assign_struct_to_array(self, ide, scope1, value, scope2, line):
+        if not self.__contains_struct(value[0], scope2):
+            self.__msg_error_struct('STRUCT_ND', scope2, value[0], None, line)
+        elif not self.__contains_struct_attribute(value[0], scope2, value[1]):
+            self.__msg_error_struct('STRUCT_ATT_ND', scope2, value[0], value[1], line)
+
+        
+        index_array = self.table_array[scope1]['ide'].index(ide)
+        tipo_array = self.table_array[scope1]['tipo'][index_array]
+
+        key = value[0] + 'ç' + scope1
+        index_att = self.table_struct[key]['attributes'].index(value[1])
+        tipo_attribute = self.table_struct[key]['type_atrributes'][index_att]
+
+        if(tipo_array != tipo_attribute):
+            #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
+            self.__msg_error_array('ARRAY_TI', scope1, ide, line)
+ 
+
 
     def check_return (self, scope, ide, line):
         if(not (self.__contains_var(scope, ide))):
@@ -471,29 +550,32 @@ class semantic_analyzer:
             error = 'retorno não compativel com o tipo da funcao ' + "'" + ide + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "FUNC_START"): 
-            error = 'o programa já contem um procedimento Start. linha '+lineError
+            error = 'o programa já contem um procedimento start. linha '+lineError
             self.semantic_errors.append(error)
         elif (typeError == "FUNC_START_2"): 
-            error = 'o programa não contem um procedimento Start.'
+            error = 'o programa não contem um procedimento start.'
             self.semantic_errors.append(error)
 
     def __msg_error_struct(self, typeError, scope, ide, attribute, lineError):
         if (typeError == "STRUCT_JD"): #STRUCT JÁ DECLARADA
-            error = 'struct ' + "'" + ide + "'" + ' ja declarada no escopo '+ scope + '. linha '+ str(lineError)
+            error = 'struct ' + "'" + ide + "'" + ' ja declarada no escopo '+ scope + '. Linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "STRUCT_ND"): #STRUCT NÃO DECLARADA
-            error = 'struct ' + "'" + ide + "'" + ' nao declarada no escopo '+ scope + '. linha '+ str(lineError)
+            error = 'struct ' + "'" + ide + "'" + ' nao declarada no escopo '+ scope + '. Linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "STRUCT_ATT_ND"): #STRUCT ATT NÃO DECLARADO
-            error = 'Atributo ' + attribute+ ' da struct ' + ide + ' nao foi declarado. linha '+ str(lineError)
+            error = 'Atributo ' + attribute+ ' da struct ' + ide + ' nao foi declarado. Linha '+ str(lineError)
             self.semantic_errors.append(error)
 
         elif (typeError == "STRUCT_ATT_JD"): #STRUCT ATT JÁ DECLARADO
-            error = 'Atributo ' + attribute+ ' da struct ' + ide + ' já foi declarado. linha '+ str(lineError)
+            error = 'Atributo ' + attribute+ ' da struct ' + ide + ' já foi declarado. Linha '+ str(lineError)
             self.semantic_errors.append(error)
 
         elif (typeError == "STRCUT_ATT_TI"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
-            error = 'atribuição não compativel com o tipo de ' + ide + '.' + attribute + '. linha '+ str(lineError)
+            error = 'atribuição não compativel com o tipo de ' + ide + '.' + attribute + '. Linha '+ str(lineError)
+            self.semantic_errors.append(error)
+        elif (typeError == "STRCUT_EXTEND"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
+            error = 'extend inválido. Atributo ' + attribute + ' existente em ambas as structs. Linha '+ str(lineError)
             self.semantic_errors.append(error)
 
 
