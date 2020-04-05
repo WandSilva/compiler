@@ -254,9 +254,6 @@ class semantic_analyzer:
 
 
 
-
-
-
     
     #########################   MÉTODOS PARA MANIPULAR A TABELA DE ARRAYS    ##################
     def __contains_array(self, scope, ide):
@@ -382,6 +379,12 @@ class semantic_analyzer:
     def __contains_func_ide(self, ide):
         return True if ide in self.table_func['ide'] else False
 
+    def check_start(self):
+        if 'start' not in self.table_func['ide']:
+            self.__msg_error_func('FUNC_START_2', None, None)
+
+
+
     def add_func(self, ide, tipo, type_params, params, line):
         if ide == 'start':
             if 'start' in self.table_func['ide']:
@@ -467,8 +470,11 @@ class semantic_analyzer:
         elif (typeError == "FUNC_RETURN"): #RETORNO INCOMPATÍVEL
             error = 'retorno não compativel com o tipo da funcao ' + "'" + ide + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
-        elif (typeError == "FUNC_SART"): #RETORNO INCOMPATÍVEL
-            error = 'o programa já contem uma procedimento Start. linha '+lineError
+        elif (typeError == "FUNC_START"): 
+            error = 'o programa já contem um procedimento Start. linha '+lineError
+            self.semantic_errors.append(error)
+        elif (typeError == "FUNC_START_2"): 
+            error = 'o programa não contem um procedimento Start.'
             self.semantic_errors.append(error)
 
     def __msg_error_struct(self, typeError, scope, ide, attribute, lineError):
@@ -520,7 +526,10 @@ class semantic_analyzer:
             if not self.__contains_array(scope, variable):
                 self.__msg_error_var('ARRAY_ND',scope, variable, line)
         elif structs_name != '':
-            pass
+            if not self.__contains_struct(scope, variable):
+                self.__msg_error_struct('STRUCT_ND', scope, variable, structs_name, line)
+            elif not self.__contains_struct_attribute(variable, scope, structs_name):
+                self.__msg_error_struct('STRUCT_ATT_ND', scope, variable, structs_name, line)
 
 
     #-------------------------- ARRUMAR ANTES DE ENVIAR -----------------------------------

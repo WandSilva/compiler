@@ -17,9 +17,7 @@ semantic = semantic_analyzer()
 #teste add variavel
 semantic.add_var('start', 'int', 'x', 'None', '1')
 semantic.add_var('global', 'int', 'y', '5.1', '2')
-semantic.assign_var('x', 'start', '2', 'global', 'primitivo', '3')
-for i in semantic.print_semantic_errors():
-    print(i)
+semantic.assign_var('z', 'start', '2', 'global', 'primitivo', '3')
 
 #teste add array
 #semantic.add_var('start', 'int', 'x', '2')
@@ -32,12 +30,13 @@ for i in semantic.print_semantic_errors():
 #teste add retorno funcao
 #semantic.add_var('start', 'int', 'x', '1')
 #semantic.add_var('start', 'int', 'y', '2')
-#semantic.add_func('add', 'int', ['string', 'boolean'], ['a', 'b'])
-#semantic.add_func('add', 'float', ['int', 'int'], ['a', 'b'])
+semantic.add_func('start', 'int', ['string', 'boolean'], ['a', 'b'], '1')
+semantic.add_func('start', 'int', ['string', 'boolean'], ['a', 'b'], '1')
+semantic.add_func('add', 'float', ['int', 'int'], ['a', 'b'], '2')
 #semantic.assign_var('start', 'x', 'add', 'func')
 
 #semantic.call_func('start', 'add', ['xx', 'false'], ['CDC', 'PRE'])
 
-
-#print(semantic.get_vars())
+semantic.check_start()
+semantic.print_semantic_errors()
 
