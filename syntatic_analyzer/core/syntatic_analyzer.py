@@ -1712,11 +1712,11 @@ class SyntaticAnalyzer:
                 value = variable
                 escopo2 = real_escopo
             elif (len(array_size) == 0) and structs_name == "":
-                tipo_assign == 'variavel'
+                tipo_assign = 'variavel'
                 value = variable
                 escopo2 = real_escopo
             elif (len(structs_name) > 0):
-                tipo_assign == 'struct'
+                tipo_assign = 'struct'
                 values_struct_right[0] = variable
                 values_struct_right[1] = structs_name
 

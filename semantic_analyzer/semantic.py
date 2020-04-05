@@ -58,6 +58,8 @@ class semantic_analyzer:
 
             elif(assign_type == 'exp'):
                 pass
+            else:
+                print("TIPO DE ATRIBUIÇÃO INVÁLIDA")
 
     def __assign_var_to_var(self, scope1, ide, value, scope2, line):
         if not self.__contains_var(scope2, value): #verifica se a variavel não existe
