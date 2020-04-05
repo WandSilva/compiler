@@ -350,7 +350,7 @@ class SyntaticAnalyzer:
                     type_params = []
                     params = []
                     if self.lexemToken in self.firstParamList:
-                        self.readParamList_TB(functionName, type_params, params)
+                        type_params, params = self.readParamList_TB(functionName, type_params, params)
 
                     if self.lexemToken == ")":
                         self.getNextToken()
@@ -374,7 +374,7 @@ class SyntaticAnalyzer:
                     type_params = []
                     params = []
                     if self.lexemToken in self.firstParamList:
-                        self.readParamList_TB(procedureName, type_params, params)
+                        type_params, params = self.readParamList_TB(procedureName, type_params, params)
 
                     if self.lexemToken == ")":
                         self.getNextToken()
@@ -404,6 +404,8 @@ class SyntaticAnalyzer:
         if self.lexemToken == ",":
             self.getNextToken()
             self.readParamList_TB(escopo, type_params, params)
+        
+        return type_params, params
 
 
     def back_to_begin(self):
@@ -657,7 +659,8 @@ class SyntaticAnalyzer:
                         self.getNextToken()
                     
                 self.callVarValuesDeclaration_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line)
-
+        
+        return type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line
 
 
     def callVarValuesAttribution_Struct(self, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line): #NECESSITA MODIFICAR
@@ -679,7 +682,7 @@ class SyntaticAnalyzer:
 
         if self.lexemToken in self.firstArrayVerification:
             arrayControl = True
-            self.callArrayVarification(sizeArray)
+            sizeArray = self.callArrayVarification(sizeArray)
 
         if (arrayControl == True):
             tipo_array.append(type_atrributes[len(type_atrributes) - 1]) #Coloca o tipo na lista de array
@@ -773,7 +776,7 @@ class SyntaticAnalyzer:
 
         if self.lexemToken in self.firstArrayVerification:
             arrayControl = True
-            self.callArrayVarification(sizeArray)
+            sizeArray = self.callArrayVarification(sizeArray)
 
         if (arrayControl == True):
             i = len(sizeArray)
@@ -830,8 +833,10 @@ class SyntaticAnalyzer:
                 self.callArrayVarification(sizeArray)
             else:
                 pass
-        
+
+        return sizeArray
     
+
     def callVarMoreAttributions(self, escopo, typeVar):
         if self.lexemToken in self.firstVarMoreAttributions:
             self.getNextToken()
@@ -936,7 +941,7 @@ class SyntaticAnalyzer:
         size2_array = []
         size3_array = []
         lines_arrays = []
-        self.callVarValuesDeclaration_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line) #FUNÇÃO INCOMPLETA, EM MODIFICAÇÃO
+        type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line = self.callVarValuesDeclaration_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line) #FUNÇÃO INCOMPLETA, EM MODIFICAÇÃO
 
         if self.lexemToken == "}":
             self.getNextToken()
@@ -1208,6 +1213,8 @@ class SyntaticAnalyzer:
         if (self.lexemToken == ","):
             self.getNextToken()
             self.callParamListInFuncProc(name_params, type_token_params)
+
+        return name_params, type_token_params
 
 
     def callVarFunctionsProcedures(self, escopo):
@@ -1490,7 +1497,7 @@ class SyntaticAnalyzer:
             structs_name = ""
             array_size = []
             line = self.errorLineToken
-            self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
+            real_escopo, variable, structs_name, array_size = self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
             self.semantic.check_read_print(real_escopo, variable, structs_name, array_size, line)
             if self.lexemToken in self.firstMoreReadParams:
                 self.callMoreReadParams(escopo)
@@ -1592,7 +1599,7 @@ class SyntaticAnalyzer:
                 structs_name = ""
                 array_size = []
                 line = self.errorLineToken
-                self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
+                real_escopo, variable, structs_name, array_size = self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
                 self.semantic.check_read_print(real_escopo, variable, structs_name, array_size, line)
         else:
             while (not ((self.lexemToken in self.firstPrintParam) or (self.lexemToken in self.FollowPrintParam)) and (not self.lexemToken == None)):
@@ -1618,12 +1625,13 @@ class SyntaticAnalyzer:
 
     def callAssignment(self, escopo):
         if self.lexemToken in self.firstCallVariable:
-            variable = ""
+            variable = [0]
+            variable= ""
             real_escopo = ""
             structs_name = ""
             array_size = []
             line = self.errorLineToken
-            self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
+            real_escopo, variable, structs_name, array_size = self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
             #CHAMAR VERIFICAÇÃO DE ERRO SEMÂNTICO AQUI
             if self.lexemToken == '=':
                 self.getNextToken()
@@ -1642,7 +1650,7 @@ class SyntaticAnalyzer:
             values_struct_left = []
             values_struct_right = []
             if (self.lexemToken in self.firstAssign2 or self.typeLexema in self.firstAssign2):
-                self.callAssign2(escopo, tipo_assign, value, escopo2, values_struct_right)
+                tipo_assign, value, escopo2, values_struct_right = self.callAssign2(escopo, tipo_assign, value, escopo2, values_struct_right)
             else:
                 pass
 
@@ -1657,6 +1665,10 @@ class SyntaticAnalyzer:
                 if (len(values_struct_right)>0):
                     self.semantic.assign_var(variable,real_escopo,values_struct_right,escopo2,tipo_assign,line)
                 else:
+                    print("________________________")
+                    print(variable)
+                    print(real_escopo)
+                    print("________________________")
                     self.semantic.assign_var(variable,real_escopo,value,escopo2,tipo_assign,line)
             
             else:
@@ -1696,7 +1708,7 @@ class SyntaticAnalyzer:
             real_escopo = ""
             structs_name = ""
             array_size = []
-            self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
+            real_escopo, variable, structs_name, array_size = self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
 
             if (len(array_size) > 0) and structs_name == "":
                 tipo_assign = 'array'
@@ -1727,6 +1739,7 @@ class SyntaticAnalyzer:
         else:
             pass
 
+        return tipo_assign, value, escopo2, values_struct_right
 
 
     def callStruct(self, escopo, structs_name, array_size):
@@ -1763,25 +1776,31 @@ class SyntaticAnalyzer:
                 self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "."))
             elif (self.lexemToken in self.firstPaths):
                 self.getNextToken()
+        
+        return structs_name, array_size
 
 
     def callPaths(self, escopo, structs_name, array_size):
         if self.lexemToken == '.':
-            self.callStruct(escopo, structs_name, array_size)
+            structs_name, array_size = self.callStruct(escopo, structs_name, array_size)
         
         elif self.lexemToken in self.firstMatrAssign:
-            self.callMatrAssign(escopo, structs_name, array_size)
+            structs_name, array_size = self.callMatrAssign(escopo, structs_name, array_size)
+
+        return structs_name, array_size
         
 
     def callMatrAssign(self, escopo, structs_name, array_size):
         if self.lexemToken == '[':
-            self.callCell(escopo, array_size)
+            array_size = self.callCell(escopo, array_size)
         else:
             pass
         if self.lexemToken in self.firstPaths:
-            self.callPaths(escopo, structs_name, array_size)
+            structs_name, array_size = self.callPaths(escopo, structs_name, array_size)
         else:
             pass
+
+        return structs_name, array_size
 
 
     def callCell(self, escopo, array_size):
@@ -1805,7 +1824,7 @@ class SyntaticAnalyzer:
                 structs_name = ""
                 array_size = []
                 line = self.errorLineToken
-                self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
+                real_escopo, variable, structs_name, array_size = self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
                 self.semantic.check_read_print(real_escopo, variable, structs_name, array_size, line)
             else:
                 pass
@@ -1815,6 +1834,8 @@ class SyntaticAnalyzer:
                 pass
         else:
             pass
+
+        return array_size
 
     
     def callCallProcedureFunction(self, escopo): ##
@@ -1841,7 +1862,7 @@ class SyntaticAnalyzer:
         name_params = []
         type_tokens_params = []
         if self.lexemToken in self.firstParamListInFuncProc or self.typeLexema in self.firstParamListInFuncProc:
-            self.callParamListInFuncProc(name_params, type_tokens_params)
+            name_params, type_tokens_params = self.callParamListInFuncProc(name_params, type_tokens_params)
 
         if (self.lexemToken == ")"):
             self.getNextToken()
@@ -1855,8 +1876,6 @@ class SyntaticAnalyzer:
                 self.getNextToken()
 
         self.semantic.call_func(escopo, nameFP, name_params, type_tokens_params, line)
-
-        
 
 
     def callComandsExp(self, escopo):
@@ -2078,7 +2097,7 @@ class SyntaticAnalyzer:
                 structs_name = ""
                 array_size = []
                 line = self.errorLineToken
-                self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
+                real_escopo, variable, structs_name, array_size = self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
                 self.semantic.check_read_print(real_escopo, variable, structs_name, array_size, line)
 
 
@@ -2089,7 +2108,7 @@ class SyntaticAnalyzer:
             structs_name = ""
             array_size = []
             line = self.errorLineToken
-            self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
+            real_escopo, variable, structs_name, array_size = self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
             self.semantic.check_read_print(real_escopo, variable, structs_name, array_size, line)
         elif self.typeLexema == 'NRO':
             self.getNextToken()
@@ -2138,7 +2157,9 @@ class SyntaticAnalyzer:
             elif (self.typeLexema == "IDE"):
                 self.getNextToken()
         if self.lexemToken in self.firstPaths:
-            self.callPaths(escopo, structs_name, array_size)
+            structs_name, array_size = self.callPaths(escopo, structs_name, array_size)
+        
+        return real_escopo, variable, structs_name, array_size
 
     
     def callReturn(self, escopo):
@@ -2157,7 +2178,7 @@ class SyntaticAnalyzer:
         variable = ""
         structs_name = ""
         array_size = []
-        self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
+        real_escopo, variable, structs_name, array_size = self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
         # CHAMAR ERRO DO RETORNO AQUI
         #ERRO SEMANTICO BUSCA VARIAVEL
         #self.callExpression()

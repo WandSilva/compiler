@@ -11,26 +11,12 @@ var {
 
 function int start(){
     var{
-	int wand, wand;
+	int wand;
     }
     print("aloisio");
-    local.wand[3] = a();
-    local.a = local.estrela;
+    local.wand = 3;
     
-    while (){
-        local.anta = "aluno";
-    }
-    
-    if() then {
-        global.carro = "fusca";
-        while (){
-            local.pc = "asus";
-        }
-    } else{
-        
-    }
-    
-    read(local.a);
+    read(local.wand);
     
     return local.wand;
 }
