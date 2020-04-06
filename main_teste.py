@@ -17,7 +17,7 @@ semantic = semantic_analyzer()
 #teste add variavel
 semantic.add_var('start', 'int', 'x', 'None', '1')
 semantic.add_var('start', 'int', 'y', '5.1', '2')
-semantic.assign_var('z', 'start', 'x', 'start', 'variavel', '3')
+semantic.assign_var('x', 'start', '1.2', 'start', 'primitivo', '3')
 
 #teste add array
 #semantic.add_var('start', 'int', 'x', '2')

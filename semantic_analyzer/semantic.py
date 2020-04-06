@@ -150,12 +150,13 @@ class semantic_analyzer:
             tipo = self.table_struct[key]['type_attribute'][index]
 
         if tipo == 'int':
-            if isinstance(int(value), int):
+            try:
+                int(value)
                 return True
-            else:
+            except:
                 return False
 
-        if tipo == 'float':
+        if tipo == 'real':
             if re.match(r'^-?\d+(?:\.\d+)$', value) is None:
                 return False
             else:
@@ -532,7 +533,7 @@ class semantic_analyzer:
     #MANIPULAÇÃO DOS ERROS
 
     def __msg_error_var (self, typeError, scope, ide, lineError):
-        lineError = lineError + 1
+        lineError = int(lineError) + 1
         if (typeError == "VAR_JD"): #VARIÁVEL JÁ DECLARADA
             error = 'variavel ' + "'" + str(ide) + "'" + ' ja declarada no escopo '+ "'" + scope + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
@@ -544,7 +545,7 @@ class semantic_analyzer:
             self.semantic_errors.append(error)
 
     def __msg_error_func(self, typeError, ide, lineError):
-        lineError = lineError + 1
+        lineError = int(lineError) + 1
         if (typeError == "FUNC_JD"): #FUNC JÁ DECLARADA
             error = 'funcao ' + "'" + ide + "'" + ' ja declarada. linha '+ str(lineError)
             self.semantic_errors.append(error)
@@ -555,14 +556,14 @@ class semantic_analyzer:
             error = 'retorno não compativel com o tipo da funcao ' + "'" + ide + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "FUNC_START"): 
-            error = 'o programa já contem um procedimento start. linha '+lineError
+            error = 'o programa já contem um procedimento start. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "FUNC_START_2"): 
             error = 'o programa não contem um procedimento start.'
             self.semantic_errors.append(error)
 
     def __msg_error_struct(self, typeError, scope, ide, attribute, lineError):
-        lineError = lineError + 1
+        lineError = int(lineError) + 1
         if (typeError == "STRUCT_JD"): #STRUCT JÁ DECLARADA
             error = 'struct ' + "'" + ide + "'" + ' ja declarada no escopo '+ scope + '. Linha '+ str(lineError)
             self.semantic_errors.append(error)
@@ -586,7 +587,7 @@ class semantic_analyzer:
 
 
     def __msg_error_array(self, typeError, scope, ide, lineError):
-        lineError = lineError + 1
+        lineError = int(lineError) + 1
         if (typeError == "ARRAY_JD"): #ARRAY JÁ DECLARADO
             error = 'array ' + "'" + ide + "'" + ' ja declarado no escopo '+ "'" + scope + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
