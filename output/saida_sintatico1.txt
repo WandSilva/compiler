@@ -1,0 +1,6 @@
+
+Erro sintático na linha: 14. ## Palavra/caractere encontrado: '}'[DEL] ## Palavras/caracteres esperados: 'var'
+Erro sintático na linha: 14. ## Palavra esperada e não encontrada: 'var'.
+Erro sintático na linha: 14. ## Simbolo esperado e não encontrado: '{'.
+Erro sintático na linha: 14. ## Simbolo esperado e não encontrado: '}'.
+Erro sintático na linha: 14. ## Simbolo esperado e não encontrado: '}'.

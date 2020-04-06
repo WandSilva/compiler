@@ -10,21 +10,5 @@ var {
 }
 
 procedure start(){
-    var{
-	    int wand, nome;
-        struct casa {
-            var{
-                int numero;
-                string proprietario;
-            }
-        }
-    }
-    print("aloisio");
-    local.casa.numero = 3;
-    local.casa.proprietario = "Wanderson";
-    local.wand = local.casa.numero;
-    local.nome = local.casa.proprietario;
-    
-    read(local.wand);
     
 }
