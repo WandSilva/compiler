@@ -57,9 +57,9 @@ CORRECT TOKENS:
 17 DEL .
 17 IDE wand
 17 REL =
-17 PRE local
-17 DEL .
-17 IDE b
+17 IDE a
+17 DEL (
+17 DEL )
 17 DEL ;
 19 PRE read
 19 DEL (

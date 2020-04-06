@@ -14,7 +14,7 @@ procedure start(){
 	int wand;
     }
     print("aloisio");
-    local.wand = local.b;
+    local.wand = a();
     
     read(local.wand);
     
