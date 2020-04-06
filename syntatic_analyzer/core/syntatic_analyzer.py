@@ -1718,6 +1718,7 @@ class SyntaticAnalyzer:
                 escopo2 = real_escopo
             elif (len(structs_name) > 0):
                 tipo_assign = 'struct'
+                escopo2 = real_escopo
                 values_struct_right.append(variable)
                 values_struct_right.append(structs_name)
 
@@ -2172,10 +2173,10 @@ class SyntaticAnalyzer:
         variable = ""
         structs_name = ""
         array_size = []
+        line = self.errorLineTokens
         real_escopo, variable, structs_name, array_size = self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
-        # CHAMAR ERRO DO RETORNO AQUI
-        #ERRO SEMANTICO BUSCA VARIAVEL
-        #self.callExpression()
+        
+        self.semantic.check_return(real_escopo, variable, line)
 
         if self.lexemToken == ";":
             self.getNextToken()
