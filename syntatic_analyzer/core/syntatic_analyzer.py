@@ -2173,7 +2173,7 @@ class SyntaticAnalyzer:
         variable = ""
         structs_name = ""
         array_size = []
-        line = self.errorLineTokens
+        line = self.errorLineToken
         real_escopo, variable, structs_name, array_size = self.callCallVariable(escopo, real_escopo, variable, structs_name, array_size)
         
         self.semantic.check_return(real_escopo, variable, line)

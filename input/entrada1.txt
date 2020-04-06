@@ -12,11 +12,16 @@ var {
 procedure start(){
     var{
 	    int wand, nome;
+        struct s {
+            var{
+                int a;
+            }
+        }
     }
     print("aloisio");
     local.wand = "a";
     local.nome = 3;
-    
+    local.s.a = 4;
     read(local.wand);
     
 }
