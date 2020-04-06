@@ -667,7 +667,7 @@ class SyntaticAnalyzer:
     def callVarValuesAttribution_Struct(self, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line): #NECESSITA MODIFICAR
         if self.typeLexema in self.firstVarValuesAttribution:
             atrributes.append(self.lexemToken)
-            line.append(self.errorLineToken)
+            line = self.errorLineToken
             self.getNextToken()
         else:
             while (not ((self.typeLexema == "IDE") or (self.lexemToken in self.firstArrayVerification) or (self.lexemToken in self.FollowVarValuesAttribution)) and (not self.lexemToken == None)):
@@ -741,19 +741,19 @@ class SyntaticAnalyzer:
                         self.getNextToken()
                 
                 self.callIDE_Struct(escopo)
-                self.callVarValuesDeclaration(escopo)()
+                self.callVarValuesDeclaration(escopo)
                 
             elif self.lexemToken == "struct":
                 self.getNextToken()
                 self.callIDE_Struct(escopo)
-                self.callVarValuesDeclaration(escopo)()
+                self.callVarValuesDeclaration(escopo)
 
         else:
             while (not (self.lexemToken in self.firstVarValuesDeclaration or self.lexemToken in self.FollowVarValuesDeclaration) and (not self.lexemToken == None)):
                 self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.FollowVarValuesDeclaration))
                 self.getNextToken()
             if self.lexemToken in self.firstVarValuesDeclaration:
-                self.callVarValuesDeclaration(escopo)()
+                self.callVarValuesDeclaration(escopo)
             else:
                 pass
 
@@ -943,6 +943,8 @@ class SyntaticAnalyzer:
         size3_array = []
         lines_arrays = []
         type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line = self.callVarValuesDeclaration_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line) #FUNÇÃO INCOMPLETA, EM MODIFICAÇÃO
+        type_atrributes.extend(tipo_array)
+        atrributes.extend(ide_array)
 
         if self.lexemToken == "}":
             self.getNextToken()
@@ -966,7 +968,7 @@ class SyntaticAnalyzer:
             elif (self.lexemToken == "}"):
                 self.getNextToken()
 
-        self.semantic.add_struct(nameStruct, escopo, name_extends, line, type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, lines_arrays) #ALTERAR NO SEMANTICO
+        self.semantic.add_struct(nameStruct, escopo, type_atrributes, atrributes, name_extends, line) #ALTERAR NO SEMANTICO
 
             
     def callFunctionProcedure(self):
@@ -1669,8 +1671,8 @@ class SyntaticAnalyzer:
                     self.semantic.assign_var(variable,real_escopo,value,escopo2,tipo_assign,line)
             
             else:
-                values_struct_left[0] = value
-                values_struct_left[1] = structs_name
+                values_struct_left.append(value)
+                values_struct_left.append(structs_name)
                 if (len(values_struct_right) > 0):
                     self.semantic.assign_struct(values_struct_left, real_escopo, values_struct_right, escopo2, tipo_assign, line)
                 else:
