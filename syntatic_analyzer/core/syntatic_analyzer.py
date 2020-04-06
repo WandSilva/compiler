@@ -941,7 +941,6 @@ class SyntaticAnalyzer:
         size1_array = []
         size2_array = []
         size3_array = []
-        lines_arrays = []
         type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line = self.callVarValuesDeclaration_Struct(type_atrributes, atrributes, tipo_array, ide_array, size1_array, size2_array, size3_array, line) #FUNÇÃO INCOMPLETA, EM MODIFICAÇÃO
         type_atrributes.extend(tipo_array)
         atrributes.extend(ide_array)
@@ -1658,13 +1657,13 @@ class SyntaticAnalyzer:
                 pass
 
             # VER COMO FICARÁ TRATAMENTO DE STRUCT
-            if (len(array_size) > 0) and structs_name == "":
+            if ((len(array_size) > 0) and structs_name == ""):
                 if (len(values_struct_right)>0):
                     self.semantic.assign_array(variable,real_escopo,values_struct_right,escopo2, tipo_assign,line)
                 else:
                     self.semantic.assign_array(variable,real_escopo,value,escopo2, tipo_assign,line)
             
-            elif (len(array_size) == 0) and structs_name == "":
+            elif ((len(array_size) == 0) and structs_name == ""):
                 if (len(values_struct_right)>0):
                     self.semantic.assign_var(variable,real_escopo,values_struct_right,escopo2,tipo_assign,line)
                 else:
@@ -1719,8 +1718,8 @@ class SyntaticAnalyzer:
                 escopo2 = real_escopo
             elif (len(structs_name) > 0):
                 tipo_assign = 'struct'
-                values_struct_right[0] = variable
-                values_struct_right[1] = structs_name
+                values_struct_right.append(variable)
+                values_struct_right.append(structs_name)
 
         elif self.lexemToken in self.firstExpression:
             self.callExpression(escopo)
@@ -1768,13 +1767,7 @@ class SyntaticAnalyzer:
         if self.lexemToken in self.firstPaths:
             self.callPaths(escopo, structs_name, array_size)
         else:
-            while (not ((self.lexemToken in self.firstPaths) or (self.lexemToken in self.FollowStruct)) and (not self.lexemToken == None)):
-                self.listErrors.append(self.errorMessagePanic(self.errorLineToken, self.typeLexema, self.lexemToken, self.firstPaths))
-                self.getNextToken()
-            if (not self.lexemToken in self.firstPaths):
-                self.listErrors.append(self.errorMessage(self.errorLineToken, "simbolo", "."))
-            elif (self.lexemToken in self.firstPaths):
-                self.getNextToken()
+            pass
         
         return structs_name, array_size
 
@@ -2146,6 +2139,8 @@ class SyntaticAnalyzer:
 
         if self.typeLexema == "IDE":
             variable = self.lexemToken
+            if variable in self.semantic.table_var['global_const']['ide']:
+                real_escopo = "global_const"
             self.getNextToken()
         else:
             while (not ((self.typeLexema == "IDE") or (self.lexemToken in self.firstPaths) or (self.lexemToken in self.FollowCallVariable)) and (not self.lexemToken == None)):

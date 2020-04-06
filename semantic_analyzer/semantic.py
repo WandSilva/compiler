@@ -566,24 +566,24 @@ class semantic_analyzer:
     def __msg_error_struct(self, typeError, scope, ide, attribute, lineError):
         lineError = int(lineError) + 1
         if (typeError == "STRUCT_JD"): #STRUCT JÁ DECLARADA
-            error = 'Struct ' + "'" + ide + "'" + ' já declarada no escopo '+ scope + '. Linha '+ str(lineError)
+            error = 'Struct ' + "'" + ide + "'" + ' já declarada no escopo ' + "'" + scope + "'" + '. Linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "STRUCT_ND"): #STRUCT NÃO DECLARADA
-            error = 'Struct ' + "'" + ide + "'" + ' não declarada no escopo '+ scope + '. Linha '+ str(lineError)
+            error = 'Struct ' + "'" + ide + "'" + ' não declarada no escopo ' + "'" + scope + "'" + '. Linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "STRUCT_ATT_ND"): #STRUCT ATT NÃO DECLARADO
             error = 'Atributo ' + "'" + attribute + "'" + ' da struct ' + "'" + ide + "'" + ' não foi declarado. Linha '+ str(lineError)
             self.semantic_errors.append(error)
 
         elif (typeError == "STRUCT_ATT_JD"): #STRUCT ATT JÁ DECLARADO
-            error = 'Atributo ' + attribute+ ' da struct ' + ide + ' já foi declarado. Linha '+ str(lineError)
+            error = 'Atributo ' + "'" + attribute + "'" + ' da struct ' + "'" + ide + "'" + ' já foi declarado. Linha '+ str(lineError)
             self.semantic_errors.append(error)
 
         elif (typeError == "STRCUT_ATT_TI"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
             error = 'Atribuição não compativel com o tipo de ' + "'" + ide + '.' + "'" + attribute + "'" + "'" + '. Linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "STRCUT_EXTEND"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
-            error = 'Extend inválido. Atributo ' + attribute + ' existente em ambas as structs. Linha '+ str(lineError)
+            error = 'Extend inválido. Atributo ' + "'" + attribute + "'" + ' existente em ambas as structs. Linha '+ str(lineError)
             self.semantic_errors.append(error)
 
 
@@ -596,10 +596,10 @@ class semantic_analyzer:
             error = 'Array ' + "'" + ide + "'" + ' não declarado no escopo '+ "'" + scope + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "ARRAY_TI"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
-            error = 'atribuição não compativel com o tipo da array ' + "'" + ide + "'" + '. linha '+ str(lineError)
+            error = 'Atribuição não compativel com o tipo da array ' + "'" + ide + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "ARRAY_DIM"): #var inválida pra acesso ao array
-            error = 'a variável de acesso a posicao do array deve ser um inteiro. linha '+ str(lineError)
+            error = 'A variável de acesso a posicao do array deve ser um inteiro. linha '+ str(lineError)
             self.semantic_errors.append(error)
     
     def print_semantic_errors(self):
