@@ -1,0 +1,2 @@
+
+Atribuição não compativel com o tipo da variavel 'wand'. linha 17

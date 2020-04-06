@@ -38,7 +38,7 @@ def main():
         sa.letsWork()
         sa.teste()
         save_lexical_file(output_path, sa.get_output_list(), index[0])
-        save_sintatic_file(output_path, sa.semantic.get_errors, index[0])
+        save_semantic_file(output_path, sa.semantic.get_errors(), index[0])
         del sa
         
         
