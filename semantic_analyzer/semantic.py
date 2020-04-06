@@ -212,12 +212,13 @@ class semantic_analyzer:
             self.table_struct[struct_key]['type_attributes'].append(type_attributes)
             self.table_struct[struct_key]['attributes'].append(attributes)
             self.table_struct[struct_key]['extend'] = extend
+            if extend is not None:
+                self.check_struct_extend(scope, ide, extend, line)
 
     def __add_struct_key(self, strcut_key):
         self.table_struct[strcut_key] = dict(ide = None, scope = None, extend = None, type_attributes = [], attributes = [])
 
     def assign_struct(self, struct, scope1, value, scope2, assign_type, line):
-        key = struct[0] +'ç' + scope1
         if not self.__contains_struct(struct[0], scope1): #verifica se a variavel não existe
             self.__msg_error_struct('STRUCT_ND', scope1, struct[0], struct[1], line)
     
@@ -634,6 +635,3 @@ class semantic_analyzer:
 
     def get_arrays(self):
         return self.table_array
-
-    def get_errors (self):
-        return self.semantic_errors
