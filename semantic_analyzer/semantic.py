@@ -199,12 +199,13 @@ class semantic_analyzer:
 
     def add_struct(self, ide, scope, type_atrributes, atrributes, extend, line):
         struct_key = ide+'ç'+scope
-        if struct_key not in self.table_struct:
-            self.__add_struct_key(struct_key)
 
         if self.__contains_struct(ide, scope):
             #print('FAZER A CHAMADA DO ERRO AQUI: #sctruct ja declarada')
             self.__msg_error_struct('STRUCT_JD', scope, ide, None, line)
+
+        elif struct_key not in self.table_struct.keys():
+            self.__add_struct_key(struct_key)
         else:
             self.table_struct[struct_key]['ide'] = ide
             self.table_struct[struct_key]['scope'] = scope

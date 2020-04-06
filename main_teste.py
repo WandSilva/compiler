@@ -15,9 +15,9 @@ semantic = semantic_analyzer()
 #semantic.assign_var('start', 'y', 'novo', 'primitivo')
 
 #teste add variavel
-semantic.add_var('start', 'int', 'x', 'None', '1')
-semantic.add_var('start', 'int', 'y', '5.1', '2')
-semantic.assign_var('x', 'start', '1.2', 'start', 'primitivo', '3')
+#semantic.add_var('start', 'int', 'x', 'None', '1')
+#semantic.add_var('start', 'int', 'y', '5.1', '2')
+#semantic.assign_var('x', 'start', '1.2', 'start', 'primitivo', '3')
 
 #teste add array
 #semantic.add_var('start', 'int', 'x', '2')
@@ -36,6 +36,11 @@ semantic.add_func('start', 'int', ['string', 'boolean'], ['a', 'b'], '1')
 #semantic.assign_var('start', 'x', 'add', 'func')
 
 #semantic.call_func('start', 'add', ['xx', 'false'], ['CDC', 'PRE'])
+
+
+
+#semantic.add_struct('casa', 'start', ['int', 'string'], ['casa', 'dono'], None, 1 )
+#semantic.assign_struct()
 
 semantic.check_start()
 semantic.print_semantic_errors()
