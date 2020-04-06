@@ -535,43 +535,43 @@ class semantic_analyzer:
     def __msg_error_var (self, typeError, scope, ide, lineError):
         lineError = int(lineError) + 1
         if (typeError == "VAR_JD"): #VARIÁVEL JÁ DECLARADA
-            error = 'variavel ' + "'" + str(ide) + "'" + ' ja declarada no escopo '+ "'" + scope + "'" + '. linha '+ str(lineError)
+            error = 'Variável ' + "'" + str(ide) + "'" + ' ja declarada no escopo '+ "'" + scope + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "VAR_ND"): #VARIÁVEL NÃO DECLARADA
-            error = 'variavel ' + "'" + str(ide) + "'" + ' nao declarada no escopo '+ "'" + scope + "'" + '. linha '+ str(lineError)
+            error = 'Variável ' + "'" + str(ide) + "'" + ' nao declarada no escopo '+ "'" + scope + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "VAR_TI"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
-            error = 'atribuição não compativel com o tipo da variavel ' + "'" + ide + "'" + '. linha '+ str(lineError)
+            error = 'Atribuição não compativel com o tipo da variavel ' + "'" + ide + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
 
     def __msg_error_func(self, typeError, ide, lineError):
         lineError = int(lineError) + 1
         if (typeError == "FUNC_JD"): #FUNC JÁ DECLARADA
-            error = 'funcao ' + "'" + ide + "'" + ' ja declarada. linha '+ str(lineError)
+            error = 'Função ' + "'" + ide + "'" + ' já declarada. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "FUNC_ND"): #FUNC NÃO DECLARADA
-            error = 'funcao ' + "'" + ide + "'" + ' nao declarada. linha '+ str(lineError)
+            error = 'Função ' + "'" + ide + "'" + ' não declarada. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "FUNC_RETURN"): #RETORNO INCOMPATÍVEL
-            error = 'retorno não compativel com o tipo da funcao ' + "'" + ide + "'" + '. linha '+ str(lineError)
+            error = 'Retorno não compatível com o tipo da função ' + "'" + ide + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "FUNC_START"): 
             error = 'o programa já contem um procedimento start. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "FUNC_START_2"): 
-            error = 'o programa não contem um procedimento start.'
+            error = "O programa não contem um procedimento 'start'."
             self.semantic_errors.append(error)
 
     def __msg_error_struct(self, typeError, scope, ide, attribute, lineError):
         lineError = int(lineError) + 1
         if (typeError == "STRUCT_JD"): #STRUCT JÁ DECLARADA
-            error = 'struct ' + "'" + ide + "'" + ' ja declarada no escopo '+ scope + '. Linha '+ str(lineError)
+            error = 'Struct ' + "'" + ide + "'" + ' já declarada no escopo '+ scope + '. Linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "STRUCT_ND"): #STRUCT NÃO DECLARADA
-            error = 'struct ' + "'" + ide + "'" + ' nao declarada no escopo '+ scope + '. Linha '+ str(lineError)
+            error = 'Struct ' + "'" + ide + "'" + ' não declarada no escopo '+ scope + '. Linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "STRUCT_ATT_ND"): #STRUCT ATT NÃO DECLARADO
-            error = 'Atributo ' + attribute+ ' da struct ' + ide + ' nao foi declarado. Linha '+ str(lineError)
+            error = 'Atributo ' + "'" + attribute + "'" + ' da struct ' + "'" + ide + "'" + ' não foi declarado. Linha '+ str(lineError)
             self.semantic_errors.append(error)
 
         elif (typeError == "STRUCT_ATT_JD"): #STRUCT ATT JÁ DECLARADO
@@ -579,20 +579,20 @@ class semantic_analyzer:
             self.semantic_errors.append(error)
 
         elif (typeError == "STRCUT_ATT_TI"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
-            error = 'atribuição não compativel com o tipo de ' + "'" + ide + '.' + attribute + "'" + '. Linha '+ str(lineError)
+            error = 'Atribuição não compativel com o tipo de ' + "'" + ide + '.' + "'" + attribute + "'" + "'" + '. Linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "STRCUT_EXTEND"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
-            error = 'extend inválido. Atributo ' + attribute + ' existente em ambas as structs. Linha '+ str(lineError)
+            error = 'Extend inválido. Atributo ' + attribute + ' existente em ambas as structs. Linha '+ str(lineError)
             self.semantic_errors.append(error)
 
 
     def __msg_error_array(self, typeError, scope, ide, lineError):
         lineError = int(lineError) + 1
         if (typeError == "ARRAY_JD"): #ARRAY JÁ DECLARADO
-            error = 'array ' + "'" + ide + "'" + ' ja declarado no escopo '+ "'" + scope + "'" + '. linha '+ str(lineError)
+            error = 'Array ' + "'" + ide + "'" + ' já declarado no escopo '+ "'" + scope + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "ARRAY_ND"): #ARRAY NÃO DECLARADA
-            error = 'array ' + "'" + ide + "'" + ' nao declarado no escopo '+ "'" + scope + "'" + '. linha '+ str(lineError)
+            error = 'Array ' + "'" + ide + "'" + ' não declarado no escopo '+ "'" + scope + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
         elif (typeError == "ARRAY_TI"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
             error = 'atribuição não compativel com o tipo da array ' + "'" + ide + "'" + '. linha '+ str(lineError)
