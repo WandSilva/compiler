@@ -1670,7 +1670,7 @@ class SyntaticAnalyzer:
                     self.semantic.assign_var(variable,real_escopo,value,escopo2,tipo_assign,line)
             
             else:
-                values_struct_left.append(value)
+                values_struct_left.append(variable)
                 values_struct_left.append(structs_name)
                 if (len(values_struct_right) > 0):
                     self.semantic.assign_struct(values_struct_left, real_escopo, values_struct_right, escopo2, tipo_assign, line)

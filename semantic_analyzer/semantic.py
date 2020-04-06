@@ -194,7 +194,7 @@ class semantic_analyzer:
             atributos2 = self.table_struct[struct_key2]['attributes'][0]
             for item in atributos1:
                 if item in atributos2:
-                    self.__msg_error_struct('STRCUT_EXTEND', None, None, item, line)
+                    self.__msg_error_struct('STRUCT_EXTEND', None, None, item, line)
        
 
     def add_struct(self, ide, scope, type_attributes, attributes, extend, line):
@@ -223,7 +223,7 @@ class semantic_analyzer:
             self.__msg_error_struct('STRUCT_ND', scope1, struct[0], struct[1], line)
     
         else:
-            if(assign_type == 'primitivo'): #se for uma atribuição com valores normais
+            if(assign_type == 'primitivo'): #se for uma atribuição com valores normais 
                 if not self.__is_corect_type(scope1, struct[0], value, struct[1], 'struct'): #verifica se o tipo ta certo
                     self.__msg_error_struct('STRUCT_ATT_TI', scope1, struct[0], struct[1], line)
         
@@ -240,8 +240,7 @@ class semantic_analyzer:
                 pass
             
             elif(assign_type == 'struct'):
-                self.__assign_struct_to_struct(scope1, struct, value, scope2, line)
-
+                self.__assign_struct_to_struct(struct, scope1, value, scope2, line)
 
     def __assign_var_to_struct(self, struct, scope1, value, scope2, line):
         if not self.__contains_var(scope2, value): #verifica se a variavel não existe
@@ -258,7 +257,7 @@ class semantic_analyzer:
             
             if(tipo_attribute != tipo_var2):
                 #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
-                self.__msg_error_struct('STRCUT_ATT_TI', scope1, struct[0], struct[1], line)
+                self.__msg_error_struct('STRUCT_ATT_TI', scope1, struct[0], struct[1], line)
 
     def __assign_func_to_struct(self, struct, scope1, value, line):
         if not self.__contains_func_ide(value): #verifica se a função não existe
@@ -274,7 +273,7 @@ class semantic_analyzer:
             
             if not (tipo_attribute == tipo_func):
                 #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
-                self.__msg_error_struct('STRCUT_ATT_TI', scope1, struct[0], struct[1], line)
+                self.__msg_error_struct('STRUCT_ATT_TI', scope1, struct[0], struct[1], line)
 
     def __assign_array_to_struct(self, struct, scope1, value, scope2, line):
         if not self.__contains_array(scope2, value): #verifica se o array não existe
@@ -290,7 +289,7 @@ class semantic_analyzer:
             
             if(tipo_attribute != tipo_array2):
                 #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
-                self.__msg_error_struct('STRCUT_ATT_TI', scope1, struct[0], struct[1], line)
+                self.__msg_error_struct('STRUCT_ATT_TI', scope1, struct[0], struct[1], line)
 
     def __assign_struct_to_struct(self, struct, scope1, value, scope2, line):
         if not self.__contains_struct(value[0], scope2):
@@ -310,7 +309,7 @@ class semantic_analyzer:
 
         if(tipo_attribute1 != tipo_attribute2):
             #print('FAZER A CHAMADA DO ERRO AQUI: #tipo incompatível')
-            self.__msg_error_struct('STRCUT_ATT_TI', scope1, struct[0], struct[1], line)
+            self.__msg_error_struct('STRUCT_ATT_TI', scope1, struct[0], struct[1], line)
 
 
 
@@ -578,10 +577,10 @@ class semantic_analyzer:
             error = 'Atributo ' + "'" + attribute + "'" + ' da struct ' + "'" + ide + "'" + ' já foi declarado. Linha '+ str(lineError)
             self.semantic_errors.append(error)
 
-        elif (typeError == "STRCUT_ATT_TI"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
+        elif (typeError == "STRUCT_ATT_TI"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
             error = 'Atribuição não compativel com o tipo de ' + "'" + ide + '.' + attribute + "'" + '. Linha '+ str(lineError)
             self.semantic_errors.append(error)
-        elif (typeError == "STRCUT_EXTEND"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
+        elif (typeError == "STRUCT_EXTEND"): #ATRIBUIÇÃO DE VALOR INCOMPATIVEL COM O TIPO
             error = 'Extend inválido. Atributo ' + "'" + attribute + "'" + ' existente em ambas as structs. Linha '+ str(lineError)
             self.semantic_errors.append(error)
 
