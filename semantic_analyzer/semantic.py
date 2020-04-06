@@ -635,3 +635,6 @@ class semantic_analyzer:
 
     def get_arrays(self):
         return self.table_array
+
+    def get_errors(self):
+        return self.semantic_errors
