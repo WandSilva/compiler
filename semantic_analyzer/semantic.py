@@ -532,6 +532,7 @@ class semantic_analyzer:
     #MANIPULAÇÃO DOS ERROS
 
     def __msg_error_var (self, typeError, scope, ide, lineError):
+        lineError = lineError + 1
         if (typeError == "VAR_JD"): #VARIÁVEL JÁ DECLARADA
             error = 'variavel ' + "'" + str(ide) + "'" + ' ja declarada no escopo '+ "'" + scope + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
@@ -543,6 +544,7 @@ class semantic_analyzer:
             self.semantic_errors.append(error)
 
     def __msg_error_func(self, typeError, ide, lineError):
+        lineError = lineError + 1
         if (typeError == "FUNC_JD"): #FUNC JÁ DECLARADA
             error = 'funcao ' + "'" + ide + "'" + ' ja declarada. linha '+ str(lineError)
             self.semantic_errors.append(error)
@@ -560,6 +562,7 @@ class semantic_analyzer:
             self.semantic_errors.append(error)
 
     def __msg_error_struct(self, typeError, scope, ide, attribute, lineError):
+        lineError = lineError + 1
         if (typeError == "STRUCT_JD"): #STRUCT JÁ DECLARADA
             error = 'struct ' + "'" + ide + "'" + ' ja declarada no escopo '+ scope + '. Linha '+ str(lineError)
             self.semantic_errors.append(error)
@@ -583,6 +586,7 @@ class semantic_analyzer:
 
 
     def __msg_error_array(self, typeError, scope, ide, lineError):
+        lineError = lineError + 1
         if (typeError == "ARRAY_JD"): #ARRAY JÁ DECLARADO
             error = 'array ' + "'" + ide + "'" + ' ja declarado no escopo '+ "'" + scope + "'" + '. linha '+ str(lineError)
             self.semantic_errors.append(error)
