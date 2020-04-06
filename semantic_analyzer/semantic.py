@@ -615,7 +615,8 @@ class semantic_analyzer:
             if not self.__contains_array(scope, variable):
                 self.__msg_error_var('ARRAY_ND',scope, variable, line)
         elif structs_name != '':
-            if not self.__contains_struct(scope, variable):
+            print()
+            if not self.__contains_struct(variable, scope):
                 self.__msg_error_struct('STRUCT_ND', scope, variable, structs_name, line)
             elif not self.__contains_struct_attribute(variable, scope, structs_name):
                 self.__msg_error_struct('STRUCT_ATT_ND', scope, variable, structs_name, line)
